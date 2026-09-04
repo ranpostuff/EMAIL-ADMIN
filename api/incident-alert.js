@@ -125,7 +125,7 @@ export default async function handler(req, res) {
     const body = bodyLines.join("\n");
 
     const [emailResult, pushResult] = await Promise.allSettled([
-        sendAdviserEmail(title, body),
+        sendAdviserEmail(title, body, incident),
         sendPushToAllDevices(title, body, incident, incidentKey)
     ]);
 
@@ -139,14 +139,44 @@ export default async function handler(req, res) {
 /* ==========================================================================
    EMAIL
 ========================================================================== */
-async function sendAdviserEmail(subject, textBody) {
-    const recipients = (process.env.ALERT_RECIPIENTS || "")
+async function sendAdviserEmail(subject, textBody, incident) {
+    // Always-CC list — e.g. principal, safety office. Gets every alert
+    // regardless of room. Optional: fine to leave empty if you only want
+    // per-room routing.
+    const alwaysCc = (process.env.ALERT_RECIPIENTS || "")
         .split(",")
         .map((email) => email.trim())
         .filter(Boolean);
 
+    // Per-room routing: facilityAdviserEmails/{facilityId} in Firebase,
+    // e.g. "adviser@example.com" or "adviser@example.com,coadviser@example.com".
+    // Edit this data directly in Firebase Console -> Realtime Database ->
+    // facilityAdviserEmails -- no redeploy needed.
+    let roomRecipients = [];
+    if (incident && incident.facilityId) {
+        try {
+            const snap = await admin.database().ref(`facilityAdviserEmails/${incident.facilityId}`).get();
+            const raw = snap.val();
+            if (raw) {
+                roomRecipients = String(raw)
+                    .split(",")
+                    .map((email) => email.trim())
+                    .filter(Boolean);
+            }
+        } catch (error) {
+            console.error("[incident-alert] Failed to read facilityAdviserEmails:", error);
+        }
+    }
+
+    const recipients = Array.from(new Set([...roomRecipients, ...alwaysCc]));
+
     if (recipients.length === 0) {
-        return { skipped: true, reason: "No ALERT_RECIPIENTS configured." };
+        return {
+            skipped: true,
+            reason: incident && incident.facilityId
+                ? `No adviser email set for facilityId "${incident.facilityId}" and no ALERT_RECIPIENTS configured.`
+                : "No ALERT_RECIPIENTS configured and incident has no facilityId."
+        };
     }
 
     const port = Number(process.env.SMTP_PORT || 465);
