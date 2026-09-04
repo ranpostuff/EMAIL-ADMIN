@@ -56,7 +56,7 @@ const SIMULATED_SMTP_MIN_MS = 180;
 const SIMULATED_SMTP_MAX_MS = 520;
 
 const MAX_BATCH_SIZE = 50;   // safety cap — this is a synthetic load test, not a real campaign
-const MAX_BATCH_COUNT = 20;  // same reasoning
+const MAX_BATCH_COUNT = 50;  // same reasoning
 
 let appInitialized = false;
 
