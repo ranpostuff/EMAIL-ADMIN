@@ -29,7 +29,7 @@
 ========================================================================== */
 
 // Replace with your deployed Vercel URL, e.g. "https://rescuepriority-alerts.vercel.app"
-const ALERT_API_BASE_URL = "PASTE-YOUR-VERCEL-DEPLOYMENT-URL-HERE";
+const ALERT_API_BASE_URL = "https://email-admin-alerts.vercel.app";
 
 // Optional — only needed if you set ALERT_API_SECRET in the Vercel project's
 // environment variables (recommended, see SETUP-NOTIFICATIONS.md). Leave
