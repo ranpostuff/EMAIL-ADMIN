@@ -13,6 +13,18 @@
      in localStorage (rp_email_latency_test) until you visit with
      ?htmlemail=0. When on, a debug panel appears bottom-left (the
      submit->dashboard latency panel already occupies bottom-right).
+
+   TABLE / EXPORT SHAPE
+     Deliberately mirrors latency-test.js's "auto trials" table and CSV
+     one-for-one (same column pattern: trial, an id column, a start-time
+     pair, an end-time pair, latency_ms, via) so both tools' exports drop
+     into the same spreadsheet/report format. Here:
+       incidentId      -> facilityId   (no real incident exists to name)
+       submission_time -> the moment this simulated send started
+       display_time    -> the moment it finished (Firebase lookup +
+                           message compile + modeled network delay)
+       via              -> always "simulated" (never "student-app"/"direct" —
+                           nothing here is a real submission)
 ========================================================================== */
 
 const ALERT_API_BASE_URL = "https://email-admin-alerts.vercel.app";
@@ -28,9 +40,59 @@ function isEmailLatencyTestModeEnabled() {
     }
 }
 
+/* ==========================================================================
+   CSV FIELD FORMATTING — same two workarounds as latency-test.js:
+   wrap text-like ids as ="..." so Excel doesn't misread a leading "-" as
+   a formula, and pair every epoch-ms column with a human-readable ISO
+   column so epoch numbers don't collapse into scientific notation.
+========================================================================== */
+function csvTextLiteral(value) {
+    const str = String(value ?? "");
+    return `="${str.replace(/"/g, '""')}"`;
+}
+
+function csvIsoTimestamp(epochMs) {
+    if (typeof epochMs !== "number" || !Number.isFinite(epochMs)) return "";
+    return new Date(epochMs).toISOString().replace("T", " ").replace("Z", "");
+}
+
+function downloadBlob(content, mimeType, filename) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 function summaryLine(stats) {
     if (!stats || !stats.count) return "No data.";
     return `n=${stats.count} · mean ${stats.meanMs}ms · median ${stats.medianMs}ms · min ${stats.minMs}ms · max ${stats.maxMs}ms · sd ${stats.stddevMs}ms`;
+}
+
+// Flattens the server's { batches: [{ items: [...] }] } shape into one
+// row per simulated send, numbered 1..N across the whole run -- this flat
+// list is what both the table and the CSV/JSON exports are built from.
+function flattenToTrials(data) {
+    let trial = 0;
+    const trials = [];
+    for (const batch of data.batches) {
+        for (const item of batch.items) {
+            trial += 1;
+            trials.push({
+                trial,
+                facilityId: item.facilityId,
+                submittedAt: item.startedAt,
+                displayedAt: item.completedAt,
+                latencyMs: item.totalMs,
+                batchNumber: batch.batchNumber,
+                recipientCount: item.recipientCount,
+                via: "simulated"
+            });
+        }
+    }
+    return trials;
 }
 
 function buildPanel() {
@@ -42,7 +104,7 @@ function buildPanel() {
         "position:fixed", "bottom:12px", "left:12px", "z-index:99999",
         "background:#1b1f27", "color:#e8e8e8", "font:12px/1.4 monospace",
         "border:1px solid #4aa3f5", "border-radius:8px", "padding:10px 12px",
-        "width:360px", "max-height:520px", "overflow-y:auto", "box-shadow:0 4px 16px rgba(0,0,0,.4)"
+        "width:380px", "max-height:560px", "overflow-y:auto", "box-shadow:0 4px 16px rgba(0,0,0,.4)"
     ].join(";");
 
     panel.innerHTML = `
@@ -71,23 +133,25 @@ function buildPanel() {
             <table id="rp-el-table" style="width:100%;border-collapse:collapse;font-size:11px;">
                 <thead>
                     <tr style="text-align:left;color:#4aa3f5;">
-                        <th style="padding:2px 4px;">Batch</th>
-                        <th style="padding:2px 4px;">Size</th>
-                        <th style="padding:2px 4px;">Wall (ms)</th>
-                        <th style="padding:2px 4px;">Mean (ms)</th>
-                        <th style="padding:2px 4px;">Max (ms)</th>
+                        <th style="padding:2px 4px;">Trial</th>
+                        <th style="padding:2px 4px;">Facility ID</th>
+                        <th style="padding:2px 4px;">Sub. Time</th>
+                        <th style="padding:2px 4px;">Disp. Time</th>
+                        <th style="padding:2px 4px;">Latency (ms)</th>
                     </tr>
                 </thead>
                 <tbody id="rp-el-tbody"></tbody>
             </table>
         </div>
         <div>
-            <button id="rp-el-export-json" style="font:11px monospace;cursor:pointer;">export json</button>
+            <button id="rp-el-export-csv" style="font:11px monospace;cursor:pointer;">export trials csv</button>
+            <button id="rp-el-export-json" style="font:11px monospace;cursor:pointer;">export trials json</button>
         </div>
     `;
     document.body.appendChild(panel);
 
-    let lastRunResult = null;
+    let lastTrials = [];
+    let lastOverallStats = null;
 
     document.getElementById("rp-el-run").addEventListener("click", async () => {
         const runBtn = document.getElementById("rp-el-run");
@@ -117,17 +181,19 @@ function buildPanel() {
                 return;
             }
 
-            lastRunResult = data;
+            lastTrials = flattenToTrials(data);
+            lastOverallStats = data.overall;
+
             overallEl.textContent = `Overall — ${summaryLine(data.overall)}`;
             progressEl.textContent = `Done. ${data.note}`;
 
-            tbody.innerHTML = data.batches.map((batch) => `
+            tbody.innerHTML = lastTrials.map((t) => `
                 <tr>
-                    <td style="padding:2px 4px;">${batch.batchNumber}</td>
-                    <td style="padding:2px 4px;">${batch.items.length}</td>
-                    <td style="padding:2px 4px;">${batch.batchWallMs}</td>
-                    <td style="padding:2px 4px;">${batch.stats.meanMs}</td>
-                    <td style="padding:2px 4px;">${batch.stats.maxMs}</td>
+                    <td style="padding:2px 4px;">${t.trial}</td>
+                    <td style="padding:2px 4px;" title="batch ${t.batchNumber}, ${t.recipientCount} recipient(s)">${t.facilityId}</td>
+                    <td style="padding:2px 4px;">${csvIsoTimestamp(t.submittedAt)}</td>
+                    <td style="padding:2px 4px;">${csvIsoTimestamp(t.displayedAt)}</td>
+                    <td style="padding:2px 4px;">${t.latencyMs.toFixed(1)}</td>
                 </tr>
             `).join("");
         } catch (error) {
@@ -139,15 +205,32 @@ function buildPanel() {
         }
     });
 
+    document.getElementById("rp-el-export-csv").addEventListener("click", () => {
+        if (!lastTrials.length) return;
+        const header =
+            "trial,facilityId,submission_time_ms,submission_time,display_time_ms,display_time,latency_ms,via";
+        const rows = lastTrials.map((t) =>
+            [
+                t.trial,
+                csvTextLiteral(t.facilityId),
+                t.submittedAt,
+                csvIsoTimestamp(t.submittedAt),
+                t.displayedAt,
+                csvIsoTimestamp(t.displayedAt),
+                t.latencyMs,
+                t.via
+            ].join(",")
+        );
+        downloadBlob([header, ...rows].join("\n"), "text/csv", `rp-email-latency-trials-${Date.now()}.csv`);
+    });
+
     document.getElementById("rp-el-export-json").addEventListener("click", () => {
-        if (!lastRunResult) return;
-        const blob = new Blob([JSON.stringify(lastRunResult, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `rp-email-latency-${Date.now()}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+        if (!lastTrials.length) return;
+        downloadBlob(
+            JSON.stringify({ trials: lastTrials, stats: lastOverallStats }, null, 2),
+            "application/json",
+            `rp-email-latency-trials-${Date.now()}.json`
+        );
     });
 }
 
