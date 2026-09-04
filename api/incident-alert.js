@@ -110,11 +110,34 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "No incident found with that key." });
     }
 
+    // Parent contact info lives on the student record, not the incident
+    // itself — only studentId/studentName get written at report time (see
+    // app.js submitIncidentReport). Look it up here, keyed by studentId.
+    // Incidents with no studentId (dashboard "Trigger Test Alert",
+    // Facilities Test Mode) simply won't have this section.
+    let parentMobile = null;
+    let parentEmail = null;
+    if (incident.studentId) {
+        try {
+            const studentSnap = await admin.database().ref(`students/${incident.studentId}`).get();
+            const student = studentSnap.val();
+            if (student) {
+                parentMobile = student.parentMobileNo || null;
+                parentEmail = student.parentEmail || null;
+            }
+        } catch (error) {
+            console.error("[incident-alert] Failed to read student record:", error);
+        }
+    }
+
     const isTest = !!incident.isTestData;
     const subjectPrefix = isTest ? "[TEST] " : "";
     const title = `${subjectPrefix}RescuePriority Alert: ${incident.classroom || "Unknown location"}`;
     const bodyLines = [
         `Incident: ${incident.incidentNumber || incidentKey}`,
+        `Student: ${incident.studentName || "Unknown"}`,
+        parentMobile ? `Parent Mobile: ${parentMobile}` : null,
+        parentEmail ? `Parent Email: ${parentEmail}` : null,
         `Location: ${incident.classroom || "Unknown"}`,
         `Type: ${incident.incidentType || "Unspecified"}`,
         `Status: ${incident.status || "Unknown"}`,
