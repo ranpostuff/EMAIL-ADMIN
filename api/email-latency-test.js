@@ -118,6 +118,7 @@ function summarize(latencies) {
 ========================================================================== */
 async function simulateOneSend(facilityId, index) {
     const start = performance.now();
+    const startedAt = Date.now(); // epoch ms — mirrors submission_time in the submit->dashboard latency CSV
 
     const alwaysCc = (process.env.ALERT_RECIPIENTS || "")
         .split(",")
@@ -171,6 +172,7 @@ async function simulateOneSend(facilityId, index) {
     await sleep(modeledNetworkMs);
 
     const totalMs = performance.now() - start;
+    const completedAt = Date.now(); // epoch ms — mirrors display_time in the submit->dashboard latency CSV
 
     return {
         index,
@@ -178,7 +180,9 @@ async function simulateOneSend(facilityId, index) {
         recipientCount: effectiveRecipients.length,
         firebaseLookupAndCompileMs: Number(compileMs.toFixed(2)),
         modeledNetworkMs: Number(modeledNetworkMs.toFixed(2)),
-        totalMs: Number(totalMs.toFixed(2))
+        totalMs: Number(totalMs.toFixed(2)),
+        startedAt,
+        completedAt
     };
 }
 
