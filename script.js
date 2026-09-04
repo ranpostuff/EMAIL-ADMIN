@@ -456,6 +456,7 @@ async function raiseClassroomEmergency(facility) {
         incidentNumber: formatIncidentNumber(incidentNumber),
         timestamp: now,
         classroom: facility.name,
+        facilityId: facility.id,
         status: "Active",
         resolvedAt: null
     };
