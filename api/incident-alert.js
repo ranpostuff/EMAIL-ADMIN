@@ -191,7 +191,12 @@ async function sendAdviserEmail(subject, textBody, incident) {
     });
 
     await transporter.sendMail({
-        from: `"RescuePriority Alerts" <${process.env.SMTP_USER}>`,
+        // NOTE: "from" must be a real email address, NOT the SMTP_USER login
+        // name (which for Resend is literally the string "resend"). Uses
+        // MAIL_FROM if set, otherwise falls back to Resend's shared test
+        // sender (only deliverable to your own Resend account email until
+        // you verify a domain in Resend -> Domains).
+        from: `"RescuePriority Alerts" <${process.env.MAIL_FROM || "onboarding@resend.dev"}>`,
         to: recipients.join(","),
         subject,
         text: textBody
