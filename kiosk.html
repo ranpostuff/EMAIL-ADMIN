@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RescuePriority — Kiosk Display</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body class="kiosk-body">
+
+    <!-- FULLSCREEN TOGGLE — browsers require a real tap to grant fullscreen
+         (a page can't force it on load), so this stays on screen as a
+         fallback in case the auto-request on first tap (see kiosk.js)
+         doesn't fire, e.g. the browser blocked it once already. -->
+    <button type="button" id="kiosk-fullscreen-btn" class="kiosk-fullscreen-btn" title="Enter fullscreen">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 5.5V2.5C1.5 1.95 1.95 1.5 2.5 1.5H5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M14.5 5.5V2.5C14.5 1.95 14.05 1.5 13.5 1.5H10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M1.5 10.5V13.5C1.5 14.05 1.95 14.5 2.5 14.5H5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M14.5 10.5V13.5C14.5 14.05 14.05 14.5 13.5 14.5H10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+    </button>
+
+    <!-- IDLE STATE -->
+    <div id="kiosk-idle" class="kiosk-idle">
+        <div class="kiosk-idle-mark">RP</div>
+        <h1>RescuePriority</h1>
+        <p>Tap your ID / scan your QR code at the gate to check in or out.</p>
+        <div class="kiosk-idle-pulse"></div>
+    </div>
+
+    <!-- RESULT STATE (shown briefly after each scan) -->
+    <div id="kiosk-result" class="kiosk-result hidden">
+        <div class="kiosk-result-card">
+            <div class="kiosk-direction-badge" id="kiosk-direction-badge">Checked IN</div>
+
+            <div class="kiosk-photo-wrap">
+                <img id="kiosk-photo" class="kiosk-photo hidden" alt="">
+                <div id="kiosk-photo-fallback" class="kiosk-photo-fallback">--</div>
+            </div>
+
+            <h1 id="kiosk-name">Student Name</h1>
+            <p class="kiosk-lrn" id="kiosk-lrn">LRN: --</p>
+
+            <div class="kiosk-meta-row">
+                <div class="kiosk-meta-item">
+                    <span class="kiosk-meta-label">Grade &amp; Section</span>
+                    <span class="kiosk-meta-value" id="kiosk-section">--</span>
+                </div>
+                <div class="kiosk-meta-item">
+                    <span class="kiosk-meta-label">Adviser</span>
+                    <span class="kiosk-meta-value" id="kiosk-adviser">--</span>
+                </div>
+                <div class="kiosk-meta-item">
+                    <span class="kiosk-meta-label">Room</span>
+                    <span class="kiosk-meta-value" id="kiosk-room">--</span>
+                </div>
+                <div class="kiosk-meta-item">
+                    <span class="kiosk-meta-label">Time</span>
+                    <span class="kiosk-meta-value" id="kiosk-time">--</span>
+                </div>
+            </div>
+
+            <div class="kiosk-flag-row">
+                <span id="kiosk-punctuality-badge" class="kiosk-punctuality-badge hidden">--</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="kiosk-footer">MCNHS &middot; RescuePriority Kiosk Display &middot; <span id="kiosk-clock">--:--:--</span></div>
+
+    <script type="module" src="kiosk.js"></script>
+</body>
+</html>

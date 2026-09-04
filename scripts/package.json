@@ -1,0 +1,16 @@
+{
+  "name": "rescuepriority-seed-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Standalone test-data tooling for RescuePriority. Not part of the deployed app — run manually from a dev machine.",
+  "scripts": {
+    "seed": "node seed-test-incidents.mjs",
+    "seed:confirm": "node seed-test-incidents.mjs --confirm"
+  },
+  "dependencies": {
+    "firebase": "^10.8.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

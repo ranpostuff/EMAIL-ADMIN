@@ -1,0 +1,278 @@
+/* ============================================================================
+   RESCUEPRIORITY — KIOSK DISPLAY
+   Standalone, full-screen page meant to run on its own monitor (not the
+   admin dashboard). Deliberately kept visually separate from style.css —
+   this page only ever needs a handful of rules and shouldn't inherit the
+   sidebar/table/chart styling that the rest of the app depends on.
+   ============================================================================ */
+
+:root {
+    --kiosk-bg: #1C1720;
+    --kiosk-bg-panel: #241E29;
+    --kiosk-pink: #FF66C4;
+    --kiosk-pink-soft: rgba(255, 102, 196, 0.16);
+    --kiosk-text: #FFFFFF;
+    --kiosk-text-muted: rgba(255, 255, 255, 0.55);
+    --kiosk-safe: #3DDC84;
+    --kiosk-safe-soft: rgba(61, 220, 132, 0.16);
+    --kiosk-out: #FFB84D;
+    --kiosk-out-soft: rgba(255, 184, 77, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--kiosk-bg);
+    color: var(--kiosk-text);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow: hidden;
+}
+
+/* When the browser grants Fullscreen API access, the fullscreened element
+   (html) is forced to cover the entire screen — this is what actually
+   pushes the tab bar / address bar / taskbar out of view, not just CSS. */
+:fullscreen,
+:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.kiosk-fullscreen-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--kiosk-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.kiosk-fullscreen-btn svg { width: 16px; height: 16px; }
+
+.kiosk-fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--kiosk-text);
+}
+
+.kiosk-body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+}
+
+/* ---------- IDLE STATE ---------- */
+.kiosk-idle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 2rem;
+}
+
+.kiosk-idle-mark {
+    width: 96px;
+    height: 96px;
+    border-radius: 24px;
+    background: var(--kiosk-pink-soft);
+    color: var(--kiosk-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.kiosk-idle h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.kiosk-idle p {
+    font-size: 1.15rem;
+    color: var(--kiosk-text-muted);
+    max-width: 32ch;
+    margin: 0;
+}
+
+.kiosk-idle-pulse {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--kiosk-pink);
+    margin-top: 1.5rem;
+    animation: kiosk-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes kiosk-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.8); opacity: 0.35; }
+}
+
+/* ---------- RESULT STATE ---------- */
+.kiosk-result {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: kiosk-fade-in 0.25s ease-out;
+}
+
+@keyframes kiosk-fade-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.kiosk-result-card {
+    background: var(--kiosk-bg-panel);
+    border-radius: 32px;
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 90vw;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.kiosk-direction-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.4rem;
+    border-radius: 999px;
+    background: var(--kiosk-safe-soft);
+    color: var(--kiosk-safe);
+    margin-bottom: 1.75rem;
+}
+
+.kiosk-direction-badge.direction-out {
+    background: var(--kiosk-out-soft);
+    color: var(--kiosk-out);
+}
+
+.kiosk-photo-wrap {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--kiosk-pink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+    border: 4px solid var(--kiosk-pink);
+    flex-shrink: 0;
+}
+
+.kiosk-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kiosk-photo-fallback {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 3.2rem;
+    color: var(--kiosk-pink);
+}
+
+.kiosk-result-card h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+    line-height: 1.15;
+}
+
+.kiosk-lrn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--kiosk-text-muted);
+    margin: 0 0 2rem;
+}
+
+.kiosk-meta-row {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.kiosk-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 8ch;
+}
+
+.kiosk-meta-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--kiosk-text-muted);
+}
+
+.kiosk-meta-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* ---------- PUNCTUALITY BADGE ---------- */
+.kiosk-flag-row {
+    margin-top: 1.4rem;
+    display: flex;
+    justify-content: center;
+}
+
+.kiosk-punctuality-badge {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 0.5rem 1.4rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.kiosk-badge-ontime { background: rgba(34, 197, 94, 0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.4); }
+.kiosk-badge-late { background: rgba(239, 68, 68, 0.15); color: #b91c1c; border: 1px solid rgba(239,68,68,0.4); }
+.kiosk-badge-checkout { background: rgba(100, 116, 139, 0.15); color: #475569; border: 1px solid rgba(100,116,139,0.4); }
+.kiosk-badge-early { background: rgba(234, 179, 8, 0.15); color: #92620a; border: 1px solid rgba(234,179,8,0.4); }
+
+/* ---------- FOOTER / CLOCK ---------- */
+.kiosk-footer {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--kiosk-text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+}
+
+.hidden { display: none !important; }

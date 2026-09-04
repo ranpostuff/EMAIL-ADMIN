@@ -1,0 +1,476 @@
+{
+  "exportedAt": "2026-09-02T07:09:17.935Z",
+  "sourcePath": "incidents",
+  "sourceDatabase": "https://school-alert-system-8f211-default-rtdb.asia-southeast1.firebasedatabase.app",
+  "recordCount": 57,
+  "data": {
+    "-P-91w6o5fMNqCXuMw_c": {
+      "classroom": "CLINIC",
+      "incidentNumber": "Emergency #235",
+      "resolvedAt": 1786874942666,
+      "status": "Resolved",
+      "timestamp": 1786874938540
+    },
+    "-P-91xRf801tmsqLRkBj": {
+      "classroom": "CLINIC",
+      "incidentNumber": "Emergency #236",
+      "resolvedAt": 1786874949778,
+      "status": "Resolved",
+      "timestamp": 1786874943971
+    },
+    "-P-91z8f1qsJP_bdGtLc": {
+      "classroom": "C.R.",
+      "incidentNumber": "Emergency #237",
+      "resolvedAt": 1786874958829,
+      "status": "Resolved",
+      "timestamp": 1786874950947
+    },
+    "-P-91zLxAT4zdrcH97MC": {
+      "classroom": "9-A OFFICE",
+      "incidentNumber": "Emergency #238",
+      "resolvedAt": 1786874954796,
+      "status": "Resolved",
+      "timestamp": 1786874951797
+    },
+    "-P-DDlprAUZA2KRDh_ar": {
+      "classroom": "7-B",
+      "incidentNumber": "Emergency #239",
+      "resolvedAt": 1786945156053,
+      "status": "Resolved",
+      "timestamp": 1786945152070
+    },
+    "-P-DDnD4iqQXBpytSLBh": {
+      "classroom": "F.R.",
+      "incidentNumber": "Emergency #240",
+      "resolvedAt": 1786945163610,
+      "status": "Resolved",
+      "timestamp": 1786945157716
+    },
+    "-P-DDozbJwvOQ17TAz4X": {
+      "classroom": "11-BURGUNDY",
+      "incidentNumber": "Emergency #241",
+      "resolvedAt": 1786945171114,
+      "status": "Resolved",
+      "timestamp": 1786945164982
+    },
+    "-P-DDpCd4xQ7NDCdBjL5": {
+      "classroom": "10-A",
+      "incidentNumber": "Emergency #242",
+      "resolvedAt": 1786945178073,
+      "status": "Resolved",
+      "timestamp": 1786945165880
+    },
+    "-P-DDw5gIqLXKTO66XxU": {
+      "classroom": "11-CERULEAN",
+      "incidentNumber": "Emergency #243",
+      "resolvedAt": 1786945199505,
+      "status": "Resolved",
+      "timestamp": 1786945194107
+    },
+    "-P-DDyguuaob9plLBPIj": {
+      "classroom": "F.R.",
+      "incidentNumber": "Emergency #244",
+      "resolvedAt": 1786945214209,
+      "status": "Resolved",
+      "timestamp": 1786945204745
+    },
+    "-P-DDyqOi5OC4X16kKwu": {
+      "classroom": "8-D",
+      "incidentNumber": "Emergency #245",
+      "resolvedAt": 1786945217322,
+      "status": "Resolved",
+      "timestamp": 1786945205352
+    },
+    "-P-DMYm7IeX2LeQCcbl5": {
+      "classroom": "11-GARNET",
+      "incidentNumber": "Emergency #246",
+      "resolvedAt": 1786947469308,
+      "status": "Resolved",
+      "timestamp": 1786947453139
+    },
+    "-P-DMZ1WP3b9ScG3iASF": {
+      "classroom": "8-F",
+      "incidentNumber": "Emergency #247",
+      "resolvedAt": 1786947473241,
+      "status": "Resolved",
+      "timestamp": 1786947454188
+    },
+    "-P-DT8Yzzo6PupQ92sCT": {
+      "classroom": "8-D",
+      "incidentNumber": "Emergency #248",
+      "resolvedAt": 1787054164882,
+      "status": "Resolved",
+      "timestamp": 1786949180738
+    },
+    "-P-DT8nNHB4RQByvTCPh": {
+      "classroom": "9-A OFFICE",
+      "incidentNumber": "Emergency #249",
+      "resolvedAt": 1787054152393,
+      "status": "Resolved",
+      "timestamp": 1786949181724
+    },
+    "-P-DT91vT8jxqg2RoVui": {
+      "classroom": "7-C",
+      "incidentNumber": "Emergency #250",
+      "resolvedAt": 1787054148337,
+      "status": "Resolved",
+      "timestamp": 1786949182719
+    },
+    "-P-DTAOrjz8FP2Wpmgye": {
+      "classroom": "12-EMERALD",
+      "incidentNumber": "Emergency #251",
+      "resolvedAt": 1787054154875,
+      "status": "Resolved",
+      "timestamp": 1786949188283
+    },
+    "-P-DTAX3JKKkt-KTp9kJ": {
+      "classroom": "12-AMETHYST",
+      "incidentNumber": "Emergency #252",
+      "resolvedAt": 1787054050438,
+      "status": "Resolved",
+      "timestamp": 1786949188808
+    },
+    "-P-Jig-tYp8cMk1H3I0p": {
+      "classroom": "9-C",
+      "incidentNumber": "Emergency #253",
+      "resolvedAt": 1787054201005,
+      "status": "Resolved",
+      "timestamp": 1787054179158
+    },
+    "-P-JigFB0RowHPvX19hA": {
+      "classroom": "8-E",
+      "incidentNumber": "Emergency #254",
+      "resolvedAt": 1787054195064,
+      "status": "Resolved",
+      "timestamp": 1787054180137
+    },
+    "-P-JigZrNyacgMJP_1FH": {
+      "classroom": "F.R.",
+      "incidentNumber": "Emergency #255",
+      "resolvedAt": 1787054191642,
+      "status": "Resolved",
+      "timestamp": 1787054181460
+    },
+    "-P-Jigv81VaZjbd5sS3M": {
+      "classroom": "P. OFFICE",
+      "incidentNumber": "Emergency #256",
+      "resolvedAt": 1787054188210,
+      "status": "Resolved",
+      "timestamp": 1787054182886
+    },
+    "-P-JihGvny9AeFKbrvAt": {
+      "classroom": "12-EUCLASE",
+      "incidentNumber": "Emergency #257",
+      "resolvedAt": 1787054209122,
+      "status": "Resolved",
+      "timestamp": 1787054184344
+    },
+    "-P-Jrup9uq-84GwCenAc": {
+      "classroom": "10-A",
+      "incidentNumber": "Emergency #260",
+      "resolvedAt": 1787056634865,
+      "status": "Resolved",
+      "timestamp": 1787056598000
+    },
+    "-P-JrzufopxgucFnOz_I": {
+      "classroom": "7-A",
+      "incidentNumber": "Emergency #261",
+      "resolvedAt": 1787056640719,
+      "status": "Resolved",
+      "timestamp": 1787056618000
+    },
+    "-P-Js18r5QtFly-gd0g5": {
+      "classroom": "10-B",
+      "incidentNumber": "Emergency #262",
+      "resolvedAt": 1787056645736,
+      "status": "Resolved",
+      "timestamp": 1787056628000
+    },
+    "-P-Js9qS-_k-__3VDh7a": {
+      "classroom": "10-A",
+      "incidentNumber": "Emergency #263",
+      "resolvedAt": 1787056670248,
+      "status": "Resolved",
+      "timestamp": 1787056663000
+    },
+    "-P-JsC8MVXjLkFr0y0CP": {
+      "classroom": "10-A",
+      "incidentNumber": "Emergency #264",
+      "resolvedAt": 1787056678823,
+      "status": "Resolved",
+      "timestamp": 1787056673000
+    },
+    "-P-JsDwsit7frLtEgQqI": {
+      "classroom": "10-A",
+      "incidentNumber": "Emergency #265",
+      "resolvedAt": 1787056685130,
+      "status": "Resolved",
+      "timestamp": 1787056680000
+    },
+    "-P-Mcr6IAxImS5jbkgsI": {
+      "classroom": "11-BURGUNDY",
+      "incidentNumber": "Emergency #266",
+      "resolvedAt": 1787103032456,
+      "status": "Resolved",
+      "timestamp": 1787102982188
+    },
+    "-P-McrcwA-ry2E6oZyzS": {
+      "classroom": "P. OFFICE",
+      "incidentNumber": "Emergency #267",
+      "resolvedAt": 1787103021140,
+      "status": "Resolved",
+      "timestamp": 1787102984341
+    },
+    "-P-McsHU79_3bwJdG4Wx": {
+      "classroom": "12-EUCLASE",
+      "incidentNumber": "Emergency #268",
+      "resolvedAt": 1787102990592,
+      "status": "Resolved",
+      "timestamp": 1787102987000
+    },
+    "-P-Md3NlXliC1f2BXNN9": {
+      "classroom": "7-F",
+      "incidentNumber": "Emergency #269",
+      "resolvedAt": 1787103082368,
+      "status": "Resolved",
+      "timestamp": 1787103036554
+    },
+    "-P-Md5IEjO4FkSIb5Edq": {
+      "classroom": "COMP LAB",
+      "incidentNumber": "Emergency #270",
+      "resolvedAt": 1787103078717,
+      "status": "Resolved",
+      "timestamp": 1787103044392
+    },
+    "-P-Md5Ii_5ZeVvP4jj8B": {
+      "classroom": "12-FEDORITE",
+      "incidentNumber": "Emergency #271",
+      "resolvedAt": 1787103074901,
+      "status": "Resolved",
+      "timestamp": 1787103044423
+    },
+    "-P-MdTRFMSNpNaNT-G1I": {
+      "classroom": "11-EBONY",
+      "incidentNumber": "Emergency #272",
+      "resolvedAt": 1787103223637,
+      "status": "Resolved",
+      "timestamp": 1787103143273
+    },
+    "-P-MdXGurLzN0GTFEz5u": {
+      "classroom": "11-GARNET",
+      "incidentNumber": "Emergency #273",
+      "resolvedAt": 1787103225654,
+      "status": "Resolved",
+      "timestamp": 1787103158995
+    },
+    "-P-MdXmFnrJt4BL9g1ml": {
+      "classroom": "7-E",
+      "incidentNumber": "Emergency #274",
+      "resolvedAt": 1787103233636,
+      "status": "Resolved",
+      "timestamp": 1787103161065
+    },
+    "-P-MdYPD7uVkENHcunUr": {
+      "classroom": "12-SAPPHIRE",
+      "incidentNumber": "Emergency #275",
+      "resolvedAt": 1787103228720,
+      "status": "Resolved",
+      "timestamp": 1787103163623
+    },
+    "-P-MiyP2ib73hEild_0W": {
+      "classroom": "7-E",
+      "incidentNumber": "Emergency #276",
+      "resolvedAt": 1787381825052,
+      "status": "Resolved",
+      "timestamp": 1787104585422
+    },
+    "-P-Miyg4qrCkc_maIgHu": {
+      "classroom": "F.R.",
+      "incidentNumber": "Emergency #277",
+      "resolvedAt": 1787381820162,
+      "status": "Resolved",
+      "timestamp": 1787104586576
+    },
+    "-P-gMfAcukxgNUSU77qH": {
+      "classroom": "11-FUSCHIA",
+      "incidentNumber": "Emergency #278",
+      "resolvedAt": 1787450804629,
+      "status": "Resolved",
+      "timestamp": 1787450800057
+    },
+    "-P-gMfTcA5skCQsEhHSF": {
+      "classroom": "12-SAPPHIRE",
+      "incidentNumber": "Emergency #279",
+      "resolvedAt": 1787450807539,
+      "status": "Resolved",
+      "timestamp": 1787450801273
+    },
+    "-P-xwPbs5VzMikdOfB9D": {
+      "classroom": "7-E",
+      "incidentNumber": "Emergency #280",
+      "resolvedAt": 1787745655073,
+      "status": "Resolved",
+      "timestamp": 1787745643739
+    },
+    "-P-xxiw-GZgt6k_T_ANh": {
+      "classroom": "11-DRIFTWOOD",
+      "incidentNumber": "Emergency #281",
+      "resolvedAt": 1787745998381,
+      "status": "Resolved",
+      "timestamp": 1787745989061
+    },
+    "-P01CaxmQ_j6dIXQeJtg": {
+      "classroom": "11-Amaranth",
+      "incidentNumber": "Emergency #285",
+      "incidentType": "Allergic Reaction",
+      "reportedVia": "student-app",
+      "resolvedAt": 1787817383577,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1787817259765
+    },
+    "-P06Y9khRrkQ8-yY8nLV": {
+      "classroom": "7-D",
+      "incidentNumber": "Emergency #288",
+      "resolvedAt": 1787906811236,
+      "status": "Resolved",
+      "timestamp": 1787906797618
+    },
+    "-P0A4ve2iwwQbevWwfyK": {
+      "classroom": "Hallway / Common Area",
+      "facilityId": "right-common",
+      "incidentNumber": "Emergency #290",
+      "incidentType": "Panic Attack",
+      "locationOverridden": true,
+      "reportedVia": "student-app",
+      "resolvedAt": 1787966294470,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1787966242551
+    },
+    "-P0A54zT5GokPljJyYXA": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #291",
+      "incidentType": "Hyperventilating",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1787966298314,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-wp1rKlZUMRnSC8jWs",
+      "studentName": "Jeff Joaquin Vivares",
+      "timestamp": 1787966284881
+    },
+    "-P0A5E9-IW8JUdtooUKA": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #292",
+      "incidentType": "Nausea",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1787966336372,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1787966322419
+    },
+    "-P0RddEDseA8wad5NJKq": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #293",
+      "incidentType": "Nausea",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788260828104,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-wp1rKlZUMRnSC8jWs",
+      "studentName": "Jeff Joaquin Vivares",
+      "timestamp": 1788260816069
+    },
+    "-P0UAQXKWshT32uodpmN": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #294",
+      "incidentType": "Panic Attack",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788303302462,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1788303227724
+    },
+    "-P0Ui-u-lc2SnniNR1aC": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #295",
+      "incidentType": "Nausea",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788312299737,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w1PlD3lF7R6Mr3YPd",
+      "studentName": "Noeh John Cabrera Adobas",
+      "timestamp": 1788312292338
+    },
+    "-P0UkrEcfr_0O20YV8v9": {
+      "classroom": "11-AMARANTH",
+      "description": "nakujapan",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #296",
+      "incidentType": "Other",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788313371093,
+      "roomWide": false,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1788313040227
+    },
+    "-P0Um5pmGWpvbutx2hNb": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #297",
+      "incidentType": "Intruder",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788318904654,
+      "roomWide": true,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1788313366252
+    },
+    "-P0UmCQ3lxF8eCvQdhtu": {
+      "classroom": "11-AMARANTH",
+      "facilityId": "shs1-amaranth",
+      "incidentNumber": "Emergency #298",
+      "incidentType": "Fire",
+      "locationOverridden": false,
+      "reportedVia": "student-app",
+      "resolvedAt": 1788318907894,
+      "roomWide": true,
+      "status": "Resolved",
+      "studentId": "-P-w8XHNhLExhzT_Bd1q",
+      "studentName": "Jesse Harris Almacin",
+      "timestamp": 1788313393214
+    },
+    "-P0VCIvrLB20oMBEqmhH": {
+      "classroom": "7-B",
+      "incidentNumber": "Emergency #299",
+      "resolvedAt": 1788320507232,
+      "status": "Resolved",
+      "timestamp": 1788320497737
+    }
+  }
+}

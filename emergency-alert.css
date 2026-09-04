@@ -1,0 +1,174 @@
+/* ============================================================================
+   RESCUEPRIORITY — SITE-WIDE EMERGENCY ALERT
+   Additive stylesheet. Reuses design tokens defined in style.css (:root).
+   Renders above every other view/modal (see z-index) so an active emergency
+   is visible no matter which page of the admin app is currently open.
+   ============================================================================ */
+
+.emergency-alert-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;      /* above the Section Roster full-screen view (500) and every modal */
+    pointer-events: none; /* only the banner button below opts back in */
+}
+
+.emergency-alert-overlay.hidden { display: none; }
+
+/* Pulsing red vignette around the entire viewport edge — the "turns the
+   website red" part. Content stays fully readable since only the outer
+   ~40px is tinted; the center of the screen is untouched. */
+.emergency-alert-frame {
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 6px var(--status-emergency), inset 0 0 60px 10px rgba(217, 45, 32, 0.55);
+    animation: emergencyFramePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes emergencyFramePulse {
+    0%, 100% { box-shadow: inset 0 0 0 6px var(--status-emergency), inset 0 0 60px 10px rgba(217, 45, 32, 0.35); }
+    50% { box-shadow: inset 0 0 0 10px var(--status-emergency), inset 0 0 90px 18px rgba(217, 45, 32, 0.65); }
+}
+
+/* Persistent top banner naming what's active, with a jump-to link. Not
+   dismissible by design — it reflects real Firebase state and disappears
+   on its own once every emergency is resolved/ended. */
+.emergency-alert-banner {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: min(92vw, 640px);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--status-emergency);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(217, 45, 32, 0.45);
+    font-family: var(--font-sans);
+    pointer-events: auto;
+    animation: emergencyBannerPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes emergencyBannerPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.015); }
+}
+
+.emergency-alert-banner-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.emergency-alert-banner-text {
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.emergency-alert-banner-btn {
+    flex-shrink: 0;
+    margin-left: 0.3rem;
+    padding: 0.35rem 0.8rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: #fff;
+    color: var(--status-emergency);
+    font-family: var(--font-sans);
+    font-size: 0.74rem;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.emergency-alert-banner-btn:hover { background: var(--accent-pink-lightest); }
+
+/* Subtle sitewide accent so the alert reads even at a glance from the
+   corner of an eye — a thin red underline on the topbar. */
+body.emergency-alert-active .topbar {
+    box-shadow: inset 0 -3px 0 var(--status-emergency);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .emergency-alert-frame,
+    .emergency-alert-banner {
+        animation: none;
+    }
+}
+
+/* ---------- Per-emergency toast stack (top-right), one per NEW emergency ---------- */
+.emergency-toast-stack {
+    position: fixed;
+    top: 4.5rem;
+    right: 1rem;
+    z-index: 999998;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(92vw, 340px);
+    pointer-events: none;
+}
+
+.emergency-toast {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: var(--radius-card-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--status-emergency);
+    border-left: 5px solid var(--status-emergency);
+    box-shadow: var(--card-shadow);
+    font-family: var(--font-sans);
+    animation: emergencyToastIn 0.2s ease-out;
+}
+
+@keyframes emergencyToastIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.emergency-toast-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.emergency-toast-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--status-emergency);
+    flex: 1;
+}
+
+.emergency-toast-close {
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.15rem;
+}
+.emergency-toast-close:hover { color: var(--text-primary); }
+
+.emergency-toast-body {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+}
+
+.emergency-toast-actions { display: flex; justify-content: flex-end; }
+
+.emergency-toast-view-btn {
+    padding: 0.3rem 0.7rem;
+    border: none;
+    border-radius: var(--radius-card-sm);
+    background: var(--status-emergency);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.emergency-toast-view-btn:hover { background: var(--primary-dark); }

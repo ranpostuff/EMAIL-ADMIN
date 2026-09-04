@@ -1,0 +1,5 @@
+{
+  "buildCommand": false,
+  "installCommand": "npm install",
+  "outputDirectory": "."
+}

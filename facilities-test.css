@@ -1,0 +1,176 @@
+/* ==========================================================================
+   FACILITIES TEST MODE — overlay styles
+   Only ever shown when ?facilitiestest=2 is in the URL (facilities-test.js
+   adds .facilities-test-active to <body> and mounts #facilities-test-overlay
+   as a direct child; this file just styles that one subtree, nothing else).
+========================================================================== */
+
+#facilities-test-overlay {
+    display: none;
+}
+
+body.facilities-test-active #facilities-test-overlay {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: var(--bg-page, #F6F6F7);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Hide the normal app underneath while test mode is on, so there's no
+   double-rendering / confusion about which view is "live". */
+body.facilities-test-active .app-shell {
+    display: none;
+}
+
+.ft-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--text-primary, #1C1720);
+    color: #fff;
+    flex-wrap: wrap;
+}
+
+.ft-bar-title strong {
+    font-size: 15px;
+    margin-right: 8px;
+}
+
+.ft-bar-sub {
+    color: #C9C4CE;
+    font-size: 12px;
+}
+
+.ft-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ft-bar-actions button,
+.ft-bar-actions .ft-exit {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.ft-bar-actions button:hover,
+.ft-bar-actions .ft-exit:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+.ft-bar-actions .ft-danger {
+    border-color: var(--status-emergency, #D92D20);
+    background: rgba(217,45,32,0.25);
+}
+
+.ft-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--status-safe, #0E8F4E);
+    box-shadow: 0 0 0 3px rgba(14,143,78,0.25);
+}
+
+.ft-summary {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    background: var(--bg-card, #fff);
+    border-bottom: 1px solid var(--border-color, #E4E1E6);
+    font-size: 13px;
+    color: var(--text-secondary, #6B6470);
+}
+
+.ft-flag-good { color: var(--status-safe, #0E8F4E); font-weight: 600; }
+.ft-flag-warn { color: var(--status-warning, #A6720C); font-weight: 600; }
+.ft-flag-bad { color: var(--status-emergency, #D92D20); font-weight: 600; }
+
+.ft-table-wrap {
+    flex: 1;
+    overflow: auto;
+    padding: 12px 20px 24px;
+}
+
+.ft-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color, #E4E1E6);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.ft-table th,
+.ft-table td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border-subtle, #EFEDF0);
+    white-space: nowrap;
+}
+
+.ft-table thead th {
+    background: var(--bg-panel, #FAFAFB);
+    color: var(--text-secondary, #6B6470);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    position: sticky;
+    top: 0;
+}
+
+.ft-muted { color: var(--text-muted, #9C96A2); font-size: 12px; }
+.ft-mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+.ft-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ft-status-safe {
+    background: var(--status-safe-light, #E1F4E8);
+    color: var(--status-safe, #0E8F4E);
+}
+
+.ft-status-emergency {
+    background: var(--status-emergency-light, #FCE7E4);
+    color: var(--status-emergency, #D92D20);
+    animation: ft-pulse 1.4s infinite;
+}
+
+@keyframes ft-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+.ft-test-tools button {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #E4E1E6);
+    background: var(--bg-panel, #FAFAFB);
+    cursor: pointer;
+}
+
+.ft-test-tools button:hover {
+    background: var(--accent-pink-lightest, #FFF3FA);
+    border-color: var(--accent-pink, #FF66C4);
+}

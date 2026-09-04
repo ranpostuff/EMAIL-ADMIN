@@ -1,0 +1,185 @@
+/* ============================================================================
+   RESCUEPRIORITY — SCAN ATTENDANCE
+   Phone-optimized, minimal (non-dashboard) layout for the gate/scan device.
+   Additive stylesheet — reuses design tokens from style.css (:root).
+   ============================================================================ */
+
+#scan-attendance-view {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.scan-passcode-card,
+.scan-main-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+}
+
+.scan-passcode-card {
+    max-width: 340px;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+.scan-passcode-card h2 { font-size: 1rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.4rem; }
+.scan-passcode-card p { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1.1rem; }
+
+.scan-passcode-input {
+    width: 100%;
+    padding: 0.75rem;
+    text-align: center;
+    letter-spacing: 0.3em;
+    font-size: 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card-sm);
+    margin-bottom: 0.75rem;
+}
+
+.scan-passcode-error {
+    font-size: 0.75rem;
+    color: var(--status-emergency);
+    min-height: 1em;
+    margin-bottom: 0.6rem;
+}
+
+/* ---------- Direction toggle ---------- */
+.scan-direction-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.scan-direction-btn {
+    flex: 1;
+    padding: 0.65rem;
+    border-radius: var(--radius-card-sm);
+    border: 1px solid var(--border-color);
+    background: var(--bg-panel);
+    color: var(--text-secondary);
+    font-weight: 800;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.scan-direction-btn.active[data-direction="in"] { background: var(--status-safe-light); color: var(--status-safe); border-color: var(--status-safe); }
+.scan-direction-btn.active[data-direction="out"] { background: var(--status-warning-light); color: var(--status-warning); border-color: var(--status-warning); }
+
+/* ---------- Camera box (portrait ratio) ---------- */
+.scan-camera-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #111;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+}
+
+#scan-camera-box { width: 100%; height: 100%; }
+#scan-camera-box video { object-fit: cover; }
+
+.scan-camera-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+.scan-camera-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn-scan-camera {
+    flex: 1;
+    padding: 0.65rem;
+    border-radius: var(--radius-card-sm);
+    border: none;
+    background: var(--accent-pink-dark);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.btn-scan-camera:hover { background: var(--primary-dark); }
+.btn-scan-camera.btn-scan-stop { background: var(--status-emergency); }
+
+/* ---------- Feedback banner ---------- */
+.scan-feedback {
+    border-radius: var(--radius-card);
+    padding: 1.1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition: background 0.15s, color 0.15s;
+    background: var(--bg-panel);
+    color: var(--text-muted);
+}
+
+.scan-feedback.state-success { background: var(--status-safe-light); color: var(--status-safe); }
+.scan-feedback.state-error { background: var(--status-emergency-light); color: var(--status-emergency); }
+.scan-feedback.state-duplicate { background: var(--status-warning-light); color: var(--status-warning); }
+
+.scan-feedback-title { font-size: 1.15rem; font-weight: 800; }
+.scan-feedback-sub { font-size: 0.8rem; }
+
+/* ---------- Manual entry fallback ---------- */
+.scan-manual-entry {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
+}
+
+.scan-manual-entry input {
+    flex: 1;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card-sm);
+    font-size: 0.82rem;
+}
+
+.scan-manual-entry button {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: var(--radius-card-sm);
+    background: var(--text-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+/* ---------- Live stats ---------- */
+.scan-stats-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.scan-stat-card {
+    flex: 1;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card-sm);
+    padding: 0.7rem;
+    text-align: center;
+}
+
+.scan-stat-value { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+.scan-stat-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }

@@ -1,0 +1,132 @@
+/* ==========================================================================
+   VIOLATIONS VIEW
+========================================================================== */
+.violations-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .violations-layout { grid-template-columns: 1fr; }
+}
+
+.violations-scan-panel,
+.violations-log-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.violations-log-panel h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+}
+
+.violations-scanner-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 320px;
+    margin: 0 auto 1rem;
+    background: #0b1220;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.violations-qr-reader { width: 100%; height: 100%; }
+
+.violations-scanner-idle {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 1rem;
+}
+
+.violations-manual-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.violations-manual-row input { flex: 1; }
+
+.violations-found-card {
+    border-top: 1px dashed var(--border-color);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+.violations-found-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.violations-found-header h3 { margin: 0; font-size: 1.05rem; }
+.violations-found-header p { margin: 0.15rem 0 0; font-size: 0.82rem; color: var(--text-secondary); }
+
+.violations-found-photo-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--accent-pink-lightest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.violations-found-photo { width: 100%; height: 100%; object-fit: cover; }
+
+.violations-found-count-badge {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: var(--accent-pink-lightest);
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.violations-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.85rem;
+}
+
+.violations-form-row label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.violations-form-row select,
+.violations-form-row input {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+}
+
+.violations-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}

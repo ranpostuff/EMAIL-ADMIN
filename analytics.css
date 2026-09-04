@@ -1,0 +1,298 @@
+/* ============================================================================
+   RESCUEPRIORITY — ANALYTICS
+   Extends the existing pink/rose theme (variables come from style.css :root).
+   No selectors here collide with style.css — everything is analytics-* scoped.
+   ============================================================================ */
+
+.analytics-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-card-sm);
+    box-shadow: var(--card-shadow);
+}
+
+.analytics-intro h2 { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+
+/* ============================================================================
+   KPI ROW
+   ============================================================================ */
+.analytics-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.analytics-kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-card-sm);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.analytics-kpi-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.analytics-kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.analytics-kpi-card.kpi-primary {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+.analytics-kpi-card.kpi-primary .analytics-kpi-label { color: rgba(255, 255, 255, 0.78); }
+.analytics-kpi-card.kpi-primary .analytics-kpi-value { color: #ffffff; }
+
+.analytics-kpi-card.kpi-active .analytics-kpi-value { color: var(--status-emergency); }
+.analytics-kpi-card.kpi-resolved .analytics-kpi-value { color: var(--status-safe); }
+.analytics-kpi-card.kpi-resolution .analytics-kpi-value { color: var(--accent-pink-dark); font-size: 1.35rem; }
+
+/* ============================================================================
+   CHART CARDS
+   ============================================================================ */
+.analytics-chart-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: var(--card-shadow);
+    padding: 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.analytics-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.analytics-chart-header h3 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.analytics-chart-header p {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    margin-top: 0.15rem;
+}
+
+.analytics-chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 0.15rem 0 0.75rem;
+}
+
+.analytics-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.analytics-chart-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.analytics-chart-legend-dot.dot-active { background: var(--status-emergency); }
+.analytics-chart-legend-dot.dot-resolved { background: var(--status-safe); }
+.analytics-chart-legend-dot.dot-volume { background: var(--accent-pink); border-radius: 3px; }
+.analytics-chart-legend-dot.dot-warning { background: var(--status-warning); border-radius: 3px; }
+
+.analytics-period-select {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-pink-dark);
+    background: var(--accent-pink-lightest);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.3rem 0.55rem;
+    cursor: pointer;
+}
+
+/* MONTH NAVIGATOR — steps Daily/Weekly charts back to any past calendar
+   month (e.g. July) instead of only ever showing a trailing window ending
+   today. Disabled/greyed out in Monthly mode, which already spans a year. */
+.analytics-month-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-sans);
+}
+
+.analytics-month-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent-pink-dark);
+    background: var(--accent-pink-lightest);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.analytics-month-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.analytics-month-nav-label {
+    min-width: 5.5rem;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.analytics-month-nav-today {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+}
+
+.analytics-month-nav-today:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.analytics-month-nav-disabled .analytics-month-nav-label {
+    opacity: 0.55;
+}
+
+.analytics-chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 220px;
+}
+
+.analytics-chart-canvas-wrap-wide {
+    height: 280px;
+}
+
+.analytics-chart-canvas-wrap-hero {
+    height: 300px;
+    flex: 1;
+}
+
+/* Incident Trend is the Command Center's visual centerpiece — give it more
+   room than a standard hero chart so it reads as the dashboard's focal
+   point rather than another chart card among equals. */
+.cc-trend-card .analytics-chart-canvas-wrap-hero {
+    height: 340px;
+}
+
+.analytics-empty-note {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 0.75rem 0 0.25rem;
+}
+
+#chart-cc-activity-empty {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.empty-note-sub {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+}
+
+.analytics-chart-card-wide {
+    width: 100%;
+}
+
+.analytics-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+/* ============================================================================
+   HOME DASHBOARD CHART ROW
+   Reuses .analytics-chart-card / .analytics-chart-header / .analytics-chart-
+   canvas-wrap so the Home charts stay visually identical to Analytics.
+   ============================================================================ */
+.home-charts-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.home-chart-card .analytics-chart-canvas-wrap {
+    height: 200px;
+}
+
+/* ============================================================================
+   RESPONSIVENESS
+   ============================================================================ */
+@media (max-width: 1100px) {
+    .analytics-chart-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .analytics-kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .analytics-chart-grid { grid-template-columns: 1fr; }
+    .home-charts-row { grid-template-columns: 1fr; }
+    .cc-hero-grid { grid-template-columns: 1fr; }
+    .cc-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .analytics-intro { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .analytics-kpi-row { grid-template-columns: 1fr 1fr; }
+    .analytics-chart-canvas-wrap { height: 200px; }
+    .analytics-chart-canvas-wrap-wide { height: 240px; }
+    .analytics-chart-canvas-wrap-hero,
+    .cc-trend-card .analytics-chart-canvas-wrap-hero { height: 220px; }
+    .cc-kpi-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 420px) {
+    .cc-kpi-grid { grid-template-columns: 1fr; }
+}

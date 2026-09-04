@@ -1,0 +1,243 @@
+{
+  "rules": {
+    "classrooms": {
+      ".read": true,
+      "$facilityId": {
+        ".write": true,
+        "emergency": {
+          ".validate": "newData.isBoolean()"
+        },
+        "activeIncidentKey": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "incidents": {
+      ".read": true,
+      "$incidentKey": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['incidentNumber','timestamp','classroom','status'])",
+        "incidentNumber": {
+          ".validate": "newData.isString()"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "classroom": {
+          ".validate": "newData.isString()"
+        },
+        "grade": {
+          ".validate": "newData.val() == null || newData.isNumber()"
+        },
+        "status": {
+          ".validate": "newData.val() == 'Active' || newData.val() == 'Resolved' || newData.val() == 'Reported'"
+        },
+        "resolvedAt": {
+          ".validate": "newData.val() == null || newData.isNumber()"
+        },
+        "resolutionReason": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "studentId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "studentName": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "incidentType": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "roomWide": {
+          ".validate": "newData.val() == null || newData.isBoolean()"
+        },
+        "description": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "reportedVia": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "isTestData": {
+          ".validate": "newData.val() == null || newData.isBoolean()"
+        },
+        "facilityId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "locationOverridden": {
+          ".validate": "newData.val() == null || newData.isBoolean()"
+        },
+        "submitted_at": {
+          ".validate": "newData.val() == null || newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "latencyLogs": {
+      ".read": true,
+      "$logKey": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['incidentId','submitted_at','dashboard_update_time','latency_ms'])",
+        "incidentId": {
+          ".validate": "newData.isString()"
+        },
+        "submitted_at": {
+          ".validate": "newData.isNumber()"
+        },
+        "dashboard_update_time": {
+          ".validate": "newData.isNumber()"
+        },
+        "latency_ms": {
+          ".validate": "newData.isNumber()"
+        },
+        "latency_sec": {
+          ".validate": "newData.val() == null || newData.isNumber()"
+        },
+        "recorded_at": {
+          ".validate": "newData.val() == null || newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "fcmTokens": {
+      ".read": false,
+      "$token": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['createdAt','userAgent'])",
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "userAgent": {
+          ".validate": "newData.isString()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "counters": {
+      "lastIncidentNumber": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isNumber()"
+      }
+    },
+    "students": {
+      ".read": true,
+      "$studentId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['lrn','firstName','lastName','parentMobileNo','sectionId'])",
+        "lrn": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "firstName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "middleName": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "lastName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "extension": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "parentMobileNo": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "parentEmail": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "sectionId": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "facilityId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "sections": {
+      ".read": true,
+      "$sectionId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['name','gradeName','gradeId'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "gradeName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "gradeId": {
+          ".validate": "newData.isString()"
+        },
+        "assignedTeacherId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "facilityId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "attendance": {
+      ".read": true,
+      "$logId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['studentId','timestamp','direction'])",
+        "studentId": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "facilityId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "direction": {
+          ".validate": "newData.val() == 'in' || newData.val() == 'out'"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "violations": {
+      ".read": true,
+      "$studentId": {
+        "$violationKey": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['type','offenseCount','timestamp'])",
+          "type": {
+            ".validate": "newData.isString() && newData.val().length > 0"
+          },
+          "offenseCount": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "notes": {
+            ".validate": "newData.val() == null || newData.isString()"
+          },
+          "timestamp": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
