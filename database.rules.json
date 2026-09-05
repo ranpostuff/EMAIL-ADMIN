@@ -10,6 +10,9 @@
         "activeIncidentKey": {
           ".validate": "newData.val() == null || newData.isString()"
         },
+        "roomWide": {
+          ".validate": "newData.val() == null || newData.isBoolean()"
+        },
         "$other": {
           ".validate": false
         }
@@ -52,6 +55,9 @@
         },
         "roomWide": {
           ".validate": "newData.val() == null || newData.isBoolean()"
+        },
+        "helpNotifiedAt": {
+          ".validate": "newData.val() == null || newData.isNumber()"
         },
         "description": {
           ".validate": "newData.val() == null || newData.isString()"

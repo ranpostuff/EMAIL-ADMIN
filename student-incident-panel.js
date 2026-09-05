@@ -1,7 +1,7 @@
 /* ==========================================================================
    RESCUEPRIORITY — STUDENT INCIDENT PANEL
    --------------------------------------------------------------------------
-   Additive module, same pattern as panic.js: listens for the room-modal
+   Additive module: listens for the room-modal
    open/close events script.js already dispatches, plus its own read-only
    listeners on classrooms/ and incidents/. Writes nothing.
 

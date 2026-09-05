@@ -89,6 +89,12 @@ let ccChartsBuilt = false;
 let currentPeriod = "daily";
 let ccActivityPeriod = "daily";
 
+// How many periods (days / weeks / months, depending on ccActivityPeriod)
+// the Incident Trend window is shifted back from "now". 0 = the normal
+// trailing window ending today. Lets the < / > controls scroll back to
+// earlier dates instead of the chart being stuck on a fixed cutoff.
+let ccActivityOffset = 0;
+
 // When null, Daily/Weekly charts use their normal "trailing window ending
 // today" behavior (unchanged). When set to a Date (first-of-month), Daily
 // shows every day of that calendar month and Weekly shows the weeks that
@@ -792,7 +798,7 @@ function isCommandCenterViewVisible() {
    not shared, so tuning the hero chart's window (fewer, thicker bars) never
    risks changing the Analytics page's "Incident Volume" / "Active vs.
    Resolved" time buckets. */
-function buildActivitySeries(validIncidents, period) {
+function buildActivitySeries(validIncidents, period, offset = 0) {
     const now = new Date();
     const buckets = new Map();
 
@@ -803,8 +809,11 @@ function buildActivitySeries(validIncidents, period) {
     function monthLabel(d) { return d.toLocaleDateString("en-PH", { month: "short", year: "numeric", timeZone: "Asia/Manila" }); }
 
     if (period === "monthly") {
+        // offset shifts the whole 6-month window back in whole months —
+        // offset 0 is the normal "last 6 months ending this month" window.
+        const anchorMonth = new Date(now.getFullYear(), now.getMonth() - offset, 1);
         for (let i = 5; i >= 0; i--) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const d = new Date(anchorMonth.getFullYear(), anchorMonth.getMonth() - i, 1);
             buckets.set(monthKey(d), { label: monthLabel(d), active: 0, resolved: 0 });
         }
         validIncidents.forEach(inc => {
@@ -820,10 +829,12 @@ function buildActivitySeries(validIncidents, period) {
         const startOfThisWeek = new Date(now);
         startOfThisWeek.setHours(0, 0, 0, 0);
         startOfThisWeek.setDate(startOfThisWeek.getDate() - startOfThisWeek.getDay());
+        // offset shifts the 6-week window back by whole weeks.
+        const anchorWeekStart = new Date(startOfThisWeek.getTime() - offset * msPerWeek);
 
         const weekStarts = [];
         for (let i = 5; i >= 0; i--) {
-            weekStarts.push(new Date(startOfThisWeek.getTime() - i * msPerWeek));
+            weekStarts.push(new Date(anchorWeekStart.getTime() - i * msPerWeek));
         }
         weekStarts.forEach(ws => buckets.set(ws.getTime(), { label: weekLabel(ws), active: 0, resolved: 0 }));
 
@@ -840,9 +851,14 @@ function buildActivitySeries(validIncidents, period) {
             }
         });
     } else {
-        // daily — last 7 days, thicker/fewer bars to match the reference proportions
+        // daily — 7 days, thicker/fewer bars to match the reference
+        // proportions. offset shifts the window back by whole days, so
+        // scrolling can reach any past date instead of being capped at
+        // the last 7 days.
+        const anchorDay = new Date(now);
+        anchorDay.setDate(anchorDay.getDate() - offset);
         for (let i = 6; i >= 0; i--) {
-            const d = new Date(now);
+            const d = new Date(anchorDay);
             d.setDate(d.getDate() - i);
             buckets.set(dayKey(d), { label: dayLabel(d), active: 0, resolved: 0 });
         }
@@ -860,7 +876,8 @@ function buildActivitySeries(validIncidents, period) {
     return {
         labels: entries.map(e => e.label),
         activeData: entries.map(e => e.active),
-        resolvedData: entries.map(e => e.resolved)
+        resolvedData: entries.map(e => e.resolved),
+        rangeLabel: entries.length ? `${entries[0].label} \u2013 ${entries[entries.length - 1].label}` : "\u2014"
     };
 }
 
@@ -964,10 +981,11 @@ function buildOrUpdateCommandCenterCharts() {
     if (typeof Chart === "undefined") return;
     if (!ccChartsBuilt && !isCommandCenterViewVisible()) return;
 
-    const activity = buildActivitySeries(validIncidents, ccActivityPeriod);
+    const activity = buildActivitySeries(validIncidents, ccActivityPeriod, ccActivityOffset);
     const trendData = activity.activeData.map((a, i) => a + activity.resolvedData[i]);
 
     toggleEmptyNote("chart-cc-activity-empty", validIncidents.length === 0);
+    updateCcTrendRangeLabel(activity.rangeLabel);
 
     Chart.defaults.font.family = palette.fontFamily;
     Chart.defaults.color = palette.textSecondary;
@@ -1092,13 +1110,52 @@ function volumeAreaOptions(palette) {
 
 function setupCcActivityPeriodControl() {
     const select = document.getElementById("cc-activity-period-select");
-    if (!select) return;
+    if (select) {
+        select.value = ccActivityPeriod;
+        select.addEventListener("change", () => {
+            ccActivityPeriod = select.value;
+            // A different period has a different-sized window, so start it
+            // back at "now" rather than carrying over an offset that meant
+            // something different under the old period.
+            ccActivityOffset = 0;
+            buildOrUpdateCommandCenterCharts();
+        });
+    }
 
-    select.value = ccActivityPeriod;
-    select.addEventListener("change", () => {
-        ccActivityPeriod = select.value;
+    setupCcTrendScrollControls();
+}
+
+/* ==========================================================================
+   INCIDENT TREND — SCROLL TO PREVIOUS DATES
+   The trend chart only ever showed a fixed trailing window (last 7 days /
+   6 weeks / 6 months). These controls page that window backward/forward
+   by one period at a time so earlier activity is reachable, and the
+   currently-shown range is labeled above the chart.
+========================================================================== */
+function setupCcTrendScrollControls() {
+    const prevBtn = document.getElementById("cc-trend-prev");
+    const nextBtn = document.getElementById("cc-trend-next");
+    if (!prevBtn || !nextBtn) return;
+
+    prevBtn.addEventListener("click", () => {
+        ccActivityOffset += 1;
+        nextBtn.disabled = ccActivityOffset <= 0;
         buildOrUpdateCommandCenterCharts();
     });
+
+    nextBtn.addEventListener("click", () => {
+        if (ccActivityOffset <= 0) return;
+        ccActivityOffset -= 1;
+        nextBtn.disabled = ccActivityOffset <= 0;
+        buildOrUpdateCommandCenterCharts();
+    });
+}
+
+function updateCcTrendRangeLabel(rangeLabel) {
+    const label = document.getElementById("cc-trend-range-label");
+    const nextBtn = document.getElementById("cc-trend-next");
+    if (label) label.textContent = rangeLabel;
+    if (nextBtn) nextBtn.disabled = ccActivityOffset <= 0;
 }
 
 /* ==========================================================================

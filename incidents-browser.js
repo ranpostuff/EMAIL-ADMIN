@@ -1,7 +1,7 @@
 /* ==========================================================================
    RESCUEPRIORITY — INCIDENTS MODULE (grade-level folder browser)
    --------------------------------------------------------------------------
-   Additive module, same convention as violations.js / panic.js: owns its
+   Additive module, same convention as violations.js: owns its
    own read-only listeners, writes nothing.
 
    Replaces the old flat "every incident, newest first" list inside

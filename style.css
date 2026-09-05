@@ -40,10 +40,11 @@
     --status-emergency: #D92D20;
     --status-emergency-light: #FCE7E4;
 
-    /* Brighter/more saturated than --status-emergency on purpose — the
-       panic/evacuation state (panic.js) needs to visually outrank a normal
-       emergency at a glance. */
-    --status-panic: #FF1717;
+    /* Darker/more saturated than --status-emergency on purpose — used for
+       incidents that affect an entire room/area (roomWide: true) rather
+       than a single person, so a "everyone here" report visually outranks
+       a single-person one at a glance on the Campus Map. */
+    --status-emergency-wide: #8B0000;
 
     --room-dark-bg: #F3EEF2;
     --room-dark-text: #241E29;
@@ -1006,6 +1007,38 @@ img { max-width: 100%; display: block; }
 .cc-bubble-legend-bar-fill.fill-resolved { background: var(--status-safe); }
 .cc-bubble-legend-value { font-size: 0.72rem; font-weight: 800; color: var(--text-primary); flex-shrink: 0; min-width: 20px; text-align: right; }
 
+/* ---------- COMMAND CENTER — INCIDENT TREND SCROLL CONTROLS ---------- */
+.cc-trend-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.cc-trend-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.cc-trend-range-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    min-width: 88px;
+    text-align: center;
+}
+
+.cc-calendar-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+.cc-calendar-nav-btn:disabled:hover {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
 /* ---------- COMMAND CENTER — CALENDAR ---------- */
 .cc-calendar-nav {
     display: flex;
@@ -1462,6 +1495,37 @@ img { max-width: 100%; display: block; }
     background: var(--bg-panel);
     border: 1px solid var(--border-color);
     border-radius: 4px;
+    position: relative; /* anchors .courtyard-gym-slot without affecting the SHS clusters' own flex flow below */
+}
+
+/* GYM — occupies the open space to the right of the two SHS clusters
+   (see school_map.png). Absolutely positioned on purpose: the SHS
+   clusters keep their exact existing flex layout/orientation, and the
+   gym is simply "fit into" the remaining open courtyard space beside
+   them, rather than the courtyard being restructured. */
+.courtyard-gym-slot {
+    position: absolute;
+    top: 50%;
+    right: 0.85rem;
+    transform: translateY(-50%);
+    width: 96px;
+    height: 150px;
+}
+
+.room-card-gym {
+    width: 100%;
+    height: 100%;
+}
+.room-card-gym .room-number { font-size: 0.68rem; }
+
+@media (max-width: 700px) {
+    .courtyard-gym-slot {
+        position: static;
+        transform: none;
+        width: 100%;
+        height: 64px;
+        margin-top: 0.4rem;
+    }
 }
 
 .shs-cluster {
@@ -1583,122 +1647,32 @@ img { max-width: 100%; display: block; }
 }
 
 /* ============================================================================
-   PANIC / EVACUATION STATE — driven purely by panics/{facilityId} (see
-   panic.js), never hard-coded to a facility. Deliberately brighter and
-   faster than the normal emergency glow above so it reads as more urgent
-   at a glance, and can stack with status-threat if a room happens to have
-   both an open incident and an active evacuation at once.
+   ROOM-WIDE EMERGENCY — same states as above, but darker/more saturated red
+   for an incident that affects everyone in the room/area (roomWide: true)
+   rather than one person. Layers on top of .status-threat / .emergency-active
+   — never used on its own.
    ============================================================================ */
-.room-card.panic-active {
-    background-color: var(--status-panic) !important;
-    border: 2px solid #ffffff !important;
-    z-index: 80 !important;
-    animation: panicPulse 0.5s infinite alternate !important;
+.room-card.status-threat.emergency-wide {
+    background-color: var(--status-emergency-wide) !important;
+    border-color: var(--status-emergency-wide) !important;
 }
 
-.room-card.panic-active .room-number,
-.room-card.panic-active .room-status-badge {
-    color: #ffffff !important;
+.room-card.emergency-wide.emergency-active {
+    animation: emergencyPulse 1.1s infinite alternate,
+               emergencyGlowWide 1.2s ease-in-out infinite !important;
 }
 
-@keyframes panicPulse {
-    0% {
-        box-shadow: 0 0 10px 2px rgba(255, 23, 23, 0.75),
-                    0 0 0 2px var(--status-panic);
+@keyframes emergencyGlowWide {
+    0%, 100% {
+        box-shadow: 0 0 8px 1px rgba(139, 0, 0, 0.6),
+                    0 0 0 2px var(--status-emergency-wide);
         transform: scale(1);
     }
-    100% {
-        box-shadow: 0 0 36px 10px rgba(255, 23, 23, 1),
-                    0 0 0 4px #ffffff;
-        transform: scale(1.08);
+    50% {
+        box-shadow: 0 0 26px 6px rgba(139, 0, 0, 0.95),
+                    0 0 0 3px #5c0000;
+        transform: scale(1.05);
     }
-}
-
-.btn-test-panic {
-    color: var(--status-panic);
-    border-color: var(--status-panic);
-}
-.btn-test-panic:hover { background: var(--status-panic); color: #fff; border-color: var(--status-panic); }
-
-.btn-panic {
-    background: #ffffff;
-    color: var(--status-panic);
-    border: 1.5px solid var(--status-panic);
-}
-.btn-panic:hover { background: var(--status-emergency-light); }
-
-.btn-panic.btn-panic-active {
-    background: var(--status-panic);
-    color: #ffffff;
-    border-color: var(--status-panic);
-    animation: panicButtonPulse 0.9s ease-in-out infinite;
-}
-
-@keyframes panicButtonPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 23, 23, 0.5); }
-    50% { box-shadow: 0 0 0 6px rgba(255, 23, 23, 0); }
-}
-
-.modal-evac-section {
-    margin: 0 0 0.9rem;
-    padding: 0.85rem 1rem;
-    border: 1.5px solid var(--status-panic);
-    background: #fff2f2;
-    border-radius: var(--radius-card-sm);
-}
-
-.modal-evac-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.55rem;
-}
-
-.modal-evac-badge {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--status-panic);
-}
-
-.modal-evac-since {
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-}
-
-.modal-evac-count-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.55rem;
-    margin-bottom: 0.5rem;
-}
-
-.modal-evac-count {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--status-panic);
-    font-family: var(--font-mono);
-}
-
-.modal-evac-count-label {
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-}
-
-.modal-evac-bar {
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255, 23, 23, 0.14);
-    overflow: hidden;
-}
-
-.modal-evac-bar-fill {
-    height: 100%;
-    background: var(--status-panic);
-    border-radius: 4px;
-    transition: width 0.3s ease;
 }
 
 /* ---------- Student Incident Panel (room modal) ---------- */
@@ -2030,12 +2004,14 @@ img { max-width: 100%; display: block; }
 .modal-details-grid p { font-size: 0.78rem; color: var(--text-secondary); }
 .modal-details-grid span { color: var(--text-primary); font-weight: 700; }
 
-.modal-actions { display: flex; gap: 0.75rem; }
+.modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 .btn { flex: 1; padding: 0.65rem; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.75rem; font-family: var(--font-sans); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn-ack { background: var(--status-warning-light); color: var(--status-warning); border: 1px solid var(--status-warning); }
 .btn-resolve { background: var(--accent-pink-dark); color: #fff; }
 .btn-resolve:hover:not(:disabled) { background: var(--primary-dark); }
+.btn-notify-help { background: var(--status-safe-light); color: var(--status-safe); border: 1px solid var(--status-safe); flex-basis: 100%; }
+.btn-notify-help:hover:not(:disabled) { background: var(--status-safe); color: #fff; }
 
 /* ============================================================================
    RESOLVE EMERGENCY — SELECTION MODAL
@@ -2152,10 +2128,36 @@ img { max-width: 100%; display: block; }
 .system-status-full-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
 
 /* ============================================================================
+   HIDDEN-FEATURES TOGGLE (?hide=4 / ?hide=0 — see feature-flags.js)
+   Anything marked data-hide-group="attendance" (Scan Attendance nav+view,
+   the Kiosk Display link, "Email Today's Late List", and the roster's
+   check-in/Late-On-time/Last-Scan columns) is hidden while active.
+   Violations is never marked with this attribute, by design, so it always
+   stays visible regardless of this toggle.
+   ============================================================================ */
+html.rp-hide-attendance [data-hide-group="attendance"] {
+    display: none !important;
+}
+
+/* ============================================================================
    RESPONSIVENESS
    ============================================================================ */
 @media (max-width: 1100px) {
     .command-grid { grid-template-columns: 1fr; }
+}
+
+/* Command Center hero (Incident Trend + Calendar/Status/Facility side
+   column) stacks to a single column on narrower viewports instead of
+   squeezing the calendar into an unreadable sliver next to the trend
+   chart — .cc-hero-grid previously had no responsive rule at all. */
+@media (max-width: 960px) {
+    .cc-hero-grid { grid-template-columns: 1fr; }
+    .cc-hero-right { height: auto; }
+}
+
+@media (max-width: 420px) {
+    .cc-calendar-month-label { min-width: 72px; font-size: 0.66rem; }
+    .cc-calendar-day { font-size: 0.66rem; }
 }
 
 @media (max-width: 900px) {

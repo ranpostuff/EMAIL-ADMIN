@@ -1000,16 +1000,16 @@ function renderSectionRoster() {
         tr.innerHTML = `
             <td><div class="student-row-name">${avatarHtml}<span>${escapeHtml(studentFullName(student))}</span></div></td>
             <td><span class="pill-tag">${escapeHtml(student.lrn || "--")}</span></td>
-            <td>
+            <td data-hide-group="attendance">
                 <span class="roster-status-cell">
                     <span class="status-dot ${isPresent ? "status-dot-present" : "status-dot-absent"}" title="${isPresent ? "Checked in" : "Not checked in"}"></span>
                     ${isPresent ? "Checked in" : "Not checked in"}
                 </span>
             </td>
-            <td>${firstIn ? `<span class="section-detail-late-tag ${isLate ? "is-late" : "is-ontime"}">${isLate ? "Late" : "On time"}</span>` : "--"}</td>
+            <td data-hide-group="attendance">${firstIn ? `<span class="section-detail-late-tag ${isLate ? "is-late" : "is-ontime"}">${isLate ? "Late" : "On time"}</span>` : "--"}</td>
             <td>${violationCount}</td>
             <td>${studentIncidentCount}</td>
-            <td>${entries.length ? describeLog(entries[entries.length - 1]) : "No scans today"}</td>
+            <td data-hide-group="attendance">${entries.length ? describeLog(entries[entries.length - 1]) : "No scans today"}</td>
             <td>
                 <div class="table-row-actions">
                     <button type="button" class="icon-btn btn-primary-action btn-view-student-detail" data-id="${student.id}">View</button>

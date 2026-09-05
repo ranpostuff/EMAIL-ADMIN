@@ -143,6 +143,15 @@ function setupFullscreenControls() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Respect the same ?hide=4 / ?hide=0 toggle used across the admin app
+    // (see feature-flags.js, loaded before this file). When attendance
+    // features are hidden, the kiosk shows a simple unavailable notice and
+    // never opens any Firebase listeners or the camera-adjacent scan flow.
+    if (window.rpAttendanceHidden) {
+        showKioskUnavailable();
+        return;
+    }
+
     startClock();
     setupFullscreenControls();
 
@@ -156,8 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Today-only log cache, purely to answer "was this student's first
     // check-in today late" — same startOfToday+startAt pattern used by
-    // students.js / panic.js, kept as its own small listener per this
-    // file's read-only, self-contained convention.
+    // students.js, kept as its own small listener per this file's
+    // read-only, self-contained convention.
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const todayQuery = query(attendanceRootRef, orderByChild("timestamp"), startAt(startOfToday.getTime()));
@@ -190,6 +199,22 @@ document.addEventListener("DOMContentLoaded", () => {
         showResult(latest);
     });
 });
+
+function showKioskUnavailable() {
+    const idleEl = document.getElementById("kiosk-idle");
+    const resultEl = document.getElementById("kiosk-result");
+    const fullscreenBtn = document.getElementById("kiosk-fullscreen-btn");
+    if (resultEl) resultEl.classList.add("hidden");
+    if (fullscreenBtn) fullscreenBtn.classList.add("hidden");
+    if (idleEl) {
+        idleEl.innerHTML = `
+            <div class="kiosk-idle-mark">RP</div>
+            <h1>Kiosk Unavailable</h1>
+            <p>This display has been turned off by an administrator.</p>
+        `;
+    }
+    startClock();
+}
 
 function showResult(logEntry) {
     const student = studentsCache[logEntry.studentId];

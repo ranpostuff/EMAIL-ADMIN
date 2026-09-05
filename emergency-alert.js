@@ -2,20 +2,19 @@
    RESCUEPRIORITY — SITE-WIDE EMERGENCY ALERT
    --------------------------------------------------------------------------
    Additive module, read-only. Turns the whole admin app into an unmissable
-   alert state the moment any classroom emergency or panic/evacuation goes
-   active — no matter which sidebar view (Dashboard, Students, Analytics,
-   Violations, ...) the admin currently has open — because the overlay it
-   controls (#emergency-alert-overlay, #emergency-toast-stack) lives outside
-   every .app-view in index.html, as a direct <body> child.
+   alert state the moment any classroom emergency goes active — no matter
+   which sidebar view (Dashboard, Students, Analytics, Violations, ...) the
+   admin currently has open — because the overlay it controls
+   (#emergency-alert-overlay, #emergency-toast-stack) lives outside every
+   .app-view in index.html, as a direct <body> child.
 
-   Sources of truth (both already exist elsewhere in the app; this module
-   just adds its own read-only listeners rather than importing live
-   bindings, matching the reliability reasoning already used by insights.js
-   and students.js's own incidents/ listener):
+   Source of truth (already exists elsewhere in the app; this module just
+   adds its own read-only listener rather than importing a live binding,
+   matching the reliability reasoning already used by insights.js and
+   students.js's own incidents/ listener):
      classrooms/{facilityId}.emergency  -> boolean (the same flag that
                                             drives the pulsing room cards
                                             and the Command Center KPIs)
-     panics/{facilityId}                -> { active: true, ... } (panic.js)
 
    What it does when the active set is non-empty:
      - Keeps a pulsing red border + a persistent top banner visible on every
@@ -33,14 +32,12 @@ import { database, SCHOOL_FACILITIES, switchView, displayFacilityName } from "./
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const classroomsRootRef = ref(database, "classrooms");
-const panicsRootRef = ref(database, "panics");
 
 let classroomsCache = {}; // facilityId -> { emergency, activeIncidentKey }
-let panicsCache = {};     // facilityId -> { active, triggeredAt }
 
-// facilityId -> { type: "emergency"|"panic" } for everything currently
-// active, kept across renders so re-firing onValue snapshots (which happen
-// on every unrelated field change too) don't create duplicate toasts.
+// facilityId -> { type: "emergency" } for everything currently active,
+// kept across renders so re-firing onValue snapshots (which happen on
+// every unrelated field change too) don't create duplicate toasts.
 let knownActiveIds = new Set();
 
 let notificationPermissionAsked = false;
@@ -50,11 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     onValue(classroomsRootRef, (snapshot) => {
         classroomsCache = snapshot.val() || {};
-        recomputeAlertState();
-    });
-
-    onValue(panicsRootRef, (snapshot) => {
-        panicsCache = snapshot.val() || {};
         recomputeAlertState();
     });
 });
@@ -72,10 +64,6 @@ function getActiveAlerts() {
 
     Object.entries(classroomsCache).forEach(([facilityId, entry]) => {
         if (entry && entry.emergency) alerts.push({ facilityId, type: "emergency" });
-    });
-
-    Object.entries(panicsCache).forEach(([facilityId, entry]) => {
-        if (entry && entry.active) alerts.push({ facilityId, type: "panic" });
     });
 
     return alerts;
@@ -139,7 +127,7 @@ function showToast(alert) {
     if (!stack) return;
 
     const roomName = facilityName(alert.facilityId);
-    const title = alert.type === "panic" ? "Panic / Evacuation Triggered" : "New Emergency";
+    const title = "New Emergency";
 
     const toast = document.createElement("div");
     toast.className = "emergency-toast";
@@ -200,7 +188,7 @@ function maybeShowBrowserNotification(alert) {
     if (document.visibilityState === "visible") return; // in-page banner/toast already covers this case
 
     const roomName = facilityName(alert.facilityId);
-    const title = alert.type === "panic" ? "RescuePriority: Panic / Evacuation" : "RescuePriority: Active Emergency";
+    const title = "RescuePriority: Active Emergency";
 
     if (Notification.permission === "granted") {
         new Notification(title, { body: roomName });

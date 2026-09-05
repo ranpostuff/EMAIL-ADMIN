@@ -1,8 +1,8 @@
 /* ==========================================================================
    RESCUEPRIORITY — VIOLATIONS MODULE
    --------------------------------------------------------------------------
-   Additive module, same conventions as students.js / scan-attendance.js /
-   panic.js: owns one new Firebase path, reuses studentsState/sectionsState
+   Additive module, same conventions as students.js / scan-attendance.js:
+   owns one new Firebase path, reuses studentsState/sectionsState
    read-only, never touches students/, sections/, classrooms/, or incidents/.
 
    New Firebase path owned by this file:

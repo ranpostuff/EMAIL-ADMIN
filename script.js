@@ -154,7 +154,12 @@ export const SCHOOL_FACILITIES = [
     { id: "shs2-burgundy", name: "11-BURGUNDY", adviser: "", section: "Grade 11 Burgundy", zone: "SHS Building 2", adviserImage: "advisor52.png" },
     { id: "shs2-bloodstone", name: "12-BLOODSTONE", adviser: "", section: "Grade 12 Bloodstone", zone: "SHS Building 2", adviserImage: "advisor53.png" },
     { id: "shs2-cerulean", name: "11-CERULEAN", adviser: "", section: "Grade 11 Cerulean", zone: "SHS Building 2", adviserImage: "advisor54.png" },
-    { id: "shs2-cr2", name: "C.R.", adviser: "Maintenance", section: "Comfort Room", zone: "SHS Building 2", adviserImage: "advisor55.png" }
+    { id: "shs2-cr2", name: "C.R.", adviser: "Maintenance", section: "Comfort Room", zone: "SHS Building 2", adviserImage: "advisor55.png" },
+
+    /* ===============================
+       COURTYARD (open space between the wings — see school_map.png)
+    =============================== */
+    { id: "gym", name: "GYM", adviser: "PE Department", section: "Gymnasium", zone: "Courtyard", adviserImage: "advisor56.png" }
 ];
 
 /* ==========================================================================
@@ -204,6 +209,7 @@ function initializeDashboard() {
     setupIncidentsListener();
     setupButtons();
     setupModal();
+    setupNotifyHelpButton();
     setupResolveModal();
     setupNavigation();
     setupSidebarToggle();
@@ -262,12 +268,22 @@ function buildCampusMap() {
             } else {
                 shs2Tier2.appendChild(card);
             }
+        } else if (facility.zone === "Courtyard") {
+            // Sits in the open courtyard space to the right of the SHS
+            // clusters (see school_map.png) — positioned via CSS
+            // (.courtyard-gym-slot) so it never disturbs the existing
+            // wing/cluster layout or orientation.
+            const gymSlot = document.getElementById("courtyard-gym-slot");
+            if (gymSlot) {
+                card.classList.add("room-card-gym");
+                gymSlot.appendChild(card);
+            }
         }
     });
 }
 
 function clearBlueprintWings() {
-    const ids = ["wing-top", "wing-left", "wing-right", "wing-bottom", "shs1-tier-1", "shs1-tier-2", "shs2-tier-1", "shs2-tier-2"];
+    const ids = ["wing-top", "wing-left", "wing-right", "wing-bottom", "shs1-tier-1", "shs1-tier-2", "shs2-tier-1", "shs2-tier-2", "courtyard-gym-slot"];
     ids.forEach(id => {
         const element = document.getElementById(id);
         if (element) element.innerHTML = "";
@@ -336,7 +352,8 @@ function setupClassroomsListener() {
             SCHOOL_FACILITIES.forEach(facility => {
                 const entry = classroomsState[facility.id];
                 const isActive = !!(entry && entry.emergency);
-                updateRoomStatus(facility.id, isActive ? "THREAT" : "SAFE");
+                const isRoomWide = !!(entry && entry.roomWide);
+                updateRoomStatus(facility.id, isActive ? "THREAT" : "SAFE", isRoomWide);
             });
 
             updateStatistics();
@@ -381,6 +398,14 @@ function setupIncidentsListener() {
             const resolveModal = document.getElementById("resolve-modal");
             if (resolveModal && !resolveModal.classList.contains("hidden")) {
                 renderResolveOptions();
+            }
+
+            // Keep the room modal's "Notify Student" button live if it's
+            // open — e.g. reflects helpNotifiedAt the moment it's set,
+            // even if it was set from a different admin tab/device.
+            const roomModal = document.getElementById("room-modal");
+            if (roomModal && !roomModal.classList.contains("hidden") && selectedFacilityId) {
+                refreshModalButtonsForFacility(selectedFacilityId);
             }
 
             // Let analytics.js (loaded independently) know fresh data is in.
@@ -465,7 +490,10 @@ async function raiseClassroomEmergency(facility) {
 
     await update(ref(database, `classrooms/${facility.id}`), {
         emergency: true,
-        activeIncidentKey: newIncidentRef.key
+        activeIncidentKey: newIncidentRef.key,
+        // Test alerts raised here are always single-person in scope —
+        // never colored as an area-wide incident.
+        roomWide: false
     });
 
     triggerIncidentAlert(newIncidentRef.key);
@@ -504,7 +532,8 @@ async function resolveIncidentByKey(incidentKey, resolutionReason) {
     if (facilityId) {
         await update(ref(database, `classrooms/${facilityId}`), {
             emergency: false,
-            activeIncidentKey: null
+            activeIncidentKey: null,
+            roomWide: false
         });
     }
 }
@@ -910,15 +939,17 @@ function openRoomModal(facilityId) {
 
     if (modal) modal.classList.remove("hidden");
 
-    // Let panic.js (loaded independently) know which room's modal is open,
-    // the same plain-DOM-event pattern used for analytics.js above — this
-    // file doesn't need to import or know anything about that module.
+    // Broadcast which room's modal is open as a plain DOM event (same
+    // pattern used for analytics.js above) in case another module wants
+    // to react to it later — this file doesn't need to import or know
+    // anything about who's listening.
     window.dispatchEvent(new CustomEvent("rp:room-modal-opened", { detail: { facilityId: facility.id } }));
 }
 
 function refreshModalButtonsForFacility(facilityId) {
     const acknowledgeButton = document.getElementById("btn-acknowledge");
     const resolveButton = document.getElementById("btn-resolve");
+    const notifyButton = document.getElementById("btn-notify-help");
     const entry = classroomsState[facilityId];
     const isEmergency = !!(entry && entry.emergency);
 
@@ -935,6 +966,65 @@ function refreshModalButtonsForFacility(facilityId) {
         }
         if (resolveButton) resolveButton.disabled = true;
     }
+
+    refreshNotifyHelpButton(notifyButton, entry);
+}
+
+/* ==========================================================================
+   "NOTIFY STUDENT — HELP IS COMING"
+   The Student Incident Reporter app no longer assumes help is coming the
+   moment a report is sent (that was a loophole — the app could say "Help
+   is on the way" even if nobody had actually seen the report yet). Instead
+   it waits, live, for incidents/{key}.helpNotifiedAt to be set, which only
+   happens when an admin presses this button. Only shown for incidents that
+   actually came from that app (reportedVia === "student-app") — the
+   "Trigger Test Alert" / ESP32 pipeline has no student waiting on a
+   confirmation screen, so there's nothing to notify.
+========================================================================== */
+function refreshNotifyHelpButton(notifyButton, classroomEntry) {
+    if (!notifyButton) return;
+
+    const isEmergency = !!(classroomEntry && classroomEntry.emergency);
+    const incidentKey = classroomEntry ? classroomEntry.activeIncidentKey : null;
+    const incident = incidentKey ? incidents.find(inc => inc.key === incidentKey) : null;
+
+    if (!isEmergency || !incident || incident.reportedVia !== "student-app") {
+        notifyButton.classList.add("hidden");
+        return;
+    }
+
+    notifyButton.classList.remove("hidden");
+    notifyButton.dataset.incidentKey = incident.key;
+
+    if (incident.helpNotifiedAt) {
+        notifyButton.disabled = true;
+        notifyButton.textContent = "Help-Is-Coming Sent \u2713";
+    } else {
+        notifyButton.disabled = false;
+        notifyButton.textContent = "Notify Student \u2014 Help is Coming";
+    }
+}
+
+async function notifyStudentHelpIsComing(incidentKey) {
+    if (!incidentKey) return;
+    await update(ref(database, `incidents/${incidentKey}`), {
+        helpNotifiedAt: Date.now()
+    });
+}
+
+function setupNotifyHelpButton() {
+    const notifyButton = document.getElementById("btn-notify-help");
+    if (!notifyButton) return;
+
+    notifyButton.addEventListener("click", () => {
+        const incidentKey = notifyButton.dataset.incidentKey;
+        if (!incidentKey) return;
+        notifyButton.disabled = true;
+        notifyStudentHelpIsComing(incidentKey).catch((error) => {
+            console.error("Failed to notify student:", error);
+            notifyButton.disabled = false;
+        });
+    });
 }
 
 function closeModal() {
@@ -1050,12 +1140,12 @@ function renderResolveOptions() {
 /* ==========================================================================
    MAP DISPLAY HELPERS
 ========================================================================== */
-function updateRoomStatus(facilityId, status) {
+function updateRoomStatus(facilityId, status, isRoomWide = false) {
     const card = document.querySelector(`.room-card[data-id="${facilityId}"]`);
     if (!card) return;
 
     const badge = card.querySelector(".room-status-badge");
-    card.classList.remove("status-safe", "status-threat", "status-medical", "status-suspicious", "emergency-active");
+    card.classList.remove("status-safe", "status-threat", "status-medical", "status-suspicious", "emergency-active", "emergency-wide");
 
     if (status === "SAFE") {
         card.classList.add("status-safe");
@@ -1066,6 +1156,14 @@ function updateRoomStatus(facilityId, status) {
         // true right now — never hard-coded to a particular facility — and
         // is removed the instant that value flips back to false.
         card.classList.add("status-threat", "emergency-active");
+
+        // "emergency-wide" swaps in a darker/more saturated red (see
+        // --status-emergency-wide in style.css) when the active incident
+        // affects everyone in the room/area rather than one person —
+        // driven by classrooms/{facilityId}/roomWide, mirrored there from
+        // the reporting incident's own roomWide flag.
+        if (isRoomWide) card.classList.add("emergency-wide");
+
         if (badge) badge.textContent = "EMERGENCY";
     }
 }
