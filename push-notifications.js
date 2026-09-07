@@ -43,7 +43,7 @@ import { getMessaging, getToken, deleteToken } from "https://www.gstatic.com/fir
    the checkbox will show an error instead of turning on. Full walkthrough
    in SETUP-NOTIFICATIONS.md.
 -------------------------------------------------------------------------- */
-const VAPID_KEY = "PASTE-YOUR-FIREBASE-VAPID-KEY-HERE";
+const VAPID_KEY = "BBvuVVAoebHcAJxvpUwpq5wSvPoj8sPMan7ahjkWiP_shS7BPvk_aPmRotI8HDvGkdotvk3AUwh7hg0PcdLKTHw";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDHPzeyaEtVvEvnH1Va81i24tpiCX8Gx-8",

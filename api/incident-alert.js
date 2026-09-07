@@ -247,6 +247,19 @@ async function sendPushToAllDevices(title, body, incident, incidentKey) {
             classroom: String(incident.classroom || ""),
             status: String(incident.status || "")
         },
+        // "high" priority tells Android/FCM to wake the device and deliver
+        // immediately, bypassing Doze/App Standby batching — without this,
+        // Android is free to delay delivery by several minutes, which is
+        // exactly the delay this project was seeing before this was added.
+        android: {
+            priority: "high"
+        },
+        // Same idea for iPhones: apns-priority 10 = deliver right away.
+        apns: {
+            headers: {
+                "apns-priority": "10"
+            }
+        },
         tokens
     };
 
