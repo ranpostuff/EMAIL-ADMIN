@@ -2477,3 +2477,47 @@ html.rp-hide-attendance [data-hide-group="attendance"] {
 .modal-card-wide {
     box-shadow: 0 18px 42px rgba(0,0,0,.28);
 }
+
+
+/* ===== v5 color scheme restoration ===== */
+.sidebar {
+    background: linear-gradient(180deg, #17151d 0%, #14111a 100%);
+}
+.sidebar-nav-item:hover {
+    background: rgba(255, 92, 177, 0.08);
+}
+.sidebar-nav-item.active {
+    background: linear-gradient(90deg, rgba(255, 92, 177, 0.14), rgba(255,255,255,0.03));
+    box-shadow: inset 3px 0 0 var(--accent-pink);
+}
+.nav-section-label { color: rgba(255,255,255,.38); }
+
+.incident-log-section {
+    border-color: rgba(255, 92, 177, 0.10);
+}
+.incident-card {
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+    border-color: rgba(255, 92, 177, 0.10);
+}
+.incident-card:hover {
+    border-color: rgba(255, 92, 177, 0.28);
+    background: rgba(255,255,255,.05);
+}
+.data-table-wrap {
+    border-color: rgba(255, 92, 177, 0.10);
+}
+table.data-table thead th {
+    background: linear-gradient(180deg, rgba(255, 92, 177, 0.08), rgba(255,255,255,.03));
+}
+table.data-table tbody tr:hover {
+    background: rgba(255, 92, 177, 0.045);
+}
+.icon-btn:hover {
+    background: rgba(255, 92, 177, 0.08);
+    color: #fff;
+    border-color: rgba(255, 92, 177, 0.22);
+}
+.pill-tag {
+    background: rgba(255, 92, 177, 0.08);
+    border-color: rgba(255, 92, 177, 0.14);
+}

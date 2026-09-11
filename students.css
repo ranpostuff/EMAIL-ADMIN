@@ -1281,3 +1281,101 @@ table.data-table tbody tr:hover { background: rgba(255,255,255,.025); }
     border-color: rgba(255,95,177,.30);
     box-shadow: none;
 }
+
+
+/* ===== v5 accent revival + roster sort control ===== */
+.students-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+}
+.students-sort-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.students-sort-select {
+    min-width: 190px;
+    min-height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 92, 177, 0.28);
+    background: rgba(255, 92, 177, 0.08);
+    color: var(--text-primary);
+    padding: 0 12px;
+    font: inherit;
+}
+.students-sort-select:focus {
+    outline: 2px solid rgba(255, 92, 177, 0.24);
+    border-color: var(--accent-pink);
+}
+
+.grade-folder-card,
+.section-folder-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025));
+    border-color: rgba(255, 92, 177, 0.14);
+}
+.grade-folder-card:hover,
+.section-folder-card:hover {
+    border-color: rgba(255, 92, 177, 0.34);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+.grade-folder-icon,
+.section-folder-icon {
+    background: rgba(255, 92, 177, 0.10);
+    border-color: rgba(255, 92, 177, 0.20);
+    color: #f3b4db;
+}
+.grade-folder-stat.stat-incidents,
+.section-folder-stat.stat-incidents {
+    background: rgba(255, 92, 177, 0.12);
+    color: #ff9bd1;
+    border-color: rgba(255, 92, 177, 0.20);
+}
+.grade-folder-stat.stat-violations,
+.section-folder-stat.stat-violations {
+    background: rgba(255, 179, 71, 0.12);
+    color: #ffd18c;
+    border-color: rgba(255, 179, 71, 0.18);
+}
+.student-detail-page {
+    background:
+        radial-gradient(circle at top left, rgba(255, 76, 166, 0.12), transparent 26%),
+        linear-gradient(180deg, #0d0e13, #11131a);
+}
+.student-detail-topbar {
+    background: linear-gradient(180deg, rgba(13,14,19,0.96), rgba(13,14,19,0.74) 72%, transparent);
+    backdrop-filter: blur(10px);
+}
+.student-detail-hero,
+.student-detail-content {
+    background: linear-gradient(180deg, rgba(20,21,27,0.97), rgba(20,21,27,0.94));
+    border-color: rgba(255, 92, 177, 0.10);
+}
+.student-detail-avatar {
+    background: linear-gradient(180deg, rgba(255,81,170,0.18), rgba(255,255,255,0.04));
+    border-color: rgba(255, 92, 177, 0.18);
+    color: #ff8bcb;
+}
+.student-detail-eyebrow { color: #f2a0d0; }
+.student-detail-tabs-large .section-detail-tab {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255, 92, 177, 0.14);
+}
+.student-detail-tabs-large .section-detail-tab.active {
+    background: linear-gradient(180deg, #ff5ca6, #d93281);
+    border-color: transparent;
+}
+.student-detail-record-button.is-selected {
+    background: rgba(255,95,177,.09);
+    border-color: rgba(255,95,177,.34);
+}
+@media (max-width: 720px) {
+    .students-toolbar { align-items: stretch; }
+    .students-sort-control { width: 100%; justify-content: space-between; }
+    .students-sort-select { width: 100%; min-width: 0; }
+}

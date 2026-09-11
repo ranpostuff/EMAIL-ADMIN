@@ -1422,6 +1422,15 @@
 
             <div class="students-toolbar">
                 <input type="text" id="section-roster-search-input" class="students-search-input" placeholder="Search this section by name or LRN...">
+                <label class="students-sort-control" for="section-roster-sort-select">
+                    <span>Sort</span>
+                    <select id="section-roster-sort-select" class="students-sort-select">
+                        <option value="alpha-asc">Alphabetical (A–Z)</option>
+                        <option value="alpha-desc">Alphabetical (Z–A)</option>
+                        <option value="incidents-desc">Most Incidents</option>
+                        <option value="violations-desc">Most Violations</option>
+                    </select>
+                </label>
             </div>
 
             <div class="data-table-wrap">

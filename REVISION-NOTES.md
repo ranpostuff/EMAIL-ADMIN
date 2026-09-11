@@ -30,3 +30,9 @@ Added/improved:
 - Simplified tables, buttons, pills, incident cards, grade/section cards, and student-record surfaces.
 - Removed unnecessary decorative gradients/shadows from the student record workspace.
 - Kept all existing Firebase, attendance, incident, violation, QR, and student-management behavior unchanged.
+
+
+## v5 color + sorting adjustments
+- Restored a stronger pink-accent color scheme while keeping the cleaner layout and full-screen student detail improvements.
+- Added a visible roster sort control in the section student list.
+- Student roster can now be sorted by Alphabetical (A-Z), Alphabetical (Z-A), Most Incidents, or Most Violations.

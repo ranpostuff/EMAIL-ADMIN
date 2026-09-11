@@ -299,7 +299,9 @@ function renderStudentsTable() {
             const haystack = `${studentFullName(student)} ${student.lrn}`.toLowerCase();
             return haystack.includes(studentSearchTerm);
         })
-        .sort((a, b) => studentFullName(a).localeCompare(studentFullName(b)));
+        ;
+
+    rows.sort((a, b) => compareSectionRosterStudents(a, b));
 
     tbody.innerHTML = "";
 
@@ -950,6 +952,7 @@ let rosterUnsubscribe = null;
 let rosterPresentMap = {};
 let rosterLogsByStudent = {};
 let rosterSearchTerm = "";
+let rosterSortMode = "alpha-asc";
 
 let studentDetailId = null;
 let studentDetailTab = "overview";
@@ -978,6 +981,14 @@ function setupSectionRosterView() {
             renderSectionRoster();
         });
     }
+
+    const sortSelect = document.getElementById("section-roster-sort-select");
+    if (sortSelect) {
+        sortSelect.addEventListener("change", () => {
+            rosterSortMode = sortSelect.value || "alpha-asc";
+            renderSectionRoster();
+        });
+    }
 }
 
 function openSectionRosterView(sectionId) {
@@ -986,8 +997,11 @@ function openSectionRosterView(sectionId) {
 
     rosterSectionId = sectionId;
     rosterSearchTerm = "";
+    rosterSortMode = "alpha-asc";
     const searchInput = document.getElementById("section-roster-search-input");
     if (searchInput) searchInput.value = "";
+    const sortSelect = document.getElementById("section-roster-sort-select");
+    if (sortSelect) sortSelect.value = rosterSortMode;
 
     const view = document.getElementById("section-roster-view");
     const title = document.getElementById("section-roster-title");
@@ -1056,6 +1070,20 @@ function closeSectionRosterView() {
     rosterPresentMap = {};
     rosterLogsByStudent = {};
     closeStudentDetailModal();
+}
+
+function compareSectionRosterStudents(a, b) {
+    const nameA = studentFullName(a).toLowerCase();
+    const nameB = studentFullName(b).toLowerCase();
+    const incidentsA = incidentsCache.filter((i) => i.studentId === a.id).length;
+    const incidentsB = incidentsCache.filter((i) => i.studentId === b.id).length;
+    const violationsA = (violationsState[a.id] || []).length;
+    const violationsB = (violationsState[b.id] || []).length;
+
+    if (rosterSortMode === "alpha-desc") return nameB.localeCompare(nameA);
+    if (rosterSortMode === "incidents-desc") return (incidentsB - incidentsA) || nameA.localeCompare(nameB);
+    if (rosterSortMode === "violations-desc") return (violationsB - violationsA) || nameA.localeCompare(nameB);
+    return nameA.localeCompare(nameB);
 }
 
 function renderSectionRoster() {
