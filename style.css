@@ -2425,3 +2425,55 @@ html.rp-hide-attendance [data-hide-group="attendance"] {
 .grade-folder-icon svg,.section-folder-icon svg { width:22px; height:22px; display:block; }.grade-folder-icon,.section-folder-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--text-secondary); }
 .grade-folder-card:focus-visible,.section-folder-row:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
 @media(max-width:720px){.incident-report-info{grid-template-columns:1fr}.incident-report-description{grid-column:auto}}
+
+/* ===== v4 final visual cleanup: quieter, more conventional admin UI ===== */
+.sidebar {
+    background: #17151a;
+    border-right: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-brand { padding: 1rem 1rem .8rem; }
+.sidebar-brand-mark {
+    background: #2a252d;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 9px;
+}
+.sidebar-nav { padding: .35rem .65rem 1.25rem; gap: .1rem; }
+.sidebar-nav-item {
+    min-height: 38px;
+    padding: .52rem .65rem;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.sidebar-nav-item:hover { background: rgba(255,255,255,.045); }
+.sidebar-nav-item.active {
+    background: rgba(255,255,255,.07);
+    box-shadow: inset 2px 0 0 var(--accent);
+}
+.sidebar-nav-item.active .nav-icon,
+.sidebar-nav-item:hover .nav-icon { color: rgba(255,255,255,.88); }
+.nav-section-label { color: rgba(255,255,255,.32); letter-spacing: .11em; }
+
+.incident-log-section {
+    background: var(--bg-card);
+    box-shadow: none;
+    border-color: rgba(255,255,255,.07);
+}
+.incident-card {
+    border-radius: 10px;
+    background: rgba(255,255,255,.025);
+    border-color: rgba(255,255,255,.07);
+    box-shadow: none;
+    padding: .8rem .9rem;
+}
+.incident-card:hover {
+    border-color: rgba(255,255,255,.16);
+    background: rgba(255,255,255,.04);
+    box-shadow: none;
+}
+.incident-card-id { font-size: .82rem; }
+.incident-card-sub { line-height: 1.45; }
+
+.modal-card,
+.modal-card-wide {
+    box-shadow: 0 18px 42px rgba(0,0,0,.28);
+}

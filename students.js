@@ -635,7 +635,7 @@ function renderGradeFolders() {
         card.className = "grade-folder-card";
         card.dataset.gradeId = group.gradeId;
         card.innerHTML = `
-            <span class="grade-folder-icon" aria-hidden="true">&#128193;</span>
+            <span class="grade-folder-icon" aria-hidden="true">${folderIconSvg('grade')}</span>
             <span class="grade-folder-name">${escapeHtml(group.gradeName)}</span>
             <span class="grade-folder-meta">${group.sectionIds.length} section${group.sectionIds.length === 1 ? "" : "s"} &middot; ${studentTotal} student${studentTotal === 1 ? "" : "s"}</span>
             <span class="grade-folder-stats">
@@ -700,7 +700,7 @@ function renderSectionsInGrade() {
         card.className = "section-folder-card";
         card.innerHTML = `
             <button type="button" class="section-folder-open" data-id="${id}">
-                <span class="section-folder-icon" aria-hidden="true">&#128194;</span>
+                <span class="section-folder-icon" aria-hidden="true">${folderIconSvg('section')}</span>
                 <span class="section-folder-body">
                     <span class="section-folder-name">${escapeHtml(section.name)}</span>
                     <span class="section-folder-meta">${escapeHtml(section.assignedTeacherId || "Unassigned adviser")} &middot; ${escapeHtml(facility ? displayFacilityName(facility.name) : "Not linked")}</span>
@@ -953,6 +953,7 @@ let rosterSearchTerm = "";
 
 let studentDetailId = null;
 let studentDetailTab = "overview";
+let studentDetailSelection = null;
 
 /* Same cutoff as kiosk.js — a student is "late" if their first "in" scan
    today happened after 7:15 AM. Duplicated locally (rather than shared)
@@ -1154,6 +1155,7 @@ function openStudentDetailModal(studentId) {
 
     studentDetailId = studentId;
     studentDetailTab = "overview";
+    studentDetailSelection = null;
 
     const modal = document.getElementById("student-detail-modal");
     if (modal) {
@@ -1173,6 +1175,8 @@ function closeStudentDetailModal() {
     }
     document.body.classList.remove("student-detail-open");
     studentDetailId = null;
+    studentDetailTab = "overview";
+    studentDetailSelection = null;
 }
 
 function renderStudentDetailModal() {
@@ -1216,8 +1220,15 @@ function renderStudentDetailModal() {
         statusChipEl.classList.toggle("is-good", Boolean(firstIn && !isLate));
         statusChipEl.classList.toggle("is-warning", Boolean(firstIn && isLate));
     }
-    const violationCount = (violationsState[studentDetailId] || []).length;
-    const studentIncidents = incidentsCache.filter((i) => i.studentId === studentDetailId);
+
+    const studentViolations = (violationsState[studentDetailId] || []).slice().sort((a, b) => b.timestamp - a.timestamp);
+    const violationCount = studentViolations.length;
+    const studentIncidents = incidentsCache
+        .filter((i) => i.studentId === studentDetailId)
+        .slice()
+        .sort((a, b) => b.timestamp - a.timestamp);
+
+    syncStudentDetailSelection(studentDetailTab, studentViolations, studentIncidents);
 
     const tabsEl = document.getElementById("student-detail-tabs");
     const panelEl = document.getElementById("student-detail-tab-panel");
@@ -1232,13 +1243,24 @@ function renderStudentDetailModal() {
         tabsEl.querySelectorAll(".section-detail-tab").forEach((tabBtn) => {
             tabBtn.addEventListener("click", () => {
                 studentDetailTab = tabBtn.dataset.tab;
+                studentDetailSelection = null;
                 renderStudentDetailModal();
             });
         });
     }
 
     if (panelEl) {
-        panelEl.innerHTML = renderTabPanelContent(studentDetailTab, { student, firstIn, isLate, violationCount, studentIncidents, entries });
+        panelEl.innerHTML = renderTabPanelContent(studentDetailTab, { student, firstIn, isLate, violationCount, studentViolations, studentIncidents, entries });
+        panelEl.querySelectorAll("[data-record-kind][data-record-key]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                studentDetailSelection = {
+                    tab: studentDetailTab,
+                    kind: btn.dataset.recordKind,
+                    key: btn.dataset.recordKey
+                };
+                renderStudentDetailModal();
+            });
+        });
     }
 }
 
@@ -1252,31 +1274,58 @@ function renderTabButton(tabId, label, count, activeTab) {
 }
 
 function renderTabPanelContent(activeTab, data) {
-    const { student, firstIn, isLate, violationCount, studentIncidents, entries } = data;
+    const { student, firstIn, isLate, violationCount, studentViolations, studentIncidents, entries } = data;
 
     if (activeTab === "violations") {
-        if (!violationCount) return '<p class="section-detail-history-empty">No violations logged for this student.</p>';
-        return violationsState[student.id].slice().reverse().map(renderViolationRow).join("");
+        return renderStudentRecordCollection({
+            kind: "violation",
+            title: "Violation Records",
+            helper: studentViolations.length ? "Select a violation to see the full details, notes, and timestamp." : "No violations logged for this student.",
+            records: studentViolations,
+            listHtml: studentViolations.length
+                ? studentViolations.map((record) => renderViolationListButton(record, isStudentDetailRecordSelected("violation", record.key))).join("")
+                : '<p class="section-detail-history-empty">No violations logged for this student.</p>',
+            detailHtml: renderViolationDetailCard(studentViolations.find((record) => isStudentDetailRecordSelected("violation", record.key)) || null, student)
+        });
     }
 
     if (activeTab === "incidents") {
-        if (!studentIncidents.length) return '<p class="section-detail-history-empty">No incidents on record for this student.</p>';
-        return studentIncidents.slice().reverse().map(renderIncidentRow).join("");
+        return renderStudentRecordCollection({
+            kind: "incident",
+            title: "Incident Records",
+            helper: studentIncidents.length ? "Select an incident to see reporter, location, status, and the submitted description." : "No incidents on record for this student.",
+            records: studentIncidents,
+            listHtml: studentIncidents.length
+                ? studentIncidents.map((incident) => renderIncidentListButton(incident, isStudentDetailRecordSelected("incident", incident.key))).join("")
+                : '<p class="section-detail-history-empty">No incidents on record for this student.</p>',
+            detailHtml: renderIncidentDetailCard(studentIncidents.find((incident) => isStudentDetailRecordSelected("incident", incident.key)) || null)
+        });
     }
 
     if (activeTab === "timeline") {
         if (!entries.length) return '<p class="section-detail-history-empty">No check-ins or check-outs logged today.</p>';
-        return entries.map(renderHistoryRow).reverse().join("");
+        return `
+            <div class="student-detail-simple-list">
+                <div class="student-detail-section-heading">
+                    <div>
+                        <h3>Attendance Timeline</h3>
+                        <p>Daily scan history for this student.</p>
+                    </div>
+                </div>
+                <div class="student-detail-record-list is-static">
+                    ${entries.map(renderHistoryRow).reverse().join("")}
+                </div>
+            </div>
+        `;
     }
 
-    // "overview" (default)
     return `
         <div class="student-detail-overview-grid">
             <section class="student-detail-info-card">
                 <div class="student-detail-info-card-heading">Student Information</div>
                 <dl class="student-detail-info-list">
                     <div><dt>LRN</dt><dd>${escapeHtml(student.lrn || "--")}</dd></div>
-                    <div><dt>Grade &amp; Section</dt><dd>${escapeHtml((sectionsState[student.sectionId] || {}).name || "--")}</dd></div>
+                    <div><dt>Grade &amp; Section</dt><dd>${escapeHtml(formatStudentSectionLabel(student))}</dd></div>
                     <div><dt>Parent Mobile</dt><dd>${escapeHtml(student.parentMobileNo || "--")}</dd></div>
                     <div><dt>Parent Email</dt><dd>${escapeHtml(student.parentEmail || "--")}</dd></div>
                 </dl>
@@ -1293,27 +1342,198 @@ function renderTabPanelContent(activeTab, data) {
     `;
 }
 
-function renderViolationRow(record) {
+function renderStudentRecordCollection({ kind, title, helper, records, listHtml, detailHtml }) {
+    const count = records.length;
     return `
-        <div class="section-detail-history-item is-violation">
-            <span class="section-detail-history-dot"></span>
-            <span class="section-detail-history-label">${escapeHtml(record.type)} \u2014 ${ordinalOffense(record.offenseCount)}</span>
-            <span class="section-detail-history-time">${formatLogTime(record.timestamp)}</span>
+        <div class="student-detail-record-layout">
+            <section class="student-detail-record-list-panel">
+                <div class="student-detail-section-heading">
+                    <div>
+                        <h3>${title}</h3>
+                        <p>${helper}</p>
+                    </div>
+                    <span class="student-detail-section-count">${count} ${count === 1 ? kind : `${kind}s`}</span>
+                </div>
+                <div class="student-detail-record-list">${listHtml}</div>
+            </section>
+            <aside class="student-detail-record-detail-panel">
+                ${detailHtml}
+            </aside>
         </div>
     `;
 }
 
-function renderIncidentRow(incident) {
+function renderViolationListButton(record, isSelected) {
+    return `
+        <button type="button" class="student-detail-record-button ${isSelected ? "is-selected" : ""}" data-record-kind="violation" data-record-key="${escapeHtml(record.key)}">
+            <span class="student-detail-record-marker is-warning"></span>
+            <span class="student-detail-record-main">
+                <span class="student-detail-record-title">${escapeHtml(record.type || "Violation")}</span>
+                <span class="student-detail-record-sub">${escapeHtml(ordinalOffense(record.offenseCount))}${record.notes ? ' · Has notes' : ''}</span>
+            </span>
+            <span class="student-detail-record-time">${formatLogTime(record.timestamp)}</span>
+        </button>
+    `;
+}
+
+function renderViolationDetailCard(record, student) {
+    if (!record) {
+        return renderStudentDetailEmptyCard("Select a violation record", "Choose a violation from the list to see the offense count, notes, and recorded date.");
+    }
+    return `
+        <div class="student-detail-record-card">
+            <div class="student-detail-record-card-head">
+                <div>
+                    <p class="student-detail-record-kicker">Violation Detail</p>
+                    <h3>${escapeHtml(record.type || "Violation")}</h3>
+                </div>
+                <span class="student-detail-record-badge is-warning">${escapeHtml(ordinalOffense(record.offenseCount))}</span>
+            </div>
+            <dl class="student-detail-record-meta-grid">
+                <div><dt>Student</dt><dd>${escapeHtml(studentFullName(student))}</dd></div>
+                <div><dt>LRN</dt><dd>${escapeHtml(student.lrn || "--")}</dd></div>
+                <div><dt>Recorded On</dt><dd>${escapeHtml(formatFullDateTime(record.timestamp))}</dd></div>
+                <div><dt>Section</dt><dd>${escapeHtml(formatStudentSectionLabel(student))}</dd></div>
+            </dl>
+            <div class="student-detail-record-note-block">
+                <div class="student-detail-record-note-label">Notes</div>
+                <p>${escapeHtml(record.notes || "No notes were added for this violation record.")}</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderIncidentListButton(incident, isSelected) {
     const label = incident.roomWide
         ? `Room-wide: ${incident.incidentType || "Emergency"}`
         : (incident.incidentType || "Reported emergency");
     return `
-        <div class="section-detail-history-item ${incident.status === "Resolved" ? "is-resolved" : "is-active"}">
-            <span class="section-detail-history-dot"></span>
-            <span class="section-detail-history-label">${escapeHtml(label)} \u00b7 ${escapeHtml(incident.status || "--")}</span>
-            <span class="section-detail-history-time">${formatLogTime(incident.timestamp)}</span>
+        <button type="button" class="student-detail-record-button ${isSelected ? "is-selected" : ""}" data-record-kind="incident" data-record-key="${escapeHtml(incident.key)}">
+            <span class="student-detail-record-marker ${incident.status === "Resolved" ? "is-good" : "is-danger"}"></span>
+            <span class="student-detail-record-main">
+                <span class="student-detail-record-title">${escapeHtml(label)}</span>
+                <span class="student-detail-record-sub">${escapeHtml(incident.incidentNumber || "No incident number")} · ${escapeHtml(incident.status || "--")}</span>
+            </span>
+            <span class="student-detail-record-time">${formatLogTime(incident.timestamp)}</span>
+        </button>
+    `;
+}
+
+function renderIncidentDetailCard(incident) {
+    if (!incident) {
+        return renderStudentDetailEmptyCard("Select an incident record", "Choose an incident from the list to see the reporter, location, status, and description.");
+    }
+
+    const involvedLabel = incident.roomWide
+        ? "Everyone in the reported area"
+        : (incident.studentName || resolveStudentName(incident.studentId) || "Not specified");
+    const reporterLabel = incident.reporterName || resolveStudentName(incident.reporterId) || "Not recorded";
+    const locationLabel = incident.classroom ? displayFacilityName(incident.classroom) : "Not specified";
+
+    return `
+        <div class="student-detail-record-card">
+            <div class="student-detail-record-card-head">
+                <div>
+                    <p class="student-detail-record-kicker">Incident Detail</p>
+                    <h3>${escapeHtml(incident.incidentType || (incident.roomWide ? "Room-wide emergency" : "Emergency report"))}</h3>
+                </div>
+                <span class="student-detail-record-badge ${incident.status === "Resolved" ? "is-good" : "is-danger"}">${escapeHtml(incident.status || "--")}</span>
+            </div>
+            <dl class="student-detail-record-meta-grid">
+                <div><dt>Incident No.</dt><dd>${escapeHtml(incident.incidentNumber || "--")}</dd></div>
+                <div><dt>Reported On</dt><dd>${escapeHtml(formatFullDateTime(incident.timestamp))}</dd></div>
+                <div><dt>Reported By</dt><dd>${escapeHtml(reporterLabel)}</dd></div>
+                <div><dt>Student Involved</dt><dd>${escapeHtml(involvedLabel)}</dd></div>
+                <div><dt>Location</dt><dd>${escapeHtml(locationLabel)}</dd></div>
+                <div><dt>Method</dt><dd>${escapeHtml(formatIdentificationMethodLabel(incident.identificationMethod, incident.roomWide))}</dd></div>
+                <div><dt>Source</dt><dd>${escapeHtml(formatReportedViaLabel(incident.reportedVia))}</dd></div>
+                <div><dt>Resolved At</dt><dd>${escapeHtml(incident.resolvedAt ? formatFullDateTime(incident.resolvedAt) : "Not yet resolved")}</dd></div>
+            </dl>
+            <div class="student-detail-record-note-block">
+                <div class="student-detail-record-note-label">Description</div>
+                <p>${escapeHtml(incident.description || "No additional description was submitted for this incident.")}</p>
+            </div>
         </div>
     `;
+}
+
+function renderStudentDetailEmptyCard(title, body) {
+    return `
+        <div class="student-detail-empty-card">
+            <p class="student-detail-record-kicker">Details</p>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(body)}</p>
+        </div>
+    `;
+}
+
+function isStudentDetailRecordSelected(kind, key) {
+    return studentDetailSelection && studentDetailSelection.kind === kind && studentDetailSelection.key === String(key);
+}
+
+function syncStudentDetailSelection(activeTab, studentViolations, studentIncidents) {
+    if (activeTab === "violations") {
+        const selectedExists = studentDetailSelection && studentDetailSelection.kind === "violation"
+            && studentViolations.some((record) => String(record.key) === String(studentDetailSelection.key));
+        if (!selectedExists) {
+            const first = studentViolations[0] || null;
+            studentDetailSelection = first ? { tab: activeTab, kind: "violation", key: String(first.key) } : null;
+        }
+        return;
+    }
+    if (activeTab === "incidents") {
+        const selectedExists = studentDetailSelection && studentDetailSelection.kind === "incident"
+            && studentIncidents.some((record) => String(record.key) === String(studentDetailSelection.key));
+        if (!selectedExists) {
+            const first = studentIncidents[0] || null;
+            studentDetailSelection = first ? { tab: activeTab, kind: "incident", key: String(first.key) } : null;
+        }
+        return;
+    }
+    studentDetailSelection = null;
+}
+
+function formatStudentSectionLabel(student) {
+    const section = sectionsState[student.sectionId] || null;
+    if (!section) return "--";
+    return `${section.gradeName || "--"} · ${section.name}`;
+}
+
+function formatFullDateTime(timestamp) {
+    if (!timestamp) return "--";
+    return new Date(timestamp).toLocaleString("en-PH", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function resolveStudentName(studentId) {
+    if (!studentId || !studentsState[studentId]) return "";
+    return studentFullName(studentsState[studentId]);
+}
+
+function formatIdentificationMethodLabel(method, roomWide) {
+    if (roomWide || method === "room-wide") return "Room-wide report";
+    if (method === "qr") return "QR code";
+    if (method === "manual-lrn") return "Manual LRN";
+    if (method === "logged-in-account") return "Logged-in student account";
+    return "Not recorded";
+}
+
+function formatReportedViaLabel(reportedVia) {
+    if (reportedVia === "student-app") return "Student Web App";
+    if (reportedVia === "admin-dashboard") return "Admin Dashboard";
+    return reportedVia || "System";
+}
+
+function folderIconSvg(kind) {
+    if (kind === 'section') {
+        return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 7a2 2 0 0 1 2-2h4.6c.6 0 1.18.25 1.59.68l1.1 1.14c.22.23.52.36.84.36h4.87a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.5 12h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 7a2 2 0 0 1 2-2h4.6c.6 0 1.18.25 1.59.68l1.1 1.14c.22.23.52.36.84.36h4.87a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 12h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10.5 9.5V14.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
 }
 
 function ordinalOffense(n) {
@@ -1335,7 +1555,7 @@ function renderHistoryRow(log) {
 }
 
 function describeLog(log) {
-    return `${log.direction === "out" ? "Out" : "In"} \u00b7 ${formatLogTime(log.timestamp)}`;
+    return `${log.direction === "out" ? "Out" : "In"} · ${formatLogTime(log.timestamp)}`;
 }
 
 function formatLogTime(timestamp) {

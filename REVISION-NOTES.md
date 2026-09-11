@@ -17,3 +17,16 @@ Added/improved:
 - Expanded Violations, Incidents, and Timeline rows for long-form readability and scrolling.
 - Added responsive layouts for tablet and mobile widths.
 - Preserved all existing student-record, violations, incidents, attendance, and Firebase data logic.
+
+
+## v3 visual/admin UX cleanup
+- Replaced remaining Students & Sections emoji folder icons with clean inline SVG icons.
+- Refined grade and section card styling to look more professional and less decorative/AI-like.
+- Upgraded the fullscreen student record workspace styling and spacing.
+- Added detailed click-through views for violation and incident records inside the fullscreen student record page.
+
+## v4 final cleanup
+- Quieted the sidebar and navigation styling for a more conventional admin-dashboard appearance.
+- Simplified tables, buttons, pills, incident cards, grade/section cards, and student-record surfaces.
+- Removed unnecessary decorative gradients/shadows from the student record workspace.
+- Kept all existing Firebase, attendance, incident, violation, QR, and student-management behavior unchanged.
