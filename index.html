@@ -1447,19 +1447,35 @@
         </div>
     </div>
 
-    <!-- STUDENT DETAIL MODAL (Overview / Violations / Incidents / Timeline tabs) —
-         opened from the Section Roster's "View" button/column. -->
-    <div id="student-detail-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <button type="button" class="modal-close-btn" id="student-detail-modal-close">&times;</button>
-
-            <div class="modal-header">
-                <h2 id="student-detail-title">Student</h2>
+    <!-- STUDENT DETAIL PAGE (Overview / Violations / Incidents / Timeline tabs) —
+         full-screen workspace opened from the Section Roster's "View" action. -->
+    <div id="student-detail-modal" class="student-detail-page hidden" aria-hidden="true">
+        <div class="student-detail-page-shell">
+            <div class="student-detail-topbar">
+                <button type="button" class="student-detail-back-btn" id="student-detail-modal-close" aria-label="Back to student roster">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to Students
+                </button>
+                <span class="student-detail-page-label">Student Record</span>
             </div>
-            <p class="section-detail-subtitle" id="student-detail-subtitle">--</p>
 
-            <div class="section-detail-tabs" id="student-detail-tabs" role="tablist"></div>
-            <div class="section-detail-tab-panel" id="student-detail-tab-panel"></div>
+            <section class="student-detail-hero">
+                <div class="student-detail-avatar" id="student-detail-avatar">ST</div>
+                <div class="student-detail-identity">
+                    <p class="student-detail-eyebrow">RescuePriority Student Profile</p>
+                    <h2 id="student-detail-title">Student</h2>
+                    <p class="section-detail-subtitle" id="student-detail-subtitle">--</p>
+                    <div class="student-detail-meta-row">
+                        <span class="student-detail-meta-chip" id="student-detail-lrn-chip">LRN: --</span>
+                        <span class="student-detail-meta-chip" id="student-detail-status-chip">Attendance: --</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="student-detail-content">
+                <div class="section-detail-tabs student-detail-tabs-large" id="student-detail-tabs" role="tablist"></div>
+                <div class="section-detail-tab-panel student-detail-tab-panel-large" id="student-detail-tab-panel"></div>
+            </section>
         </div>
     </div>
 

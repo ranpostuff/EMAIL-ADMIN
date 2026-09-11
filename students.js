@@ -1137,22 +1137,15 @@ function renderSectionRoster() {
 }
 
 /* ==========================================================================
-   STUDENT DETAIL MODAL (Overview / Violations / Incidents / Timeline tabs)
+   STUDENT DETAIL PAGE (Overview / Violations / Incidents / Timeline tabs)
    --------------------------------------------------------------------------
-   Opened via the Section Roster's "View" button. Reuses the same tab
-   renderers (renderTabButton / renderTabPanelContent, below) that used to
-   live inside the old accordion-in-a-modal Section Detail view.
+   Opened via the Section Roster's "View" button. This is intentionally a
+   full-screen workspace rather than a floating modal so long student records
+   remain readable and easy to navigate.
 ========================================================================== */
 function setupStudentDetailModal() {
-    const modal = document.getElementById("student-detail-modal");
     const closeBtn = document.getElementById("student-detail-modal-close");
-
     if (closeBtn) closeBtn.addEventListener("click", closeStudentDetailModal);
-    if (modal) {
-        modal.addEventListener("click", (event) => {
-            if (event.target === modal) closeStudentDetailModal();
-        });
-    }
 }
 
 function openStudentDetailModal(studentId) {
@@ -1163,14 +1156,22 @@ function openStudentDetailModal(studentId) {
     studentDetailTab = "overview";
 
     const modal = document.getElementById("student-detail-modal");
-    if (modal) modal.classList.remove("hidden");
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.setAttribute("aria-hidden", "false");
+    }
+    document.body.classList.add("student-detail-open");
 
     renderStudentDetailModal();
 }
 
 function closeStudentDetailModal() {
     const modal = document.getElementById("student-detail-modal");
-    if (modal) modal.classList.add("hidden");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+    }
+    document.body.classList.remove("student-detail-open");
     studentDetailId = null;
 }
 
@@ -1191,11 +1192,30 @@ function renderStudentDetailModal() {
         subtitleEl.textContent = section ? `${section.gradeName || "--"} \u00b7 ${section.name}` : "No section on file";
     }
 
+    const avatarEl = document.getElementById("student-detail-avatar");
+    const lrnChipEl = document.getElementById("student-detail-lrn-chip");
+    const statusChipEl = document.getElementById("student-detail-status-chip");
+    const initials = studentFullName(student)
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() || "")
+        .join("") || "ST";
+    if (avatarEl) avatarEl.textContent = initials;
+    if (lrnChipEl) lrnChipEl.textContent = `LRN: ${student.lrn || "--"}`;
+
     // Timeline data comes from the roster view's live listener (the only
     // entry point to this modal), so it's already in sync for this student.
     const entries = rosterSectionId === student.sectionId ? (rosterLogsByStudent[studentDetailId] || []) : [];
     const firstIn = entries.find((log) => log.direction === "in");
     const isLate = firstIn ? isLogEntryLate(firstIn.timestamp) : false;
+    if (statusChipEl) {
+        statusChipEl.textContent = firstIn
+            ? `Attendance: ${isLate ? "Late" : "On time"}`
+            : "Attendance: Not checked in";
+        statusChipEl.classList.toggle("is-good", Boolean(firstIn && !isLate));
+        statusChipEl.classList.toggle("is-warning", Boolean(firstIn && isLate));
+    }
     const violationCount = (violationsState[studentDetailId] || []).length;
     const studentIncidents = incidentsCache.filter((i) => i.studentId === studentDetailId);
 
@@ -1251,14 +1271,24 @@ function renderTabPanelContent(activeTab, data) {
 
     // "overview" (default)
     return `
-        <div class="section-detail-profile-grid">
-            <p><strong>LRN:</strong> ${escapeHtml(student.lrn || "--")}</p>
-            <p><strong>Grade &amp; Section:</strong> ${escapeHtml((sectionsState[student.sectionId] || {}).name || "--")}</p>
-            <p><strong>Parent Mobile:</strong> ${escapeHtml(student.parentMobileNo || "--")}</p>
-            <p><strong>Parent Email:</strong> ${escapeHtml(student.parentEmail || "--")}</p>
-            <p><strong>Check-in Today:</strong> ${firstIn ? `${formatLogTime(firstIn.timestamp)} ${isLate ? "(Late)" : "(On time)"}` : "Not checked in yet"}</p>
-            <p><strong>Violations:</strong> ${violationCount} logged</p>
-            <p><strong>Incidents Involved:</strong> ${studentIncidents.length} on record</p>
+        <div class="student-detail-overview-grid">
+            <section class="student-detail-info-card">
+                <div class="student-detail-info-card-heading">Student Information</div>
+                <dl class="student-detail-info-list">
+                    <div><dt>LRN</dt><dd>${escapeHtml(student.lrn || "--")}</dd></div>
+                    <div><dt>Grade &amp; Section</dt><dd>${escapeHtml((sectionsState[student.sectionId] || {}).name || "--")}</dd></div>
+                    <div><dt>Parent Mobile</dt><dd>${escapeHtml(student.parentMobileNo || "--")}</dd></div>
+                    <div><dt>Parent Email</dt><dd>${escapeHtml(student.parentEmail || "--")}</dd></div>
+                </dl>
+            </section>
+            <section class="student-detail-info-card">
+                <div class="student-detail-info-card-heading">Today &amp; Record Summary</div>
+                <div class="student-detail-stat-grid">
+                    <div class="student-detail-stat"><span>Check-in</span><strong>${firstIn ? formatLogTime(firstIn.timestamp) : "Not yet"}</strong><small>${firstIn ? (isLate ? "Late arrival" : "On time") : "No attendance scan"}</small></div>
+                    <div class="student-detail-stat"><span>Violations</span><strong>${violationCount}</strong><small>${violationCount === 1 ? "record" : "records"}</small></div>
+                    <div class="student-detail-stat"><span>Incidents</span><strong>${studentIncidents.length}</strong><small>${studentIncidents.length === 1 ? "record" : "records"}</small></div>
+                </div>
+            </section>
         </div>
     `;
 }

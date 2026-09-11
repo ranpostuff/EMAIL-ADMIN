@@ -10,3 +10,10 @@ Added/improved:
 - Backward-compatible fallbacks for legacy incident records.
 - Professional inline SVG folder/person icons replacing emoji in grade/section/student browsing.
 - Database rules synchronized with the Student App for the additive incident fields.
+
+## Visual correction — Student Record Detail
+- Replaced the small blurred-background Student Detail modal with a dedicated full-screen student record workspace.
+- Added an explicit Back to Students action, profile header, LRN/attendance chips, larger tabs, structured profile information, and readable record summary cards.
+- Expanded Violations, Incidents, and Timeline rows for long-form readability and scrolling.
+- Added responsive layouts for tablet and mobile widths.
+- Preserved all existing student-record, violations, incidents, attendance, and Firebase data logic.

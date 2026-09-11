@@ -48,9 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let isAuthorized = false;
         try {
-            console.log("[auth-debug] checking uid:", JSON.stringify(user.uid), "length:", user.uid.length);
             const snapshot = await get(ref(database, `admins/${user.uid}`));
-            console.log("[auth-debug] snapshot exists:", snapshot.exists(), "val:", snapshot.val());
             isAuthorized = snapshot.exists();
         } catch (error) {
             console.error("[auth] Failed to check admin allowlist:", error);
