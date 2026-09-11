@@ -55,7 +55,44 @@
     </div>
     <div id="emergency-toast-stack" class="emergency-toast-stack" aria-live="polite"></div>
 
-    <div class="app-shell">
+    <!-- ============================= AUTH GATE ============================= -->
+    <!-- Direct <body> child, same as the emergency alert overlay above, so it
+         covers the whole screen regardless of which view is behind it. Shown
+         until auth.js confirms a signed-in AND allowlisted (admins/{uid})
+         Firebase Auth session — see auth.js and RULES-NOTES.md. -->
+    <div id="auth-gate" class="auth-gate">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="sidebar-brand-mark">RP</div>
+                <div class="auth-brand-text">
+                    <h1>RESCUEPRIORITY</h1>
+                    <p>MCNHS Emergency Ops Center</p>
+                </div>
+            </div>
+
+            <p id="auth-checking" class="auth-status">Checking your session&hellip;</p>
+
+            <form id="auth-login-form" class="auth-form hidden">
+                <h2>Command Center Sign In</h2>
+                <p class="auth-subtitle">Authorized staff only. If you don't have an account, contact your system administrator.</p>
+
+                <div id="auth-login-error" class="form-general-error hidden"></div>
+
+                <div class="field-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" autocomplete="username" required>
+                </div>
+                <div class="field-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" id="auth-login-btn" class="btn btn-resolve auth-login-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-shell hidden">
 
         <!-- ============================= SIDEBAR ============================= -->
         <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
@@ -117,7 +154,13 @@
                 </button>
             </nav>
 
-            <div class="sidebar-foot">MCNHS &middot; ESP32-linked</div>
+            <div class="sidebar-foot">
+                <div class="sidebar-foot-account">
+                    <span id="sidebar-account-email" class="sidebar-account-email">--</span>
+                    <button type="button" id="btn-logout" class="sidebar-logout-btn">Log Out</button>
+                </div>
+                <div class="sidebar-foot-brand">MCNHS &middot; ESP32-linked</div>
+            </div>
         </aside>
 
         <!-- ============================= MAIN CONTENT ============================= -->
@@ -521,6 +564,22 @@
                             <div>
                                 <span class="meta-label">Resolved At</span>
                                 <span class="meta-value" id="incident-detail-resolved">--</span>
+                            </div>
+                        </div>
+
+                        <!-- "Reported By" strip — populated by incidents-browser.js off the
+                             rp:incident-detail-rendered event script.js dispatches. Hidden for
+                             incidents with no reporter on file (ESP32/"Trigger Test Alert"
+                             incidents, which never go through the Student Incident Reporter app). -->
+                        <div id="incident-detail-reporter" class="incident-detail-reporter hidden">
+                            <div class="incident-detail-reporter-photo-wrap">
+                                <img id="incident-detail-reporter-photo" class="incident-detail-reporter-photo hidden" alt="">
+                                <div id="incident-detail-reporter-photo-fallback" class="incident-detail-reporter-photo-fallback">--</div>
+                            </div>
+                            <div class="incident-detail-reporter-info">
+                                <span class="meta-label" id="incident-detail-reporter-label">Reported By</span>
+                                <span class="incident-detail-reporter-name" id="incident-detail-reporter-name">--</span>
+                                <span class="incident-detail-reporter-sub" id="incident-detail-reporter-sub">--</span>
                             </div>
                         </div>
 
@@ -1111,36 +1170,83 @@
                 <p><strong>Emergency Status:</strong> <span id="modal-type">--</span></p>
             </div>
 
-            <!-- Reported-student panel — shown only when the active incident on
-                 this room was raised through the Student Incident Reporter app
-                 and is linked to a specific student (individual emergency).
-                 Hidden for room-wide reports (fire/fight) and for
-                 test-alert / ESP32-triggered incidents, which have no student. -->
-            <div id="modal-student-incident-section" class="modal-student-incident-section hidden">
-                <div class="modal-student-incident-header">
+            <!-- Reported-incident banner — a slim, one-line strip shown whenever the
+                 active incident on this room was raised through the Student
+                 Incident Reporter app and has a reporter on file (this app now
+                 always captures who reported, "Just Me" or "Everyone Here"
+                 alike). Hidden only for test-alert / ESP32-triggered incidents,
+                 which have no reporter. Tapping it opens #reporter-modal — a
+                 separate, properly-sized modal — instead of cramming a photo +
+                 five lines of contact detail into this already-busy room card. -->
+            <button type="button" id="modal-student-incident-section" class="modal-student-incident-banner hidden">
+                <span class="modal-student-incident-banner-photo-wrap">
+                    <img id="modal-student-photo" class="modal-student-incident-banner-photo hidden" alt="">
+                    <span id="modal-student-photo-fallback" class="modal-student-incident-banner-photo-fallback">--</span>
+                </span>
+                <span class="modal-student-incident-banner-text">
                     <span class="modal-student-incident-badge" id="modal-student-incident-type">Reported Emergency</span>
-                </div>
-                <div class="modal-student-incident-body">
-                    <div class="modal-student-photo-wrap">
-                        <img id="modal-student-photo" class="modal-student-photo hidden" alt="">
-                        <div id="modal-student-photo-fallback" class="modal-student-photo-fallback">--</div>
-                    </div>
-                    <div class="modal-student-details">
-                        <h3 id="modal-student-name">--</h3>
-                        <p id="modal-student-lrn">LRN: --</p>
-                        <p id="modal-student-section">--</p>
-                        <p id="modal-student-adviser">Adviser: --</p>
-                        <p id="modal-student-parent">Parent contact: --</p>
-                        <p id="modal-student-incident-desc" class="modal-student-incident-desc">--</p>
-                    </div>
-                </div>
-            </div>
+                    <span id="modal-student-name">--</span>
+                </span>
+                <span class="modal-student-incident-banner-arrow" aria-hidden="true">&rarr;</span>
+            </button>
 
             <!-- Action Controls -->
             <div class="modal-actions">
                 <button type="button" id="btn-acknowledge" class="btn btn-ack" disabled>Acknowledge Siren</button>
                 <button type="button" id="btn-resolve" class="btn btn-resolve" disabled>Clear Emergency</button>
                 <button type="button" id="btn-notify-help" class="btn btn-notify-help hidden">Notify Student &mdash; Help is Coming</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORTER DETAILS MODAL — opened from the banner above. Its own,
+         wider modal (not squeezed inside #room-modal) so a photo, contact
+         info, and an optional note all have room to breathe. -->
+    <div id="reporter-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-card-wide">
+            <button type="button" class="modal-close-btn" id="reporter-modal-close">&times;</button>
+
+            <div class="modal-header">
+                <h2>Reported Incident</h2>
+                <span class="modal-student-incident-badge" id="reporter-modal-type">Reported Emergency</span>
+            </div>
+
+            <div class="reporter-modal-scope-note hidden" id="reporter-modal-scope-note">
+                Reported as affecting everyone in this room — no single student is
+                the subject of this incident, but here's who sent the report.
+            </div>
+
+            <div class="reporter-modal-identity">
+                <div class="reporter-modal-photo-wrap">
+                    <img id="reporter-modal-photo" class="reporter-modal-photo hidden" alt="">
+                    <div id="reporter-modal-photo-fallback" class="reporter-modal-photo-fallback">--</div>
+                </div>
+                <div class="reporter-modal-identity-text">
+                    <span class="meta-label" id="reporter-modal-role-label">Reported By</span>
+                    <h3 id="reporter-modal-name">--</h3>
+                    <p id="reporter-modal-lrn">LRN: --</p>
+                    <p id="reporter-modal-section">--</p>
+                </div>
+            </div>
+
+            <div class="reporter-modal-details-grid">
+                <div>
+                    <span class="meta-label">Adviser</span>
+                    <span class="meta-value" id="reporter-modal-adviser">--</span>
+                </div>
+                <div>
+                    <span class="meta-label">Parent Contact</span>
+                    <span class="meta-value" id="reporter-modal-parent">--</span>
+                </div>
+            </div>
+
+            <div id="reporter-modal-desc-wrap" class="reporter-modal-desc-wrap hidden">
+                <span class="meta-label">Note From Reporter</span>
+                <p id="reporter-modal-desc" class="reporter-modal-desc">--</p>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" id="reporter-modal-done" class="btn btn-resolve">Done</button>
             </div>
         </div>
     </div>
@@ -1227,6 +1333,12 @@
                     <label for="student-field-photoUrl">Photo URL (optional)</label>
                     <input type="url" id="student-field-photoUrl" placeholder="https://... link to a hosted photo">
                     <span class="field-hint">Paste a link to a photo hosted elsewhere (Drive, Firebase Storage, etc.). Shown on the Kiosk Display when this student checks in/out.</span>
+                </div>
+
+                <div class="field-group field-full">
+                    <label for="student-field-password">Student Web App Password <span id="student-field-password-status" class="field-hint-inline"></span></label>
+                    <input type="password" id="student-field-password" autocomplete="new-password" placeholder="Leave blank to keep the current password">
+                    <span class="field-hint">Students sign in to the Student Incident Reporter with their LRN and this password. Set one here to grant (or reset) their access — leave it blank when editing to leave an existing password unchanged. A student with no password on file can't log in.</span>
                 </div>
             </div>
 
@@ -1352,6 +1464,7 @@
         </div>
     </div>
 
+    <script type="module" src="auth.js"></script>
     <script type="module" src="script.js"></script>
     <script type="module" src="emergency-alert.js"></script>
     <script type="module" src="insights.js"></script>

@@ -1,5 +1,32 @@
 {
   "rules": {
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
+        ".validate": "newData.isString() && newData.val().length > 0"
+      }
+    },
+
+    "studentLogins": {
+      ".read": false,
+      ".write": false,
+      "$lrn": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
+        ".validate": "newData.hasChildren(['studentId','passwordHash'])",
+        "studentId": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "passwordHash": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+
     "classrooms": {
       ".read": true,
       "$facilityId": {
@@ -18,10 +45,11 @@
         }
       }
     },
+
     "incidents": {
       ".read": true,
       "$incidentKey": {
-        ".write": true,
+        ".write": "data.exists() == false || (auth != null && root.child('admins').child(auth.uid).exists())",
         ".validate": "newData.hasChildren(['incidentNumber','timestamp','classroom','status'])",
         "incidentNumber": {
           ".validate": "newData.isString()"
@@ -48,6 +76,15 @@
           ".validate": "newData.val() == null || newData.isString()"
         },
         "studentName": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "reporterId": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "reporterName": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "reporterLrn": {
           ".validate": "newData.val() == null || newData.isString()"
         },
         "incidentType": {
@@ -82,6 +119,7 @@
         }
       }
     },
+
     "latencyLogs": {
       ".read": true,
       "$logKey": {
@@ -110,6 +148,7 @@
         }
       }
     },
+
     "fcmTokens": {
       ".read": false,
       "$token": {
@@ -126,6 +165,15 @@
         }
       }
     },
+
+    "facilityAdviserEmails": {
+      ".read": false,
+      ".write": false,
+      "$facilityId": {
+        ".validate": "newData.isString()"
+      }
+    },
+
     "counters": {
       "lastIncidentNumber": {
         ".read": true,
@@ -133,21 +181,22 @@
         ".validate": "newData.isNumber()"
       }
     },
+
     "students": {
       ".read": true,
       "$studentId": {
-        ".write": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
         ".validate": "newData.hasChildren(['lrn','firstName','lastName','parentMobileNo','sectionId'])",
         "lrn": {
-          ".validate": "newData.isString() && newData.val().length > 0"
-        },
-        "firstName": {
           ".validate": "newData.isString() && newData.val().length > 0"
         },
         "middleName": {
           ".validate": "newData.val() == null || newData.isString()"
         },
         "lastName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "firstName": {
           ".validate": "newData.isString() && newData.val().length > 0"
         },
         "extension": {
@@ -165,15 +214,19 @@
         "facilityId": {
           ".validate": "newData.val() == null || newData.isString()"
         },
+        "photoUrl": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
         "$other": {
           ".validate": false
         }
       }
     },
+
     "sections": {
       ".read": true,
       "$sectionId": {
-        ".write": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
         ".validate": "newData.hasChildren(['name','gradeName','gradeId'])",
         "name": {
           ".validate": "newData.isString() && newData.val().length > 0"
@@ -195,10 +248,11 @@
         }
       }
     },
+
     "attendance": {
       ".read": true,
       "$logId": {
-        ".write": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
         ".validate": "newData.hasChildren(['studentId','timestamp','direction'])",
         "studentId": {
           ".validate": "newData.isString() && newData.val().length > 0"
@@ -217,11 +271,12 @@
         }
       }
     },
+
     "violations": {
       ".read": true,
       "$studentId": {
         "$violationKey": {
-          ".write": true,
+          ".write": "auth != null && root.child('admins').child(auth.uid).exists()",
           ".validate": "newData.hasChildren(['type','offenseCount','timestamp'])",
           "type": {
             ".validate": "newData.isString() && newData.val().length > 0"
@@ -241,6 +296,7 @@
         }
       }
     },
+
     "$other": {
       ".read": false,
       ".write": false

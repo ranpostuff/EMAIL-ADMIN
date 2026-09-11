@@ -40,6 +40,14 @@ import {
 const studentsRootRef = ref(database, "students");
 const sectionsRootRef = ref(database, "sections");
 
+/* studentLogins/{lrn} -> { studentId, passwordHash } — written only from
+   here (the admin roster), one entry at a time by direct path (there's no
+   need for a root-level ref/listener on the whole studentLogins/ tree).
+   The Student Incident Reporter app reads a single studentLogins/{lrn}
+   entry (by the LRN the student types in) at sign-in time to check the
+   password; it never writes here itself. See this project's
+   RULES-NOTES.md and the student app's README for the full login flow. */
+
 /* Read-only ref onto the attendance/ tree already owned by
    scan-attendance.js. Just a pointer — no listener is attached until the
    Section Detail modal (below) is actually open, so this doesn't touch or
@@ -129,6 +137,60 @@ function validateSectionForm(values) {
 
 function slugify(text) {
     return text.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+/* ==========================================================================
+   STUDENT PORTAL LOGIN (studentLogins/{lrn})
+   --------------------------------------------------------------------------
+   Same SHA-256-via-Web-Crypto hash used by the Student Incident Reporter
+   app to compare a typed-in password (see that app's app.js) — duplicated
+   here rather than shared, same convention as the duplicated firebaseConfig
+   documented in both READMEs. This is a client-side hash, not a substitute
+   for a real backend with salted/bcrypt-style hashing; see RULES-NOTES.md
+   for that caveat.
+========================================================================== */
+async function hashPassword(rawPassword) {
+    const bytes = new TextEncoder().encode(rawPassword);
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/* Keeps studentLogins/{lrn} in sync with a student's roster record:
+     - if a new password was typed in, hash it and (over)write the login
+       entry at the CURRENT lrn
+     - if the LRN changed and no new password was given, the login entry
+       (if any) moves from the old LRN key to the new one, carrying its
+       existing password hash forward
+     - otherwise, leaves any existing login entry untouched */
+async function syncStudentLogin(studentId, lrn, rawPassword, previousLrn) {
+    const lrnChanged = previousLrn && previousLrn !== lrn;
+    let carriedHash = null;
+
+    if (lrnChanged) {
+        const oldSnapshot = await get(ref(database, `studentLogins/${previousLrn}`));
+        if (oldSnapshot.exists()) carriedHash = oldSnapshot.val().passwordHash;
+        await remove(ref(database, `studentLogins/${previousLrn}`));
+    }
+
+    if (rawPassword) {
+        const passwordHash = await hashPassword(rawPassword);
+        await set(ref(database, `studentLogins/${lrn}`), { studentId, passwordHash });
+        return;
+    }
+
+    if (carriedHash) {
+        await set(ref(database, `studentLogins/${lrn}`), { studentId, passwordHash: carriedHash });
+        return;
+    }
+
+    // No new password, no LRN move to carry forward — just make sure an
+    // existing entry at this LRN still points at the right studentId
+    // (relevant only if a login was created before this student record
+    // existed, which shouldn't normally happen, but costs nothing to check).
+    const existingSnapshot = await get(ref(database, `studentLogins/${lrn}`));
+    if (existingSnapshot.exists() && existingSnapshot.val().studentId !== studentId) {
+        await update(ref(database, `studentLogins/${lrn}`), { studentId });
+    }
 }
 
 /* ==========================================================================
@@ -293,6 +355,14 @@ async function deleteStudent(studentId) {
     if (!confirmed) return;
 
     await remove(ref(database, `students/${studentId}`));
+    // Also drop their portal login, if any — an orphaned studentLogins entry
+    // would otherwise still let someone log in as an LRN that no longer
+    // resolves to a real student record.
+    if (student.lrn) {
+        remove(ref(database, `studentLogins/${student.lrn}`)).catch((error) => {
+            console.error("Failed to remove student portal login:", error);
+        });
+    }
 }
 
 /* ==========================================================================
@@ -335,11 +405,14 @@ function populateSectionDropdown() {
     if (currentValue) select.value = currentValue;
 }
 
+let editingStudentPreviousLrn = null; // LRN this student had when the modal opened (to detect a change)
+
 function openStudentModal(studentId) {
     editingStudentId = studentId;
     const modal = document.getElementById("student-modal");
     const title = document.getElementById("student-modal-title");
     const student = studentId ? studentsState[studentId] : null;
+    editingStudentPreviousLrn = student?.lrn || null;
 
     clearStudentFormErrors();
 
@@ -352,6 +425,17 @@ function openStudentModal(studentId) {
     document.getElementById("student-field-parentEmail").value = student?.parentEmail || "";
     document.getElementById("student-field-sectionId").value = student?.sectionId || "";
     document.getElementById("student-field-photoUrl").value = student?.photoUrl || "";
+    document.getElementById("student-field-password").value = "";
+
+    const statusEl = document.getElementById("student-field-password-status");
+    if (statusEl) statusEl.textContent = "";
+    if (statusEl && student?.lrn) {
+        get(ref(database, `studentLogins/${student.lrn}`))
+            .then((snapshot) => {
+                statusEl.textContent = snapshot.exists() ? "(login is set)" : "(no login set yet)";
+            })
+            .catch(() => { /* status label is a nicety, not worth surfacing an error over */ });
+    }
 
     if (title) title.textContent = student ? "Edit Student" : "Add Student";
     if (modal) modal.classList.remove("hidden");
@@ -379,7 +463,8 @@ async function handleStudentSave() {
         parentMobileNo: document.getElementById("student-field-parentMobileNo").value.trim(),
         parentEmail: document.getElementById("student-field-parentEmail").value.trim(),
         sectionId: document.getElementById("student-field-sectionId").value,
-        photoUrl: document.getElementById("student-field-photoUrl").value.trim()
+        photoUrl: document.getElementById("student-field-photoUrl").value.trim(),
+        password: document.getElementById("student-field-password").value
     };
 
     clearStudentFormErrors();
@@ -421,10 +506,25 @@ async function handleStudentSave() {
         photoUrl: values.photoUrl || null                 // shown on Kiosk Display at scan time
     };
 
+    let studentId = editingStudentId;
     if (editingStudentId) {
         await update(ref(database, `students/${editingStudentId}`), payload);
     } else {
-        await set(push(studentsRootRef), payload);
+        const newRef = push(studentsRootRef);
+        await set(newRef, payload);
+        studentId = newRef.key;
+    }
+
+    try {
+        await syncStudentLogin(studentId, values.lrn, values.password, editingStudentPreviousLrn);
+    } catch (error) {
+        console.error("Failed to save student portal login:", error);
+        const generalError = document.getElementById("student-form-general-error");
+        if (generalError) {
+            generalError.textContent = "Student saved, but the portal password couldn't be updated. Try again from Edit Student.";
+            generalError.classList.remove("hidden");
+        }
+        return;
     }
 
     closeStudentModal();

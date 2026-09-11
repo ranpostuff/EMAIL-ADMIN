@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
             resetToTop();
         }
     });
+    window.addEventListener("rp:incident-detail-rendered", (event) => {
+        renderIncidentDetailReporter(event.detail.incident);
+    });
 
     const backToRosterBtn = document.getElementById("btn-back-to-roster");
     if (backToRosterBtn) {
@@ -103,6 +106,73 @@ function studentFullName(student) {
     return [student.firstName, student.middleName, student.lastName, student.extension]
         .filter((v) => v && String(v).trim())
         .join(" ");
+}
+
+/* ==========================================================================
+   "REPORTED BY" STRIP — Incident Log detail panel
+   --------------------------------------------------------------------------
+   Every incident the Student Incident Reporter app creates now carries
+   reporterId/reporterName/reporterLrn — the identity of whoever was logged
+   in when they sent it, captured regardless of whether the report was
+   "Just Me" or "Everyone Here". (studentId/studentName, kept for back-
+   compat, is who the incident concerns — null for a room-wide report — so
+   it can legitimately differ from who reported it.) Incidents with neither
+   field (the "Trigger Test Alert" / ESP32 pipeline) simply have nothing to
+   show here, so the strip stays hidden for those.
+========================================================================== */
+function renderIncidentDetailReporter(incident) {
+    const wrap = document.getElementById("incident-detail-reporter");
+    if (!wrap) return;
+
+    const reporterId = incident.reporterId || incident.studentId || null;
+    const reporterNameFallback = incident.reporterName || incident.studentName || null;
+
+    if (!reporterId && !reporterNameFallback) {
+        wrap.classList.add("hidden");
+        return;
+    }
+
+    const student = reporterId ? studentsState[reporterId] : null;
+    const section = student ? sectionsState[student.sectionId] : null;
+    const fullName = student ? studentFullName(student) : (reporterNameFallback || "Unknown student");
+    const lrn = (student && student.lrn) || incident.reporterLrn || "--";
+
+    const labelEl = document.getElementById("incident-detail-reporter-label");
+    const nameEl = document.getElementById("incident-detail-reporter-name");
+    const subEl = document.getElementById("incident-detail-reporter-sub");
+    const photoEl = document.getElementById("incident-detail-reporter-photo");
+    const photoFallbackEl = document.getElementById("incident-detail-reporter-photo-fallback");
+
+    if (labelEl) {
+        labelEl.textContent = incident.roomWide ? "Reported By \u2014 Everyone Here report" : "Reported By";
+    }
+    if (nameEl) nameEl.textContent = fullName;
+    if (subEl) {
+        const sectionLabel = section ? `${section.gradeName || "--"} \u2013 ${section.name}` : "Section not on file";
+        subEl.textContent = `LRN ${lrn} \u00b7 ${sectionLabel}`;
+    }
+
+    if (photoEl && photoFallbackEl) {
+        const initials = student
+            ? ((student.firstName || "").charAt(0) + (student.lastName || "").charAt(0)).toUpperCase()
+            : (fullName || "?").charAt(0).toUpperCase();
+        photoFallbackEl.textContent = initials || "?";
+
+        if (student && student.photoUrl) {
+            photoEl.src = student.photoUrl;
+            photoEl.classList.remove("hidden");
+            photoFallbackEl.classList.add("hidden");
+            photoEl.onerror = () => {
+                photoEl.classList.add("hidden");
+                photoFallbackEl.classList.remove("hidden");
+            };
+        } else {
+            photoEl.classList.add("hidden");
+            photoFallbackEl.classList.remove("hidden");
+        }
+    }
+
+    wrap.classList.remove("hidden");
 }
 
 function studentViolationCount(studentId) {

@@ -263,6 +263,41 @@ img { max-width: 100%; display: block; }
     color: rgba(255, 255, 255, 0.4);
 }
 
+.sidebar-foot-account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-account-email {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.sidebar-logout-btn {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid var(--sidebar-border);
+    border-radius: 6px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.sidebar-logout-btn:hover { background: rgba(255, 255, 255, 0.16); }
+
+.sidebar-foot-brand { font-size: 0.62rem; color: rgba(255, 255, 255, 0.4); }
+
 .sidebar-backdrop {
     display: none;
     position: fixed;
@@ -1675,34 +1710,28 @@ img { max-width: 100%; display: block; }
     }
 }
 
-/* ---------- Student Incident Panel (room modal) ---------- */
-.modal-student-incident-section {
+/* ---------- Reported-incident banner (room modal) ----------
+   Deliberately slim — a single tappable row, not a mini profile card. Full
+   detail lives in #reporter-modal (below) so it has room to breathe instead
+   of fighting the room modal's other panels for space. */
+.modal-student-incident-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
     margin: 0 0 0.9rem;
-    padding: 0.85rem 1rem;
+    padding: 0.65rem 0.85rem;
     border: 1.5px solid var(--status-emergency);
     background: var(--status-emergency-light);
     border-radius: var(--radius-card-sm);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    text-align: left;
 }
 
-.modal-student-incident-header { margin-bottom: 0.6rem; }
-
-.modal-student-incident-badge {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--status-emergency);
-}
-
-.modal-student-incident-body {
-    display: flex;
-    gap: 0.85rem;
-    align-items: flex-start;
-}
-
-.modal-student-photo-wrap {
-    width: 56px;
-    height: 56px;
+.modal-student-incident-banner-photo-wrap {
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -1711,15 +1740,99 @@ img { max-width: 100%; display: block; }
     align-items: center;
     justify-content: center;
     font-weight: 800;
+    font-size: 0.75rem;
     color: var(--status-emergency);
     border: 2px solid var(--status-emergency);
 }
 
-.modal-student-photo { width: 100%; height: 100%; object-fit: cover; }
+.modal-student-incident-banner-photo { width: 100%; height: 100%; object-fit: cover; }
 
-.modal-student-details h3 { margin: 0 0 0.15rem; font-size: 1rem; }
-.modal-student-details p { margin: 0.1rem 0; font-size: 0.78rem; color: var(--text-secondary); }
-.modal-student-incident-desc { font-style: italic; }
+.modal-student-incident-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.modal-student-incident-banner-text #modal-student-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modal-student-incident-banner-arrow {
+    color: var(--status-emergency);
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.modal-student-incident-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--status-emergency);
+}
+
+/* ---------- Reporter details modal — the wider, properly-spaced home for
+   what used to be crammed into the room modal ---------- */
+.modal-card-wide { max-width: 480px; }
+
+.reporter-modal-scope-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+}
+
+.reporter-modal-identity {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.reporter-modal-photo-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--status-emergency);
+    border: 2px solid var(--status-emergency);
+}
+
+.reporter-modal-photo { width: 100%; height: 100%; object-fit: cover; }
+
+.reporter-modal-identity-text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.reporter-modal-identity-text h3 { margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); }
+.reporter-modal-identity-text p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); }
+
+.reporter-modal-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem 1rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+}
+
+.reporter-modal-details-grid > div { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.reporter-modal-desc-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
+.reporter-modal-desc { margin: 0; font-style: italic; font-size: 0.88rem; color: var(--text-primary); }
 
 /* ============================================================================
    INCIDENT LOG VIEW — FOLDER LIST
@@ -1878,6 +1991,38 @@ img { max-width: 100%; display: block; }
 }
 
 .meta-value { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+
+/* ---------- "Reported By" strip (Incident Log detail panel) ---------- */
+.incident-detail-reporter {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--status-emergency);
+    background: var(--status-emergency-light);
+    border-radius: var(--radius-card-sm);
+}
+
+.incident-detail-reporter-photo-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--status-emergency);
+    border: 2px solid var(--status-emergency);
+}
+
+.incident-detail-reporter-photo { width: 100%; height: 100%; object-fit: cover; }
+
+.incident-detail-reporter-info { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.incident-detail-reporter-name { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); }
+.incident-detail-reporter-sub { font-size: 0.78rem; color: var(--text-secondary); }
 
 .timeline-heading {
     font-size: 0.85rem;
@@ -2206,3 +2351,68 @@ html.rp-hide-attendance [data-hide-group="attendance"] {
     accent-color: var(--accent-pink);
     cursor: pointer;
 }
+
+/* ============================================================================
+   AUTH GATE — full-screen sign-in, shown until auth.js confirms a signed-in
+   AND admins/{uid}-allowlisted session (see auth.js, RULES-NOTES.md).
+   ============================================================================ */
+.auth-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--primary-dark, #1a1320);
+    background: linear-gradient(160deg, var(--primary-dark, #1a1320), #0d0a10);
+}
+
+.auth-gate.hidden { display: none; }
+
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--modal-shadow);
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.auth-brand-text h1 {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    line-height: 1.15;
+}
+
+.auth-brand-text p {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    margin-top: 0.1rem;
+}
+
+.auth-status {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 0.75rem 0;
+}
+
+.auth-form { display: flex; flex-direction: column; gap: 0.9rem; }
+.auth-form.hidden { display: none; }
+
+.auth-form h2 { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); }
+.auth-subtitle { font-size: 0.78rem; color: var(--text-secondary); margin-top: -0.5rem; }
+
+.auth-login-btn { width: 100%; }

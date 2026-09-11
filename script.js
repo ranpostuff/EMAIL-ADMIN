@@ -31,7 +31,7 @@ const firebaseConfig = {
     measurementId: "G-JT58NQCRMQ"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 export const database = getDatabase(firebaseApp);
 
 /* ==========================================================================
@@ -794,6 +794,15 @@ function renderIncidentDetail(incident) {
             timelineList.appendChild(li);
         });
     }
+
+    // Announce the render as a plain DOM event (same pattern as
+    // rp:room-modal-opened above) so incidents-browser.js — which already
+    // holds the live studentsState/sectionsState needed to resolve
+    // reporterId into a name/LRN/section — can populate the "Reported By"
+    // row without this file importing students.js (would create a
+    // circular import: students.js imports database/SCHOOL_FACILITIES
+    // from here).
+    window.dispatchEvent(new CustomEvent("rp:incident-detail-rendered", { detail: { incident } }));
 }
 
 function formatTime(epochMs) {
