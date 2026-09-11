@@ -121,58 +121,84 @@ function studentFullName(student) {
    show here, so the strip stays hidden for those.
 ========================================================================== */
 function renderIncidentDetailReporter(incident) {
-    const wrap = document.getElementById("incident-detail-reporter");
+    renderIncidentPerson({
+        wrapId: "incident-detail-reporter",
+        photoId: "incident-detail-reporter-photo",
+        fallbackId: "incident-detail-reporter-photo-fallback",
+        nameId: "incident-detail-reporter-name",
+        subId: "incident-detail-reporter-sub",
+        studentId: incident.reporterId || null,
+        fallbackName: incident.reporterName || null,
+        fallbackLrn: incident.reporterLrn || null,
+        fallbackSection: null
+    });
+
+    const involvedWrap = document.getElementById("incident-detail-involved");
+    if (incident.roomWide) {
+        if (involvedWrap) involvedWrap.classList.remove("hidden");
+        const nameEl = document.getElementById("incident-detail-involved-name");
+        const subEl = document.getElementById("incident-detail-involved-sub");
+        if (nameEl) nameEl.textContent = "Everyone in the reported area";
+        if (subEl) subEl.textContent = "Room-wide incident · no single student identified";
+        document.getElementById("incident-detail-involved-photo")?.classList.add("hidden");
+        const fallback = document.getElementById("incident-detail-involved-photo-fallback");
+        if (fallback) { fallback.textContent = "ALL"; fallback.classList.remove("hidden"); }
+    } else {
+        renderIncidentPerson({
+            wrapId: "incident-detail-involved",
+            photoId: "incident-detail-involved-photo",
+            fallbackId: "incident-detail-involved-photo-fallback",
+            nameId: "incident-detail-involved-name",
+            subId: "incident-detail-involved-sub",
+            studentId: incident.studentId || null,
+            fallbackName: incident.studentName || null,
+            fallbackLrn: incident.studentLrn || null,
+            fallbackSection: incident.studentSection || null
+        });
+    }
+
+    const info = document.getElementById("incident-detail-report-info");
+    const typeEl = document.getElementById("incident-detail-type");
+    const methodEl = document.getElementById("incident-detail-method");
+    const descEl = document.getElementById("incident-detail-description");
+    const hasStudentReportInfo = Boolean(incident.incidentType || incident.description || incident.identificationMethod || incident.reportedVia === "student-app");
+    if (info) info.classList.toggle("hidden", !hasStudentReportInfo);
+    if (typeEl) typeEl.textContent = incident.incidentType || "Not specified";
+    if (methodEl) methodEl.textContent = formatIdentificationMethod(incident.identificationMethod, incident.roomWide);
+    if (descEl) descEl.textContent = incident.description || "No additional description was provided.";
+}
+
+function renderIncidentPerson({ wrapId, photoId, fallbackId, nameId, subId, studentId, fallbackName, fallbackLrn, fallbackSection }) {
+    const wrap = document.getElementById(wrapId);
     if (!wrap) return;
+    if (!studentId && !fallbackName) { wrap.classList.add("hidden"); return; }
 
-    const reporterId = incident.reporterId || incident.studentId || null;
-    const reporterNameFallback = incident.reporterName || incident.studentName || null;
-
-    if (!reporterId && !reporterNameFallback) {
-        wrap.classList.add("hidden");
-        return;
-    }
-
-    const student = reporterId ? studentsState[reporterId] : null;
+    const student = studentId ? studentsState[studentId] : null;
     const section = student ? sectionsState[student.sectionId] : null;
-    const fullName = student ? studentFullName(student) : (reporterNameFallback || "Unknown student");
-    const lrn = (student && student.lrn) || incident.reporterLrn || "--";
+    const fullName = student ? studentFullName(student) : (fallbackName || "Unknown student");
+    const lrn = (student && student.lrn) || fallbackLrn || "--";
+    const sectionLabel = section ? `${section.gradeName || "--"} – ${section.name}` : (fallbackSection || "Section not on file");
+    document.getElementById(nameId).textContent = fullName;
+    document.getElementById(subId).textContent = `LRN ${lrn} · ${sectionLabel}`;
 
-    const labelEl = document.getElementById("incident-detail-reporter-label");
-    const nameEl = document.getElementById("incident-detail-reporter-name");
-    const subEl = document.getElementById("incident-detail-reporter-sub");
-    const photoEl = document.getElementById("incident-detail-reporter-photo");
-    const photoFallbackEl = document.getElementById("incident-detail-reporter-photo-fallback");
-
-    if (labelEl) {
-        labelEl.textContent = incident.roomWide ? "Reported By \u2014 Everyone Here report" : "Reported By";
-    }
-    if (nameEl) nameEl.textContent = fullName;
-    if (subEl) {
-        const sectionLabel = section ? `${section.gradeName || "--"} \u2013 ${section.name}` : "Section not on file";
-        subEl.textContent = `LRN ${lrn} \u00b7 ${sectionLabel}`;
-    }
-
-    if (photoEl && photoFallbackEl) {
-        const initials = student
-            ? ((student.firstName || "").charAt(0) + (student.lastName || "").charAt(0)).toUpperCase()
-            : (fullName || "?").charAt(0).toUpperCase();
-        photoFallbackEl.textContent = initials || "?";
-
+    const photoEl = document.getElementById(photoId);
+    const fallbackEl = document.getElementById(fallbackId);
+    if (photoEl && fallbackEl) {
+        fallbackEl.textContent = student ? ((student.firstName || "").charAt(0) + (student.lastName || "").charAt(0)).toUpperCase() || "?" : (fullName || "?").charAt(0).toUpperCase();
         if (student && student.photoUrl) {
-            photoEl.src = student.photoUrl;
-            photoEl.classList.remove("hidden");
-            photoFallbackEl.classList.add("hidden");
-            photoEl.onerror = () => {
-                photoEl.classList.add("hidden");
-                photoFallbackEl.classList.remove("hidden");
-            };
-        } else {
-            photoEl.classList.add("hidden");
-            photoFallbackEl.classList.remove("hidden");
-        }
+            photoEl.src = student.photoUrl; photoEl.classList.remove("hidden"); fallbackEl.classList.add("hidden");
+            photoEl.onerror = () => { photoEl.classList.add("hidden"); fallbackEl.classList.remove("hidden"); };
+        } else { photoEl.classList.add("hidden"); fallbackEl.classList.remove("hidden"); }
     }
-
     wrap.classList.remove("hidden");
+}
+
+function formatIdentificationMethod(method, roomWide) {
+    if (roomWide || method === "room-wide") return "Room-wide report";
+    if (method === "qr") return "QR code";
+    if (method === "manual-lrn") return "Manual LRN";
+    if (method === "logged-in-account") return "Logged-in student account";
+    return "Not recorded (legacy report)";
 }
 
 function studentViolationCount(studentId) {
@@ -331,7 +357,7 @@ function renderGrades(root) {
         card.type = "button";
         card.className = "grade-folder-card";
         card.innerHTML = `
-            <span class="grade-folder-icon">&#128193;</span>
+            <span class="grade-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 6.5h6l2 2h9v9.5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V8.5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
             <span class="grade-folder-name">${escapeHtml(gradeName)}</span>
             <span class="grade-folder-meta">${stats.sectionCount} section${stats.sectionCount === 1 ? "" : "s"}</span>
             <span class="grade-folder-stats">
@@ -400,7 +426,7 @@ function renderSections(root) {
         el.className = "section-folder-row";
         el.innerHTML = `
             <span class="section-folder-rank">#${i + 1}</span>
-            <span class="section-folder-icon">&#128193;</span>
+            <span class="section-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 7h6l2 2h9v9a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
             <span class="section-folder-info">
                 <span class="section-folder-name">${escapeHtml(row.section.name)}</span>
                 <span class="section-folder-sub">${facility ? escapeHtml(displayFacilityName(facility.name)) : "No room linked"} &middot; ${sectionStudents(row.sectionId).length} student${sectionStudents(row.sectionId).length === 1 ? "" : "s"}</span>
@@ -450,7 +476,7 @@ function renderRoster(root) {
             el.type = "button";
             el.className = "section-folder-row";
             el.innerHTML = `
-                <span class="section-folder-icon">&#128100;</span>
+                <span class="section-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c.5-4 3.2-6 7-6s6.5 2 7 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
                 <span class="section-folder-info">
                     <span class="section-folder-name">${escapeHtml(studentFullName(s))}</span>
                     <span class="section-folder-sub">LRN ${escapeHtml(s.lrn || "--")}</span>

@@ -328,7 +328,8 @@ function setupClock() {
             let greeting = "Good evening";
             if (hour < 12) greeting = "Good morning";
             else if (hour < 18) greeting = "Good afternoon";
-            greetingElement.textContent = `${greeting}, Admin`;
+            const adminName = document.documentElement.dataset.adminName || "Administrator";
+            greetingElement.textContent = `${greeting}, ${adminName}`;
         }
     }
 

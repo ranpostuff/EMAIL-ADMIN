@@ -2416,3 +2416,12 @@ html.rp-hide-attendance [data-hide-group="attendance"] {
 .auth-subtitle { font-size: 0.78rem; color: var(--text-secondary); margin-top: -0.5rem; }
 
 .auth-login-btn { width: 100%; }
+
+
+/* ===== RescuePriority revision: admin identity, accountability, folder language ===== */
+.admin-account-meta { margin:.1rem 0 0; font-size:.78rem; color:var(--text-secondary); font-weight:600; }
+.incident-report-info { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; padding:1rem; margin-top:.75rem; border:1px solid var(--border); border-radius:14px; background:var(--surface, #fff); }
+.incident-report-info>div { display:flex; flex-direction:column; gap:.25rem; }.incident-report-info strong { font-size:.9rem; }.incident-report-description { grid-column:1/-1; padding-top:.7rem; border-top:1px solid var(--border); }.incident-report-description p { margin:.2rem 0 0; line-height:1.55; white-space:pre-wrap; color:var(--text-primary); }
+.grade-folder-icon svg,.section-folder-icon svg { width:22px; height:22px; display:block; }.grade-folder-icon,.section-folder-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--text-secondary); }
+.grade-folder-card:focus-visible,.section-folder-row:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+@media(max-width:720px){.incident-report-info{grid-template-columns:1fr}.incident-report-description{grid-column:auto}}

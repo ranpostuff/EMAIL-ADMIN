@@ -159,8 +159,18 @@ function unlockDashboard(user) {
     const gate = document.getElementById("auth-gate");
     const shell = document.querySelector(".app-shell");
     const emailEl = document.getElementById("sidebar-account-email");
+    const metaEl = document.getElementById("admin-account-meta");
 
     if (gate) gate.classList.add("hidden");
     if (shell) shell.classList.remove("hidden");
     if (emailEl) emailEl.textContent = user.email || "Signed in";
+
+    const emailLocal = (user.email || "").split("@")[0];
+    const fallbackName = emailLocal
+        ? emailLocal.replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+        : "Administrator";
+    const displayName = (user.displayName || fallbackName).trim();
+    document.documentElement.dataset.adminName = displayName;
+    if (metaEl) metaEl.textContent = `Administrator${user.email ? ` • ${user.email}` : ""}`;
+    window.dispatchEvent(new CustomEvent("rp:admin-identity", { detail: { displayName, email: user.email || "" } }));
 }

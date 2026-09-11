@@ -170,7 +170,8 @@
                 <div class="topbar-left">
                     <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Open menu">&#9776;</button>
                     <div class="topbar-greeting">
-                        <h2 id="greeting-text">Good day, Admin</h2>
+                        <h2 id="greeting-text">Welcome back</h2>
+                        <p id="admin-account-meta" class="admin-account-meta">Administrator</p>
                         <p id="live-date">Loading date...</p>
                     </div>
                 </div>
@@ -581,6 +582,24 @@
                                 <span class="incident-detail-reporter-name" id="incident-detail-reporter-name">--</span>
                                 <span class="incident-detail-reporter-sub" id="incident-detail-reporter-sub">--</span>
                             </div>
+                        </div>
+
+                        <div id="incident-detail-involved" class="incident-detail-reporter hidden">
+                            <div class="incident-detail-reporter-photo-wrap">
+                                <img id="incident-detail-involved-photo" class="incident-detail-reporter-photo hidden" alt="">
+                                <div id="incident-detail-involved-photo-fallback" class="incident-detail-reporter-photo-fallback">--</div>
+                            </div>
+                            <div class="incident-detail-reporter-info">
+                                <span class="meta-label">Student Involved</span>
+                                <span class="incident-detail-reporter-name" id="incident-detail-involved-name">--</span>
+                                <span class="incident-detail-reporter-sub" id="incident-detail-involved-sub">--</span>
+                            </div>
+                        </div>
+
+                        <div id="incident-detail-report-info" class="incident-report-info hidden">
+                            <div><span class="meta-label">Incident Type</span><strong id="incident-detail-type">--</strong></div>
+                            <div><span class="meta-label">Identification</span><strong id="incident-detail-method">--</strong></div>
+                            <div class="incident-report-description"><span class="meta-label">Description</span><p id="incident-detail-description">--</p></div>
                         </div>
 
                         <div class="incident-timeline-wrapper">

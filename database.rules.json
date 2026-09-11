@@ -78,6 +78,15 @@
         "studentName": {
           ".validate": "newData.val() == null || newData.isString()"
         },
+        "studentLrn": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "studentSection": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
+        "identificationMethod": {
+          ".validate": "newData.val() == null || newData.isString()"
+        },
         "reporterId": {
           ".validate": "newData.val() == null || newData.isString()"
         },
