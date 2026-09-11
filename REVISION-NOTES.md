@@ -36,3 +36,9 @@ Added/improved:
 - Restored a stronger pink-accent color scheme while keeping the cleaner layout and full-screen student detail improvements.
 - Added a visible roster sort control in the section student list.
 - Student roster can now be sorted by Alphabetical (A-Z), Alphabetical (Z-A), Most Incidents, or Most Violations.
+
+## v6 identity correction
+- Corrected the active-emergency room panel so the QR/manual-LRN student is the PRIMARY "Student involved" identity.
+- The logged-in submitting student is now shown separately as "Reported by" for accountability.
+- The incident detail popup now shows involved-student LRN, section, adviser, and parent contact separately from the reporting account.
+- No changes were made to the incident database field meanings: student* remains the involved student; reporter* remains the logged-in submitter.

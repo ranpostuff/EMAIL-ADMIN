@@ -2521,3 +2521,64 @@ table.data-table tbody tr:hover {
     background: rgba(255, 92, 177, 0.08);
     border-color: rgba(255, 92, 177, 0.14);
 }
+
+/* ===== v6 incident identity separation ===== */
+.modal-student-incident-banner-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+.modal-student-incident-banner-text #modal-student-name {
+    font-size: .86rem;
+    color: var(--text-primary);
+    line-height: 1.35;
+}
+.modal-student-incident-banner-text #modal-student-reporter {
+    font-size: .72rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+.incident-party-primary {
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+.incident-reporter-accountability {
+    padding: .85rem 1rem;
+    border: 1px solid rgba(255, 92, 177, .18);
+    border-radius: 10px;
+    background: rgba(255, 92, 177, .055);
+}
+.incident-reporter-accountability-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: .35rem;
+}
+.incident-reporter-accountability-row strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: .92rem;
+}
+.incident-reporter-accountability-row p {
+    margin: .18rem 0 0;
+    color: var(--text-secondary);
+    font-size: .76rem;
+}
+.incident-accountability-tag {
+    flex-shrink: 0;
+    padding: .25rem .55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 92, 177, .22);
+    color: #ff9bd1;
+    font-size: .67rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+@media (max-width: 560px) {
+    .incident-reporter-accountability-row { align-items: flex-start; flex-direction: column; }
+}

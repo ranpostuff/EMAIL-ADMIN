@@ -1204,7 +1204,8 @@
                 </span>
                 <span class="modal-student-incident-banner-text">
                     <span class="modal-student-incident-badge" id="modal-student-incident-type">Reported Emergency</span>
-                    <span id="modal-student-name">--</span>
+                    <strong id="modal-student-name">--</strong>
+                    <small id="modal-student-reporter">Reported by --</small>
                 </span>
                 <span class="modal-student-incident-banner-arrow" aria-hidden="true">&rarr;</span>
             </button>
@@ -1231,36 +1232,48 @@
             </div>
 
             <div class="reporter-modal-scope-note hidden" id="reporter-modal-scope-note">
-                Reported as affecting everyone in this room — no single student is
-                the subject of this incident, but here's who sent the report.
+                This was reported as a room-wide incident. No single student was selected as the person involved.
             </div>
 
-            <div class="reporter-modal-identity">
-                <div class="reporter-modal-photo-wrap">
-                    <img id="reporter-modal-photo" class="reporter-modal-photo hidden" alt="">
-                    <div id="reporter-modal-photo-fallback" class="reporter-modal-photo-fallback">--</div>
+            <section class="incident-party-primary">
+                <div class="reporter-modal-identity">
+                    <div class="reporter-modal-photo-wrap">
+                        <img id="reporter-modal-photo" class="reporter-modal-photo hidden" alt="">
+                        <div id="reporter-modal-photo-fallback" class="reporter-modal-photo-fallback">--</div>
+                    </div>
+                    <div class="reporter-modal-identity-text">
+                        <span class="meta-label" id="reporter-modal-role-label">Student Involved</span>
+                        <h3 id="reporter-modal-name">--</h3>
+                        <p id="reporter-modal-lrn">LRN: --</p>
+                        <p id="reporter-modal-section">--</p>
+                    </div>
                 </div>
-                <div class="reporter-modal-identity-text">
-                    <span class="meta-label" id="reporter-modal-role-label">Reported By</span>
-                    <h3 id="reporter-modal-name">--</h3>
-                    <p id="reporter-modal-lrn">LRN: --</p>
-                    <p id="reporter-modal-section">--</p>
-                </div>
-            </div>
 
-            <div class="reporter-modal-details-grid">
-                <div>
-                    <span class="meta-label">Adviser</span>
-                    <span class="meta-value" id="reporter-modal-adviser">--</span>
+                <div class="reporter-modal-details-grid" id="involved-student-contact-grid">
+                    <div>
+                        <span class="meta-label">Adviser</span>
+                        <span class="meta-value" id="reporter-modal-adviser">--</span>
+                    </div>
+                    <div>
+                        <span class="meta-label">Parent Contact</span>
+                        <span class="meta-value" id="reporter-modal-parent">--</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="meta-label">Parent Contact</span>
-                    <span class="meta-value" id="reporter-modal-parent">--</span>
+            </section>
+
+            <section class="incident-reporter-accountability">
+                <span class="meta-label">Reported By</span>
+                <div class="incident-reporter-accountability-row">
+                    <div>
+                        <strong id="reporter-accountability-name">--</strong>
+                        <p id="reporter-accountability-meta">LRN: -- · Section not on file</p>
+                    </div>
+                    <span class="incident-accountability-tag">Reporting account</span>
                 </div>
-            </div>
+            </section>
 
             <div id="reporter-modal-desc-wrap" class="reporter-modal-desc-wrap hidden">
-                <span class="meta-label">Note From Reporter</span>
+                <span class="meta-label">Report Description</span>
                 <p id="reporter-modal-desc" class="reporter-modal-desc">--</p>
             </div>
 

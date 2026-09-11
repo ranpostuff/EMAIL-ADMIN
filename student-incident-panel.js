@@ -1,43 +1,19 @@
-/* ==========================================================================
+/* ========================================================================== 
    RESCUEPRIORITY — STUDENT INCIDENT PANEL
    --------------------------------------------------------------------------
-   Additive module: listens for the room-modal open/close events script.js
-   already dispatches, plus its own read-only listeners on classrooms/ and
-   incidents/. Writes nothing.
+   This module keeps the two identities on a student-submitted incident
+   separate:
 
-   Shows a slim "who reported this" banner inside the room modal, and — on
-   tap — the full reporter detail (photo, LRN, section, adviser, parent
-   contact, note) in its own dedicated #reporter-modal. That detail used to
-   be crammed directly into the room modal's small card; splitting it out
-   is what actually fixes the "cramped floating window" complaint, not just
-   a font-size tweak.
+   1) Student involved  -> incident.studentId / studentName / studentLrn
+                           This is the QR-scanned or manually-entered LRN
+                           student and is the PRIMARY person shown to admins.
 
-   The Student Incident Reporter app adds these fields onto an
-   incidents/{pushKey} record it creates:
-       reporterId    : string   (always present — whoever was logged in
-                                  when the report was sent, "Just Me" or
-                                  "Everyone Here" alike)
-       reporterName  : string   (denormalized, so this still works if the
-                                  student is later removed from students/)
-       reporterLrn   : string   (denormalized LRN)
-       studentId     : string | null (who the incident CONCERNS — same as
-                                       reporterId for an individual report,
-                                       null for a room-wide one; kept for
-                                       back-compat with older records)
-       studentName   : string | null
-       incidentType  : string   ("Headache", "Fire", "Fight", ...)
-       roomWide      : boolean  (true = whole-room emergency)
-       description   : string | null (free-text detail, if provided)
+   2) Reporting account -> incident.reporterId / reporterName / reporterLrn
+                           This is whoever was logged in and submitted the
+                           report. It is shown separately for accountability.
 
-   Older incident records only ever set studentId/studentName (no reporter*
-   fields) and hid this panel entirely for roomWide reports — this file
-   falls back to those fields so old data still renders, but no longer
-   hides the panel for room-wide reports: the point of these fields is
-   "who reported it", which is known either way.
-
-   None of this is required for the existing "Trigger Test Alert" / ESP32
-   pipeline — those incidents simply have neither set of fields, so this
-   panel stays hidden for them.
+   Older incident records may only contain studentId/studentName. Those are
+   handled with conservative fallbacks so historical data continues to render.
 ========================================================================== */
 
 import { database } from "./script.js";
@@ -48,9 +24,9 @@ const classroomsRootRef = ref(database, "classrooms");
 const incidentsRootRef = ref(database, "incidents");
 
 let classroomsCache = {};
-let incidentsCache = {}; // key -> incident record
+let incidentsCache = {};
 let openFacilityId = null;
-let currentIncident = null; // the incident currently shown in the banner/modal
+let currentIncident = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     onValue(classroomsRootRef, (snapshot) => {
@@ -89,10 +65,17 @@ function refreshPanel() {
     const incidentKey = classroomEntry && classroomEntry.emergency ? classroomEntry.activeIncidentKey : null;
     const incident = incidentKey ? incidentsCache[incidentKey] : null;
 
-    const reporterId = incident ? (incident.reporterId || incident.studentId || null) : null;
-    const reporterNameFallback = incident ? (incident.reporterName || incident.studentName || null) : null;
+    if (!incident) {
+        banner.classList.add("hidden");
+        currentIncident = null;
+        return;
+    }
 
-    if (!incident || (!reporterId && !reporterNameFallback)) {
+    const involved = resolveInvolvedParty(incident);
+    const reporter = resolveReporterParty(incident);
+
+    // Keep system/test incidents without either student identity out of this UI.
+    if (!involved.hasIdentity && !reporter.hasIdentity) {
         banner.classList.add("hidden");
         currentIncident = null;
         return;
@@ -100,21 +83,32 @@ function refreshPanel() {
 
     currentIncident = incident;
 
-    const student = reporterId ? studentsState[reporterId] : null;
-    const fullName = student ? studentFullName(student) : (reporterNameFallback || "Unknown student");
-
     const typeBadge = document.getElementById("modal-student-incident-type");
     const nameEl = document.getElementById("modal-student-name");
+    const reporterEl = document.getElementById("modal-student-reporter");
     const photoEl = document.getElementById("modal-student-photo");
     const photoFallbackEl = document.getElementById("modal-student-photo-fallback");
 
     if (typeBadge) {
         const typeLabel = incident.incidentType ? `Reported: ${incident.incidentType}` : "Reported Emergency";
-        typeBadge.textContent = incident.roomWide ? `${typeLabel} \u2014 Everyone Here` : typeLabel;
+        typeBadge.textContent = incident.roomWide ? `${typeLabel} — Room-wide` : typeLabel;
     }
-    if (nameEl) nameEl.textContent = `Reported by ${fullName}`;
 
-    setPhoto(photoEl, photoFallbackEl, student, fullName);
+    // IMPORTANT: the primary person is the student involved, not the reporter.
+    if (nameEl) {
+        nameEl.textContent = incident.roomWide
+            ? "Student involved: Everyone in the reported area"
+            : `Student involved: ${involved.name}`;
+    }
+
+    if (reporterEl) {
+        reporterEl.textContent = reporter.hasIdentity
+            ? `Reported by ${reporter.name}`
+            : "Reporter not recorded";
+    }
+
+    // Primary photo/initials follow the student involved.
+    setPhoto(photoEl, photoFallbackEl, involved.student, involved.name, incident.roomWide ? "ALL" : null);
 
     banner.classList.remove("hidden");
 }
@@ -143,13 +137,8 @@ function setupReporterModal() {
 }
 
 function openReporterModal(incident) {
-    const reporterId = incident.reporterId || incident.studentId || null;
-    const reporterNameFallback = incident.reporterName || incident.studentName || null;
-    const reporterLrnFallback = incident.reporterLrn || null;
-
-    const student = reporterId ? studentsState[reporterId] : null;
-    const studentSection = student ? sectionsState[student.sectionId] : null;
-    const fullName = student ? studentFullName(student) : (reporterNameFallback || "Unknown student");
+    const involved = resolveInvolvedParty(incident);
+    const reporter = resolveReporterParty(incident);
 
     const typeBadge = document.getElementById("reporter-modal-type");
     const scopeNote = document.getElementById("reporter-modal-scope-note");
@@ -159,37 +148,105 @@ function openReporterModal(incident) {
     const sectionEl = document.getElementById("reporter-modal-section");
     const adviserEl = document.getElementById("reporter-modal-adviser");
     const parentEl = document.getElementById("reporter-modal-parent");
+    const contactGrid = document.getElementById("involved-student-contact-grid");
     const descWrap = document.getElementById("reporter-modal-desc-wrap");
     const descEl = document.getElementById("reporter-modal-desc");
     const photoEl = document.getElementById("reporter-modal-photo");
     const photoFallbackEl = document.getElementById("reporter-modal-photo-fallback");
+    const reporterNameEl = document.getElementById("reporter-accountability-name");
+    const reporterMetaEl = document.getElementById("reporter-accountability-meta");
 
     if (typeBadge) typeBadge.textContent = incident.incidentType ? `Reported: ${incident.incidentType}` : "Reported Emergency";
     if (scopeNote) scopeNote.classList.toggle("hidden", !incident.roomWide);
-    if (roleLabel) roleLabel.textContent = incident.roomWide ? "Reported By" : (incident.studentId ? "Reported By (about themselves)" : "Reported By");
-    if (nameEl) nameEl.textContent = fullName;
-    if (lrnEl) lrnEl.textContent = `LRN: ${(student && student.lrn) || reporterLrnFallback || "--"}`;
-    if (sectionEl) {
-        sectionEl.textContent = studentSection
-            ? `${studentSection.gradeName || "--"} \u2013 ${studentSection.name}`
-            : "Section not on file";
+
+    // Primary identity: scanned/manual student involved.
+    if (roleLabel) roleLabel.textContent = incident.roomWide ? "Affected Group" : "Student Involved";
+    if (nameEl) nameEl.textContent = incident.roomWide ? "Everyone in the reported area" : involved.name;
+    if (lrnEl) lrnEl.textContent = incident.roomWide ? "No single LRN selected" : `LRN: ${involved.lrn}`;
+    if (sectionEl) sectionEl.textContent = incident.roomWide ? "Room-wide incident" : involved.sectionLabel;
+
+    if (contactGrid) contactGrid.classList.toggle("hidden", incident.roomWide || !involved.student);
+    if (adviserEl) adviserEl.textContent = involved.adviser;
+    if (parentEl) adviserEl && (parentEl.textContent = involved.parentContact);
+
+    setPhoto(photoEl, photoFallbackEl, involved.student, involved.name, incident.roomWide ? "ALL" : null);
+
+    // Secondary identity: logged-in reporting account.
+    if (reporterNameEl) reporterNameEl.textContent = reporter.name;
+    if (reporterMetaEl) {
+        const bits = [];
+        if (reporter.lrn && reporter.lrn !== "--") bits.push(`LRN ${reporter.lrn}`);
+        if (reporter.sectionLabel && reporter.sectionLabel !== "Section not on file") bits.push(reporter.sectionLabel);
+        reporterMetaEl.textContent = bits.length ? bits.join(" · ") : "Reporter details not on file";
     }
-    if (adviserEl) adviserEl.textContent = studentSection && studentSection.assignedTeacherId ? studentSection.assignedTeacherId : "Unassigned";
-    if (parentEl) {
-        const parentBits = [];
-        if (student && student.parentMobileNo) parentBits.push(student.parentMobileNo);
-        if (student && student.parentEmail) parentBits.push(student.parentEmail);
-        parentEl.textContent = parentBits.length ? parentBits.join(" \u00b7 ") : "Not on file";
-    }
+
     if (descWrap && descEl) {
-        descEl.textContent = incident.description ? `\u201c${incident.description}\u201d` : "";
+        descEl.textContent = incident.description || "";
         descWrap.classList.toggle("hidden", !incident.description);
     }
 
-    setPhoto(photoEl, photoFallbackEl, student, fullName);
-
     const modal = document.getElementById("reporter-modal");
     if (modal) modal.classList.remove("hidden");
+}
+
+function resolveInvolvedParty(incident) {
+    if (incident.roomWide) {
+        return {
+            hasIdentity: true,
+            student: null,
+            name: "Everyone in the reported area",
+            lrn: "--",
+            sectionLabel: "Room-wide incident",
+            adviser: "--",
+            parentContact: "--"
+        };
+    }
+
+    const studentId = incident.studentId || null;
+    const student = studentId ? studentsState[studentId] : null;
+    const section = student ? sectionsState[student.sectionId] : null;
+    const name = student ? studentFullName(student) : (incident.studentName || "Unknown student");
+    const lrn = (student && student.lrn) || incident.studentLrn || "--";
+    const sectionLabel = section
+        ? `${section.gradeName || "--"} – ${section.name}`
+        : (incident.studentSection || "Section not on file");
+    const adviser = section && section.assignedTeacherId ? section.assignedTeacherId : "Unassigned";
+    const parentBits = [];
+    if (student && student.parentMobileNo) parentBits.push(student.parentMobileNo);
+    if (student && student.parentEmail) parentBits.push(student.parentEmail);
+
+    return {
+        hasIdentity: Boolean(studentId || incident.studentName || incident.studentLrn),
+        student,
+        name,
+        lrn,
+        sectionLabel,
+        adviser,
+        parentContact: parentBits.length ? parentBits.join(" · ") : "Not on file"
+    };
+}
+
+function resolveReporterParty(incident) {
+    // New records use reporter*. For historical records without reporter*,
+    // fall back to student* because those older records used one identity.
+    const reporterId = incident.reporterId || (!incident.reporterName ? incident.studentId : null) || null;
+    const student = reporterId ? studentsState[reporterId] : null;
+    const section = student ? sectionsState[student.sectionId] : null;
+    const name = student
+        ? studentFullName(student)
+        : (incident.reporterName || ((!incident.reporterId && !incident.reporterName) ? incident.studentName : null) || "Not recorded");
+    const lrn = (student && student.lrn) || incident.reporterLrn || "--";
+    const sectionLabel = section
+        ? `${section.gradeName || "--"} – ${section.name}`
+        : "Section not on file";
+
+    return {
+        hasIdentity: Boolean(reporterId || incident.reporterName || incident.reporterLrn || (!incident.reporterId && incident.studentId)),
+        student,
+        name,
+        lrn,
+        sectionLabel
+    };
 }
 
 function closeReporterModal() {
@@ -197,15 +254,15 @@ function closeReporterModal() {
     if (modal) modal.classList.add("hidden");
 }
 
-function setPhoto(photoEl, photoFallbackEl, student, fullName) {
+function setPhoto(photoEl, photoFallbackEl, student, fullName, forcedFallback = null) {
     if (!photoEl || !photoFallbackEl) return;
 
-    const initials = student
+    const initials = forcedFallback || (student
         ? ((student.firstName || "").charAt(0) + (student.lastName || "").charAt(0)).toUpperCase()
-        : (fullName || "?").charAt(0).toUpperCase();
+        : (fullName || "?").charAt(0).toUpperCase());
     photoFallbackEl.textContent = initials || "?";
 
-    if (student && student.photoUrl) {
+    if (student && student.photoUrl && !forcedFallback) {
         photoEl.src = student.photoUrl;
         photoEl.classList.remove("hidden");
         photoFallbackEl.classList.add("hidden");
