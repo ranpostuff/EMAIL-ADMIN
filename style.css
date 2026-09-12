@@ -3077,3 +3077,237 @@ textarea:focus-visible,
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ============================================================================
+   v8 VISIBILITY + KPI COLOR PASS
+   Restores a clear colour identity to dashboard KPIs and fully styles the
+   incident browser's generated folder/row markup without changing its logic.
+   ============================================================================ */
+.metric-card.card-primary {
+    background: linear-gradient(145deg, rgba(183, 54, 255, .28), rgba(38, 22, 47, .96) 72%);
+    border-color: rgba(205, 112, 255, .46);
+    box-shadow: 0 0 0 1px rgba(205,112,255,.05), 0 16px 36px rgba(111,34,145,.2), 0 0 28px rgba(183,54,255,.1);
+}
+.metric-card.card-safe {
+    background: linear-gradient(145deg, rgba(28, 198, 115, .25), rgba(19, 40, 31, .96) 72%);
+    border-color: rgba(82, 217, 145, .42);
+    box-shadow: 0 0 0 1px rgba(82,217,145,.04), 0 16px 36px rgba(14,111,62,.18), 0 0 26px rgba(82,217,145,.09);
+}
+.metric-card.card-alert {
+    background: linear-gradient(145deg, rgba(241, 68, 78, .25), rgba(48, 23, 28, .96) 72%);
+    border-color: rgba(255, 112, 107, .44);
+    box-shadow: 0 0 0 1px rgba(255,112,107,.04), 0 16px 36px rgba(140,29,38,.18), 0 0 26px rgba(255,112,107,.09);
+}
+.metric-card.card-incidents {
+    background: linear-gradient(145deg, rgba(255, 72, 180, .3), rgba(49, 21, 39, .97) 72%);
+    border-color: rgba(255, 102, 196, .5);
+    box-shadow: 0 0 0 1px rgba(255,102,196,.05), 0 16px 38px rgba(161,35,109,.2), 0 0 30px rgba(255,102,196,.11);
+}
+.metric-card.card-resolved {
+    background: linear-gradient(145deg, rgba(40, 178, 225, .26), rgba(18, 37, 48, .97) 72%);
+    border-color: rgba(88, 205, 244, .43);
+    box-shadow: 0 0 0 1px rgba(88,205,244,.04), 0 16px 36px rgba(23,107,136,.18), 0 0 26px rgba(88,205,244,.09);
+}
+.metric-card.card-temp,
+.metric-card.card-temp.temp-unavailable {
+    background: linear-gradient(145deg, rgba(255, 157, 61, .25), rgba(48, 33, 20, .97) 72%);
+    border-color: rgba(255, 180, 92, .43);
+    box-shadow: 0 0 0 1px rgba(255,180,92,.04), 0 16px 36px rgba(142,84,25,.18), 0 0 26px rgba(255,180,92,.09);
+}
+.metric-card.card-temp.temp-cold,
+.metric-card.card-temp.temp-cool {
+    background: linear-gradient(145deg, rgba(47, 159, 255, .28), rgba(17, 34, 49, .97) 72%);
+    border-color: rgba(90, 182, 255, .44);
+}
+.metric-card.card-temp.temp-comfortable {
+    background: linear-gradient(145deg, rgba(91, 190, 91, .25), rgba(23, 43, 27, .97) 72%);
+    border-color: rgba(118, 218, 118, .42);
+}
+.metric-card.card-temp.temp-hot {
+    background: linear-gradient(145deg, rgba(255, 71, 133, .3), rgba(52, 21, 35, .97) 72%);
+    border-color: rgba(255, 106, 158, .48);
+}
+
+.metric-card.card-primary::before { background: linear-gradient(90deg, #cf72ff, transparent 90%); }
+.metric-card.card-safe::before { background: linear-gradient(90deg, #52d991, transparent 90%); }
+.metric-card.card-alert::before { background: linear-gradient(90deg, #ff706b, transparent 90%); }
+.metric-card.card-incidents::before { background: linear-gradient(90deg, #ff66c4, transparent 90%); }
+.metric-card.card-resolved::before { background: linear-gradient(90deg, #58cdf4, transparent 90%); }
+.metric-card.card-temp::before { background: linear-gradient(90deg, #ffb45c, transparent 90%); }
+
+.metric-card.card-primary .metric-icon-wrap { color: #da94ff; background: rgba(205,112,255,.13); border-color: rgba(205,112,255,.24); }
+.metric-card.card-incidents .metric-icon-wrap { color: #ff8fd1; background: rgba(255,102,196,.13); border-color: rgba(255,102,196,.24); }
+.metric-card.card-resolved .metric-icon-wrap { color: #70d7f8; background: rgba(88,205,244,.13); border-color: rgba(88,205,244,.22); }
+.metric-card.card-temp .metric-icon-wrap { color: #ffc47f; background: rgba(255,180,92,.13); border-color: rgba(255,180,92,.23); }
+
+#incident-log-view .incident-log-section,
+#incident-log-view .incident-detail-section {
+    background: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border-color: rgba(255, 102, 196, .16);
+}
+
+#incident-log-view .incident-folder-list {
+    gap: .75rem;
+}
+
+#incident-log-view .grade-folder-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .85rem;
+    width: 100%;
+}
+
+#incident-log-view .grade-folder-card {
+    min-width: 0;
+    min-height: 168px;
+    padding: 1.1rem;
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    grid-template-rows: auto auto 1fr;
+    column-gap: .8rem;
+    row-gap: .2rem;
+    text-align: left;
+    color: var(--text-primary);
+    background: linear-gradient(145deg, rgba(255,102,196,.11), rgba(255,255,255,.025) 65%);
+    border: 1px solid rgba(255,102,196,.2);
+    border-radius: 13px;
+    cursor: pointer;
+    transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+#incident-log-view .grade-folder-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,102,196,.46);
+    box-shadow: 0 16px 34px rgba(0,0,0,.22), 0 0 24px rgba(255,102,196,.08);
+}
+
+#incident-log-view .grade-folder-icon {
+    grid-row: 1 / 3;
+    width: 42px;
+    height: 42px;
+    background: rgba(255,102,196,.12);
+    border: 1px solid rgba(255,102,196,.24);
+    color: #ff91d1;
+}
+#incident-log-view .grade-folder-name { align-self: end; font-size: .98rem; color: var(--text-primary); }
+#incident-log-view .grade-folder-meta { font-size: .76rem; color: var(--text-secondary); }
+#incident-log-view .grade-folder-stats {
+    grid-column: 1 / -1;
+    align-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin-top: .7rem;
+}
+#incident-log-view .grade-folder-stats > span,
+#incident-log-view .section-folder-stat {
+    padding: .28rem .55rem;
+    color: #f3ddea;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 999px;
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+#incident-log-view .folder-sort-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .75rem;
+}
+#incident-log-view .folder-sort-btn {
+    min-height: 38px;
+    padding: .45rem .8rem;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: .76rem;
+    font-weight: 700;
+}
+#incident-log-view .folder-sort-btn:hover,
+#incident-log-view .folder-sort-btn.active {
+    color: #fff;
+    background: rgba(255,102,196,.14);
+    border-color: rgba(255,102,196,.36);
+}
+
+#incident-log-view .section-folder-list {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+}
+#incident-log-view .section-folder-row {
+    width: 100%;
+    min-height: 76px;
+    display: grid;
+    grid-template-columns: auto 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem .9rem;
+    text-align: left;
+    color: var(--text-primary);
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+#incident-log-view .section-folder-row:hover {
+    transform: translateX(2px);
+    background: rgba(255,102,196,.075);
+    border-color: rgba(255,102,196,.3);
+}
+#incident-log-view .section-folder-rank { min-width: 28px; color: var(--text-muted); font: 700 .72rem var(--font-mono); }
+#incident-log-view .section-folder-icon { width: 42px; height: 42px; }
+#incident-log-view .section-folder-info { display: flex; flex-direction: column; min-width: 0; gap: .15rem; }
+#incident-log-view .section-folder-name { color: var(--text-primary); font-size: .88rem; font-weight: 800; }
+#incident-log-view .section-folder-sub { color: var(--text-secondary); font-size: .74rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#incident-log-view .section-folder-stats { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .4rem; }
+
+#incident-log-view .folder-subheading {
+    margin: .5rem 0 .15rem;
+    color: var(--text-primary);
+    font-size: .88rem;
+    font-weight: 800;
+}
+
+#incident-log-view .incident-card {
+    min-height: 82px;
+    padding: .85rem 1rem;
+    background: linear-gradient(90deg, rgba(255,102,196,.07), rgba(255,255,255,.025) 46%);
+    border-color: rgba(255,102,196,.16);
+    border-left: 3px solid var(--accent-pink);
+}
+#incident-log-view .incident-card:hover {
+    background: linear-gradient(90deg, rgba(255,102,196,.13), rgba(255,255,255,.035) 52%);
+    border-color: rgba(255,102,196,.38);
+    box-shadow: 0 14px 30px rgba(0,0,0,.18);
+}
+#incident-log-view .incident-card-main { gap: .2rem; }
+#incident-log-view .incident-card-id { color: #fff; font-size: .88rem; }
+#incident-log-view .incident-card-sub { color: #d4ccd5; font-size: .78rem; }
+#incident-log-view .incident-card-time { color: #948b98; font-size: .7rem; }
+
+#incident-log-view .incident-detail-meta,
+#incident-log-view .incident-report-info {
+    background: rgba(255,255,255,.035);
+    border-color: rgba(255,255,255,.1);
+}
+#incident-log-view .meta-label { color: #a69dab; }
+#incident-log-view .meta-value,
+#incident-log-view .incident-report-info strong,
+#incident-log-view .incident-report-description p { color: #fff; }
+
+@media (max-width: 980px) {
+    #incident-log-view .grade-folder-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    #incident-log-view .grade-folder-grid { grid-template-columns: 1fr; }
+    #incident-log-view .section-folder-row { grid-template-columns: 38px minmax(0, 1fr); }
+    #incident-log-view .section-folder-rank { display: none; }
+    #incident-log-view .section-folder-stats { grid-column: 1 / -1; justify-content: flex-start; }
+    #incident-log-view .incident-card { align-items: flex-start; }
+}
