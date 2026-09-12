@@ -560,3 +560,45 @@
 @media (max-width: 620px) {
     #analytics-view:not(.hidden) { padding: .7rem; }
 }
+
+/* v12 analytics surfaces: richer pink-black system, restrained depth. */
+#analytics-view:not(.hidden) {
+    background: #1a1119;
+    border-color: #4a3042;
+    box-shadow: 0 12px 30px rgba(20, 5, 16, .27);
+}
+.analytics-intro {
+    border-bottom-color: #543449;
+}
+.analytics-kpi-card.kpi-primary {
+    box-shadow: 0 10px 24px rgba(175, 45, 120, .27), 0 0 14px rgba(175, 45, 120, .1);
+}
+.analytics-kpi-card.kpi-active {
+    box-shadow: 0 10px 24px rgba(193, 55, 50, .25), 0 0 14px rgba(193, 55, 50, .09);
+}
+.analytics-kpi-card.kpi-resolved {
+    box-shadow: 0 10px 24px rgba(130, 69, 104, .25), 0 0 14px rgba(130, 69, 104, .09);
+}
+.analytics-kpi-card.kpi-resolution {
+    box-shadow: 0 10px 24px rgba(39, 107, 134, .24), 0 0 14px rgba(39, 107, 134, .09);
+}
+#analytics-view > .analytics-chart-card-wide,
+.analytics-chart-grid .analytics-chart-card {
+    background: linear-gradient(145deg, #2a1b29 0%, #231821 72%);
+    border-color: #503448;
+    box-shadow: 0 9px 22px rgba(20, 5, 16, .2);
+}
+#analytics-view .analytics-chart-header {
+    border-bottom-color: #4a3042;
+}
+#analytics-view .analytics-chart-header p { color: #c8adbd; }
+.analytics-period-select,
+.analytics-month-nav-btn,
+.analytics-month-nav-today {
+    color: #f3bedc;
+    background: #321d2c;
+    border-color: #68405a;
+}
+.analytics-chart-grid .analytics-chart-card {
+    border-top-color: #6b3c58 !important;
+}

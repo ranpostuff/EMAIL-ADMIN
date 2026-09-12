@@ -1042,7 +1042,7 @@ function trendAreaOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.textPrimary,
+                backgroundColor: "#21151d",
                 titleColor: palette.pink,
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
@@ -1078,7 +1078,7 @@ function volumeAreaOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.textPrimary,
+                backgroundColor: "#21151d",
                 titleColor: palette.pink,
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },

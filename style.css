@@ -3563,3 +3563,189 @@ body.eoc-dashboard-body {
 }
 .ai-widget-fab:hover { background: #302c31; }
 .ai-widget-fab svg { width: 20px; height: 20px; }
+
+/* ============================================================================
+   v12 RICH OPERATIONS THEME
+   Restores the expressive pink atmosphere while retaining readable surfaces.
+   ============================================================================ */
+:root {
+    --bg-page: #140d15;
+    --bg-card: #2a1b28;
+    --bg-panel: #211720;
+    --text-primary: #fff8fc;
+    --text-secondary: #ddcbd6;
+    --text-muted: #b69eac;
+    --accent-pink: #df4d9a;
+    --accent-pink-dark: #a9236c;
+    --accent-pink-soft: rgba(223, 77, 154, .2);
+    --accent-pink-lightest: rgba(223, 77, 154, .1);
+    --primary: #df4d9a;
+    --primary-dark: #8f1d5d;
+    --primary-light: #ee86bd;
+    --accent: #df4d9a;
+    --border-color: #4a3042;
+    --border-subtle: #382332;
+    --card-shadow: 0 10px 24px rgba(20, 5, 16, .28);
+}
+
+html,
+body.eoc-dashboard-body { background: #140d15; }
+
+.main-content {
+    background:
+        radial-gradient(circle at 14% 8%, rgba(175, 45, 120, .13), transparent 30rem),
+        radial-gradient(circle at 92% 16%, rgba(134, 27, 97, .1), transparent 27rem),
+        #140d15;
+}
+
+.sidebar {
+    background: #0f0a11;
+    border-right-color: #35202f;
+    box-shadow: 8px 0 28px rgba(12, 2, 10, .28);
+}
+.sidebar-brand-mark {
+    background: #a9236c;
+    border-color: #c9478c;
+    box-shadow: 0 7px 18px rgba(124, 20, 78, .25);
+}
+.sidebar-nav-item:hover { background: #281825; }
+.sidebar-nav-item.active {
+    background: #3b2033;
+    box-shadow: inset 3px 0 0 #e258a2, 0 6px 16px rgba(76, 17, 55, .18);
+}
+
+.topbar {
+    background: #160f17;
+    border-bottom-color: #3d2737;
+    box-shadow: 0 7px 22px rgba(13, 3, 11, .22);
+}
+.header-clock {
+    background: #251824;
+    border-color: #4b3044;
+}
+
+.metric-card.card-primary {
+    box-shadow: 0 10px 24px rgba(134, 27, 97, .28), 0 0 14px rgba(134, 27, 97, .12);
+}
+.metric-card.card-safe,
+.metric-card.card-temp.temp-comfortable {
+    box-shadow: 0 10px 24px rgba(19, 127, 75, .25), 0 0 14px rgba(19, 127, 75, .1);
+}
+.metric-card.card-alert,
+.metric-card.card-temp.temp-hot {
+    box-shadow: 0 10px 24px rgba(193, 55, 50, .26), 0 0 14px rgba(193, 55, 50, .1);
+}
+.metric-card.card-incidents {
+    box-shadow: 0 10px 24px rgba(175, 45, 120, .27), 0 0 14px rgba(175, 45, 120, .11);
+}
+.metric-card.card-resolved {
+    box-shadow: 0 10px 24px rgba(130, 69, 104, .26), 0 0 14px rgba(130, 69, 104, .1);
+}
+.metric-card.card-temp,
+.metric-card.card-temp.temp-warm,
+.metric-card.card-temp.temp-unavailable {
+    box-shadow: 0 10px 24px rgba(160, 90, 8, .25), 0 0 14px rgba(160, 90, 8, .1);
+}
+.metric-card.card-temp.temp-cold,
+.metric-card.card-temp.temp-cool {
+    box-shadow: 0 10px 24px rgba(39, 107, 134, .25), 0 0 14px rgba(39, 107, 134, .1);
+}
+.metric-card:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+}
+
+.cc-card,
+.analytics-chart-card,
+.school-map-section,
+.incident-log-section,
+.info-card,
+.ai-chat-shell,
+.data-table-wrap,
+.system-status-card,
+.system-status-card.status-alert {
+    background: linear-gradient(145deg, #291b28 0%, #211720 72%);
+    border-color: #4a3042;
+    box-shadow: 0 10px 24px rgba(20, 5, 16, .24);
+}
+.quick-action-btn,
+.cc-recent-item,
+.carousel-track-wrap {
+    background: #2a1b28;
+    border-color: #493043;
+}
+.quick-action-btn:hover,
+.cc-recent-item:hover {
+    background: #352131;
+    border-color: #754661;
+}
+.cc-bubble-active { background: #c13732; }
+.cc-bubble-resolved { background: #137f4b; }
+.cc-calendar-day.is-today {
+    background: #a9236c;
+    box-shadow: 0 5px 14px rgba(169, 35, 108, .25);
+}
+.carousel-slide-photo { background: #593047; }
+
+#incident-log-view .incident-log-section,
+#incident-log-view .incident-detail-section {
+    background: #211720;
+    border-color: #4a3042;
+    box-shadow: 0 10px 24px rgba(20, 5, 16, .24);
+}
+#incident-log-view .grade-folder-card,
+#incident-log-view .section-folder-row {
+    background: #2a1b28;
+    border-color: #4d3045;
+}
+#incident-log-view .grade-folder-card:hover,
+#incident-log-view .section-folder-row:hover {
+    background: #362132;
+    border-color: #765067;
+}
+#incident-log-view .grade-folder-icon,
+#incident-log-view .section-folder-icon {
+    background: #46243b;
+    border-color: #6e3a59;
+    color: #ef8abd;
+}
+#incident-log-view .incident-card {
+    background: linear-gradient(90deg, rgba(175, 45, 120, .16), #2a1b28 52%);
+    border-color: #4d3045;
+}
+#incident-log-view .incident-card:hover {
+    background: linear-gradient(90deg, rgba(175, 45, 120, .24), #362131 56%);
+    border-color: #765067;
+    box-shadow: 0 10px 22px rgba(20, 5, 16, .22);
+}
+
+.auth-gate { background: #0f0a11; }
+.auth-card {
+    background: #241823;
+    border-color: #59394f;
+    box-shadow: 0 18px 42px rgba(15, 3, 12, .36);
+}
+.ai-ask-chart-btn,
+.analytics-period-select,
+.analytics-month-nav-btn,
+.analytics-month-nav-today {
+    color: #f3bedc;
+    background: #321d2c;
+    border-color: #68405a;
+}
+.ai-ask-chart-btn:hover,
+.analytics-period-select:hover,
+.analytics-month-nav-btn:hover,
+.analytics-month-nav-today:hover {
+    color: #fff;
+    background: #43233a;
+    border-color: #995477;
+}
+.ai-widget-fab,
+.ai-widget-fab.is-active {
+    color: #ffd2e9;
+    background: #a9236c;
+    border-color: #cc4d90;
+    box-shadow: 0 9px 22px rgba(132, 23, 86, .28);
+}
+.ai-widget-fab:hover { background: #be2e7b; }
