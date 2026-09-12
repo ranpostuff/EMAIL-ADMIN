@@ -19,6 +19,16 @@
 import { buildAIContext } from "./ai-context.js";
 
 const AI_ENDPOINT = "/api/ask-ai";
+const WIDGET_HISTORY_KEY = "rescuepriority-ai-widget-history";
+
+function loadWidgetHistory() {
+    try {
+        const value = JSON.parse(sessionStorage.getItem(WIDGET_HISTORY_KEY) || "[]");
+        return Array.isArray(value) ? value.slice(-10) : [];
+    } catch {
+        return [];
+    }
+}
 
 function initAIWidget() {
     const fab = document.getElementById("ai-widget-fab");
@@ -31,6 +41,12 @@ function initAIWidget() {
     const chartButtons = document.querySelectorAll(".ai-ask-chart-btn");
 
     if (!fab || !panel || !form || !input || !messagesEl) return;
+    let conversation = loadWidgetHistory();
+
+    function saveHistory() {
+        try { sessionStorage.setItem(WIDGET_HISTORY_KEY, JSON.stringify(conversation.slice(-10))); }
+        catch { /* Storage is optional. */ }
+    }
 
     function openPanel() {
         panel.classList.remove("hidden");
@@ -68,17 +84,24 @@ function initAIWidget() {
         return bubble;
     }
 
+    if (conversation.length) {
+        const emptyNote = messagesEl.querySelector(".ai-widget-empty-note");
+        if (emptyNote) emptyNote.remove();
+        conversation.forEach(item => addMessage(item.role, item.content));
+    }
+
     async function askAI(question) {
         const typingBubble = addTypingBubble();
         if (sendBtn) sendBtn.disabled = true;
 
         try {
             const context = buildAIContext();
+            const history = conversation.slice(-8);
 
             const response = await fetch(AI_ENDPOINT, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, context })
+                body: JSON.stringify({ question, context, history })
             });
 
             const data = await response.json().catch(() => ({}));
@@ -96,6 +119,12 @@ function initAIWidget() {
             }
 
             addMessage("assistant", data.answer);
+            conversation.push(
+                { role: "user", content: question },
+                { role: "assistant", content: data.answer }
+            );
+            conversation = conversation.slice(-10);
+            saveHistory();
         } catch (err) {
             console.error("[ai-widget] request failed:", err);
             typingBubble.remove();

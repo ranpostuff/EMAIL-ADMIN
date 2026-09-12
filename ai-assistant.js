@@ -1,8 +1,8 @@
 /* ==========================================================================
    RESCUEPRIORITY — AI ASSISTANT
-   Connects the existing chat UI to the RescuePriority AI backend (a
-   serverless function that calls Gemini). The Gemini API key never
-   touches this file or the browser — see /api/ask-ai.js.
+   Connects the existing chat UI to the RescuePriority AI backend.
+   NVIDIA Nemotron is primary and Gemini is the automatic fallback. API
+   keys stay in Vercel and never touch this file or the browser.
 
    Sends { question, context } to /api/ask-ai, where `context` comes from
    ai-context.js's buildAIContext() (live Firebase-backed data: active
@@ -13,6 +13,16 @@
 import { buildAIContext } from "./ai-context.js";
 
 const AI_ENDPOINT = "/api/ask-ai";
+const AI_HISTORY_KEY = "rescuepriority-ai-history";
+
+function loadHistory() {
+    try {
+        const value = JSON.parse(sessionStorage.getItem(AI_HISTORY_KEY) || "[]");
+        return Array.isArray(value) ? value.slice(-12) : [];
+    } catch {
+        return [];
+    }
+}
 
 function initAIAssistant() {
     const form = document.getElementById("ai-chat-form");
@@ -24,6 +34,15 @@ function initAIAssistant() {
     const promptButtons = document.querySelectorAll(".ai-suggested-prompt");
 
     if (!form || !input || !messagesEl) return;
+    let conversation = loadHistory();
+
+    function saveHistory() {
+        try {
+            sessionStorage.setItem(AI_HISTORY_KEY, JSON.stringify(conversation.slice(-12)));
+        } catch {
+            // The assistant still works when private browsing blocks storage.
+        }
+    }
 
     function addMessage(role, text) {
         const bubble = document.createElement("div");
@@ -43,17 +62,23 @@ function initAIAssistant() {
         return bubble;
     }
 
+    if (conversation.length) {
+        if (emptyState) emptyState.classList.add("hidden");
+        conversation.forEach(item => addMessage(item.role, item.content));
+    }
+
     async function askAI(question) {
         const typingBubble = addTypingBubble();
         if (sendBtn) sendBtn.disabled = true;
 
         try {
             const context = buildAIContext();
+            const history = conversation.slice(-8);
 
             const response = await fetch(AI_ENDPOINT, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, context })
+                body: JSON.stringify({ question, context, history })
             });
 
             const data = await response.json().catch(() => ({}));
@@ -71,6 +96,12 @@ function initAIAssistant() {
             }
 
             addMessage("assistant", data.answer);
+            conversation.push(
+                { role: "user", content: question },
+                { role: "assistant", content: data.answer }
+            );
+            conversation = conversation.slice(-12);
+            saveHistory();
         } catch (err) {
             console.error("[ai-assistant] request failed:", err);
             typingBubble.remove();
@@ -102,6 +133,8 @@ function initAIAssistant() {
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             messagesEl.innerHTML = "";
+            conversation = [];
+            try { sessionStorage.removeItem(AI_HISTORY_KEY); } catch { /* no-op */ }
             if (emptyState) emptyState.classList.remove("hidden");
         });
     }

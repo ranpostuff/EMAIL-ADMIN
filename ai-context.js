@@ -19,10 +19,14 @@ import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 
 const classroomsRootRef = ref(database, "classrooms");
 const incidentsRootRef = ref(database, "incidents");
+const studentsRootRef = ref(database, "students");
+const violationsRootRef = ref(database, "violations");
 
 // classroomsState[facilityId] = { emergency: bool, activeIncidentKey: string|null }
 let classroomsState = {};
 let incidents = [];
+let studentsState = {};
+let violationsState = {};
 
 function setupContextListeners() {
     onValue(
@@ -39,6 +43,18 @@ function setupContextListeners() {
         },
         (error) => console.error("[ai-context] incidents read failed:", error.code, error.message)
     );
+
+    onValue(
+        studentsRootRef,
+        (snapshot) => { studentsState = snapshot.val() || {}; },
+        (error) => console.error("[ai-context] students read failed:", error.code, error.message)
+    );
+
+    onValue(
+        violationsRootRef,
+        (snapshot) => { violationsState = snapshot.val() || {}; },
+        (error) => console.error("[ai-context] violations read failed:", error.code, error.message)
+    );
 }
 setupContextListeners();
 
@@ -49,9 +65,23 @@ function getValidIncidents() {
     if (!Array.isArray(incidents)) return [];
     return incidents.filter(inc => {
         if (!inc || typeof inc !== "object") return false;
+        if (inc.isTestData) return false;
         const ts = Number(inc.timestamp);
         return Number.isFinite(ts) && ts > 0;
     });
+}
+
+function studentNameFromRecord(studentId, fallbackName) {
+    const student = studentId ? studentsState[studentId] : null;
+    if (student) {
+        const fullName = [student.firstName, student.middleName, student.lastName]
+            .filter(Boolean)
+            .map(value => String(value).trim())
+            .filter(Boolean)
+            .join(" ");
+        if (fullName) return fullName;
+    }
+    return fallbackName ? String(fallbackName).trim() : "Unknown student";
 }
 
 function safeClassroomName(inc) {
@@ -96,6 +126,8 @@ export function getRecentIncidents(limit = 10) {
         .map(inc => ({
             incidentNumber: inc.incidentNumber || null,
             classroom: displayFacilityName(safeClassroomName(inc)),
+            studentName: studentNameFromRecord(inc.studentId, inc.studentName),
+            incidentType: inc.incidentType || "Unspecified",
             status: safeStatus(inc),
             timestamp: Number(inc.timestamp),
             resolvedAt: Number.isFinite(Number(inc.resolvedAt)) ? Number(inc.resolvedAt) : null
@@ -140,6 +172,121 @@ export function getTopClassrooms(limit = 5) {
         .map(([zone, count]) => ({ zone, count }));
 
     return { topClassrooms, topZones };
+}
+
+// Student-level aggregation is calculated before the model is called. This
+// gives the assistant exact rankings instead of asking an LLM to count rows.
+export function getStudentIncidentStatistics(limit = 10) {
+    const byStudent = new Map();
+
+    getValidIncidents().forEach(inc => {
+        if (!inc.studentId && !inc.studentName) return;
+        const key = inc.studentId || `name:${String(inc.studentName).trim().toLowerCase()}`;
+        if (!byStudent.has(key)) {
+            byStudent.set(key, {
+                studentId: inc.studentId || null,
+                name: studentNameFromRecord(inc.studentId, inc.studentName),
+                incidentCount: 0,
+                activeCount: 0,
+                resolvedCount: 0,
+                lastIncidentAt: 0,
+                classrooms: new Set(),
+                incidentTypes: new Map()
+            });
+        }
+
+        const row = byStudent.get(key);
+        row.incidentCount += 1;
+        if (safeStatus(inc) === "Active") row.activeCount += 1;
+        if (safeStatus(inc) === "Resolved") row.resolvedCount += 1;
+        row.lastIncidentAt = Math.max(row.lastIncidentAt, Number(inc.timestamp));
+        row.classrooms.add(displayFacilityName(safeClassroomName(inc)));
+        const type = inc.incidentType || "Unspecified";
+        row.incidentTypes.set(type, (row.incidentTypes.get(type) || 0) + 1);
+    });
+
+    const ranked = [...byStudent.values()]
+        .sort((a, b) => b.incidentCount - a.incidentCount || b.lastIncidentAt - a.lastIncidentAt)
+        .slice(0, limit)
+        .map(row => ({
+            studentId: row.studentId,
+            name: row.name,
+            incidentCount: row.incidentCount,
+            activeCount: row.activeCount,
+            resolvedCount: row.resolvedCount,
+            lastIncidentAt: row.lastIncidentAt,
+            classrooms: [...row.classrooms].slice(0, 3),
+            topIncidentTypes: [...row.incidentTypes.entries()]
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([type, count]) => ({ type, count }))
+        }));
+
+    return { studentsWithIncidents: byStudent.size, topStudents: ranked };
+}
+
+export function getIncidentTypeStatistics(limit = 8) {
+    const counts = new Map();
+    getValidIncidents().forEach(inc => {
+        const type = inc.incidentType || "Unspecified";
+        counts.set(type, (counts.get(type) || 0) + 1);
+    });
+    return [...counts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([type, count]) => ({ type, count }));
+}
+
+export function getViolationStatistics(limit = 8) {
+    const typeCounts = new Map();
+    const studentRows = [];
+    let total = 0;
+
+    Object.entries(violationsState || {}).forEach(([studentId, records]) => {
+        const list = Object.values(records || {}).filter(record => record && typeof record === "object");
+        total += list.length;
+        list.forEach(record => {
+            const type = record.type || "Unspecified";
+            typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+        });
+        if (list.length) {
+            studentRows.push({
+                studentId,
+                name: studentNameFromRecord(studentId, null),
+                violationCount: list.length,
+                latestViolationAt: Math.max(...list.map(record => Number(record.timestamp) || 0))
+            });
+        }
+    });
+
+    return {
+        total,
+        topViolationTypes: [...typeCounts.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, limit)
+            .map(([type, count]) => ({ type, count })),
+        topStudents: studentRows
+            .sort((a, b) => b.violationCount - a.violationCount || b.latestViolationAt - a.latestViolationAt)
+            .slice(0, limit)
+    };
+}
+
+export function getDailyIncidentTrend(days = 30) {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (days - 1));
+    const counts = new Map();
+
+    for (let offset = 0; offset < days; offset += 1) {
+        const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset);
+        counts.set(date.toISOString().slice(0, 10), 0);
+    }
+
+    getValidIncidents().forEach(inc => {
+        const key = new Date(Number(inc.timestamp)).toISOString().slice(0, 10);
+        if (counts.has(key)) counts.set(key, counts.get(key) + 1);
+    });
+
+    return [...counts.entries()].map(([date, count]) => ({ date, count }));
 }
 
 // Average resolution time + how many resolved incidents that average is
@@ -191,10 +338,15 @@ export function getTimeOfDayStatistics() {
 export function buildAIContext() {
     return {
         generatedAt: new Date().toISOString(),
+        scope: "Current live RescuePriority administrative data. Test incidents are excluded.",
         activeEmergencies: getActiveEmergencies(),
         incidentStatistics: getIncidentStatistics(),
-        recentIncidents: getRecentIncidents(10),
+        recentIncidents: getRecentIncidents(20),
         topClassroomsAndZones: getTopClassrooms(5),
+        studentIncidentStatistics: getStudentIncidentStatistics(10),
+        incidentTypeStatistics: getIncidentTypeStatistics(8),
+        violationStatistics: getViolationStatistics(8),
+        dailyIncidentTrend: getDailyIncidentTrend(30),
         resolutionStatistics: getResolutionStatistics(),
         timeOfDayStatistics: getTimeOfDayStatistics()
     };
