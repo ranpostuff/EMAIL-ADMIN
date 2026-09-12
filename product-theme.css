@@ -1,0 +1,99 @@
+/* Final surface layer: neutral black, existing semantic KPI colors, no glow. */
+:root {
+    color-scheme: dark;
+    --bg-page: #0b0b0b;
+    --bg-card: #181818;
+    --bg-panel: #121212;
+    --text-primary: #f5f5f5;
+    --text-secondary: #c2c2c2;
+    --text-muted: #a0a0a0;
+    --border-color: #333333;
+    --border-subtle: #292929;
+    --card-shadow: none;
+    --modal-shadow: none;
+}
+/* Remove decorative light effects, including hover and alert glow. Focus
+   remains visible through a solid outline; status colors remain intact. */
+body.eoc-dashboard-body *,
+body.eoc-dashboard-body *::before,
+body.eoc-dashboard-body *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+html, body.eoc-dashboard-body, .main-content, .student-detail-page {
+    background: #0b0b0b;
+}
+.sidebar, .topbar, .student-detail-topbar, .auth-gate {
+    background: #121212;
+    border-color: #292929;
+    backdrop-filter: none;
+}
+.header-clock, .cc-card, .analytics-chart-card, .school-map-section,
+.incident-log-section, .info-card, .ai-chat-shell, .data-table-wrap,
+.system-status-card, .system-status-card.status-alert, .modal-card,
+.auth-card, .student-detail-hero, .student-detail-content,
+#analytics-view .analytics-chart-card,
+#incident-log-view .incident-log-section,
+#incident-log-view .incident-detail-section {
+    background: #181818;
+    border-color: #333;
+}
+.quick-action-btn, .cc-recent-item, .carousel-track-wrap,
+.grade-folder-card, .section-folder-card, .section-folder-row,
+#incident-log-view .grade-folder-card, #incident-log-view .section-folder-row,
+#incident-log-view .incident-card {
+    background: #181818;
+    border-color: #333;
+}
+.quick-action-btn:hover, .cc-recent-item:hover, .grade-folder-card:hover,
+.section-folder-card:hover, .section-folder-row:hover,
+#incident-log-view .grade-folder-card:hover, #incident-log-view .section-folder-row:hover,
+#incident-log-view .incident-card:hover {
+    background: #222;
+    border-color: #555;
+    transform: none;
+}
+.sidebar-nav-item:hover { background: #202020; }
+.sidebar-nav-item.active { background: #32202c; border-left: 3px solid #df4d9a; }
+.metric-card:hover, .analytics-kpi-card:hover { transform: none; filter: none; }
+.metric-card::before, .analytics-kpi-card::before,
+.metric-card::after, .analytics-kpi-card::after { display: none; }
+.analytics-chart-legend-dot, .metric-badge, .system-status-icon { animation: none; }
+.analytics-chart-header { flex-wrap: wrap; gap: 12px; }
+.analytics-chart-header > * { min-width: 0; }
+#analytics-view:not(.hidden) { background: #0b0b0b; border-color: #333; }
+#analytics-view .analytics-chart-header, .analytics-intro { border-bottom-color: #333; }
+#analytics-view .analytics-chart-header p { color: #c2c2c2; }
+.analytics-chart-grid .analytics-chart-card { border-top-color: #333 !important; }
+select, select option { background-color: #202020; color: #f5f5f5; }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid #df4d9a;
+    outline-offset: 3px;
+}
+/* Reserve real space for the close control and allow long room/status names. */
+.modal-header { padding-right: 40px; flex-wrap: wrap; align-items: flex-start; }
+.modal-header h2 { min-width: 0; overflow-wrap: anywhere; flex: 1 1 170px; }
+.modal-badge { flex: 0 0 auto; max-width: 100%; white-space: normal; }
+.modal-close-btn { z-index: 2; }
+.modal-card { flex-shrink: 0; }
+.modal-card > * { flex-shrink: 0; }
+.modal-details-grid p, .modal-details-grid span { overflow-wrap: anywhere; min-width: 0; }
+.modal-actions .btn { min-width: 140px; white-space: normal; }
+/* Roster uses ordinary readable table rows with compact identity/actions. */
+table.data-table { font-size: .85rem; }
+table.data-table thead th { background: #202020; color: #c2c2c2; letter-spacing: 0; text-transform: none; }
+table.data-table tbody td { padding: 14px 16px; border-bottom-color: #2b2b2b; }
+table.data-table tbody tr:hover { background: #202020; }
+.student-row-name { min-width: 200px; gap: 10px; }
+.student-row-name > span:last-child { overflow-wrap: anywhere; }
+.student-row-avatar { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 6px; }
+.student-row-avatar-fallback, .student-detail-avatar { background: #30232c; color: #efadd0; }
+.table-row-actions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 150px; }
+.table-row-actions .icon-btn { width: auto; height: auto; min-height: 32px; padding: 6px 10px; }
+.students-sort-select { background: #202020; border-color: #444; }
+.student-detail-tabs-large .section-detail-tab.active { background: #a9236c; }
+@media (max-width: 600px) {
+    .modal-card { width: calc(100% - 24px); padding: 16px; }
+    .modal-details-grid { grid-template-columns: 1fr; }
+    .modal-header { padding-right: 32px; }
+}

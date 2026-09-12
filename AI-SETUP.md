@@ -18,8 +18,8 @@ After adding or changing an environment variable, create a new Vercel deployment
 
 - Exact count and ranking questions are answered locally from calculated dashboard statistics.
 - Repeated questions over unchanged data are cached for two minutes in a warm serverless instance.
-- Routine questions use thinking disabled and shorter responses.
-- Analytical questions automatically enable deeper reasoning.
+- Routine count and ranking questions bypass the model completely.
+- Model-generated answers use non-thinking mode and strict length limits so the visible response is fast and complete. The supplied precomputed statistics still let Nemotron perform concise analysis without spending its output budget on a hidden reasoning trace.
 - The last few messages are stored only in the current browser tab using `sessionStorage`, giving follow-up questions conversational context without permanently storing chat history.
 - If NVIDIA fails or times out, Gemini answers automatically.
 
@@ -27,4 +27,4 @@ After adding or changing an environment variable, create a new Vercel deployment
 
 The browser prepares a compact, read-only snapshot containing active emergencies, incident totals, recent incidents, classroom and zone rankings, student incident rankings, incident types, violation rankings, a 30-day incident trend, resolution time, and time-of-day statistics. Test incidents are excluded.
 
-Student names are included only in the administrator-facing context. The model is instructed not to make diagnostic, punitive, medical, or psychological conclusions from incident counts.
+Student names are included only in the administrator-facing context. Explicit test and latency records are excluded. The model is instructed not to make diagnostic, punitive, medical, or psychological conclusions from incident counts.

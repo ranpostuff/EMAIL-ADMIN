@@ -1174,7 +1174,7 @@ function activeResolvedLineOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.textPrimary,
+                backgroundColor: "#181818",
                 titleColor: "#ffffff",
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
@@ -1222,7 +1222,7 @@ function sectionRiskBarOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.textPrimary,
+                backgroundColor: "#181818",
                 titleColor: "#ffffff",
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },

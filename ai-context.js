@@ -66,6 +66,10 @@ function getValidIncidents() {
     return incidents.filter(inc => {
         if (!inc || typeof inc !== "object") return false;
         if (inc.isTestData) return false;
+        const studentName = String(inc.studentName || "").trim().toLowerCase();
+        const incidentType = String(inc.incidentType || "").trim().toLowerCase();
+        if (/^(test|dummy)|test dummy|automated latency/.test(studentName)) return false;
+        if (incidentType === "latency test" || incidentType === "facilities test") return false;
         const ts = Number(inc.timestamp);
         return Number.isFinite(ts) && ts > 0;
     });

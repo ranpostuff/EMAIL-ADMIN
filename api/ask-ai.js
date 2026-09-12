@@ -22,7 +22,8 @@ Rules:
 - If data is missing, incomplete, or tied, say so plainly.
 - You are read-only and advisory. Never claim you changed records or guarantee safety.
 - Prefer concise answers. Use plain text, short paragraphs, and numbered lists. Do not use Markdown symbols.
-- For analysis, state what the data shows, what it may mean, and 2–4 practical next actions.`;
+- Keep the entire answer under 180 words and finish every section completely.
+- For analysis, state what the data shows, what it may mean, and no more than 3 practical next actions.`;
 
 function normalizeHistory(history) {
     if (!Array.isArray(history)) return [];
@@ -131,15 +132,16 @@ async function askNvidia(question, context, history, deepAnalysis) {
         body: JSON.stringify({
             model: NVIDIA_MODEL,
             messages,
-            temperature: deepAnalysis ? 0.55 : 0.2,
+            temperature: deepAnalysis ? 0.4 : 0.2,
             top_p: 0.9,
-            max_tokens: deepAnalysis ? 1200 : 650,
+            max_tokens: deepAnalysis ? 900 : 450,
             stream: false,
-            chat_template_kwargs: { enable_thinking: deepAnalysis }
+            chat_template_kwargs: { enable_thinking: false }
         })
-    }, deepAnalysis ? 45000 : 22000);
+    }, deepAnalysis ? 22000 : 14000);
     if (!response.ok) throw new Error(`NVIDIA ${response.status}: ${(await response.text()).slice(0, 400)}`);
     const data = await response.json();
+    if (data?.choices?.[0]?.finish_reason === "length") throw new Error("NVIDIA response was truncated");
     const answer = cleanAnswer(data?.choices?.[0]?.message?.content);
     if (!answer) throw new Error("NVIDIA returned no usable answer");
     return answer;
@@ -161,11 +163,11 @@ async function askGemini(question, context, history, deepAnalysis) {
             contents,
             generationConfig: {
                 temperature: deepAnalysis ? 0.45 : 0.2,
-                maxOutputTokens: deepAnalysis ? 1000 : 600,
-                thinkingConfig: { thinkingLevel: deepAnalysis ? "medium" : "low" }
+                maxOutputTokens: deepAnalysis ? 700 : 450,
+                thinkingConfig: { thinkingLevel: "low" }
             }
         })
-    }, deepAnalysis ? 40000 : 20000);
+    }, deepAnalysis ? 20000 : 14000);
     if (!response.ok) throw new Error(`Gemini ${response.status}: ${(await response.text()).slice(0, 400)}`);
     const data = await response.json();
     const answer = cleanAnswer(data?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join(""));
@@ -199,7 +201,7 @@ export default async function handler(req, res) {
         try {
             const answer = await askNvidia(trimmedQuestion, safeContext, safeHistory, deepAnalysis);
             writeCache(key, answer, "NVIDIA Nemotron");
-            return res.status(200).json({ answer, provider: "NVIDIA Nemotron", mode: deepAnalysis ? "deep" : "fast" });
+            return res.status(200).json({ answer, provider: "NVIDIA Nemotron", mode: deepAnalysis ? "analysis" : "fast" });
         } catch (error) {
             nvidiaError = error;
             console.error("[ask-ai] NVIDIA failed; attempting fallback:", error.message);
@@ -209,7 +211,7 @@ export default async function handler(req, res) {
         try {
             const answer = await askGemini(trimmedQuestion, safeContext, safeHistory, deepAnalysis);
             writeCache(key, answer, "Gemini fallback");
-            return res.status(200).json({ answer, provider: "Gemini fallback", mode: deepAnalysis ? "deep" : "fast" });
+            return res.status(200).json({ answer, provider: "Gemini fallback", mode: deepAnalysis ? "analysis" : "fast" });
         } catch (error) {
             console.error("[ask-ai] Gemini fallback failed:", error.message);
         }

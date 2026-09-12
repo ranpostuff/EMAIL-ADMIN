@@ -1073,8 +1073,8 @@ function closeSectionRosterView() {
 }
 
 function compareSectionRosterStudents(a, b) {
-    const nameA = studentFullName(a).toLowerCase();
-    const nameB = studentFullName(b).toLowerCase();
+    const nameA = [a.lastName, a.firstName, a.middleName, a.extension].filter(Boolean).join(" ").trim();
+    const nameB = [b.lastName, b.firstName, b.middleName, b.extension].filter(Boolean).join(" ").trim();
     const incidentsA = incidentsCache.filter((i) => i.studentId === a.id).length;
     const incidentsB = incidentsCache.filter((i) => i.studentId === b.id).length;
     const violationsA = (violationsState[a.id] || []).length;
@@ -1100,7 +1100,7 @@ function renderSectionRoster() {
             const haystack = `${studentFullName(student)} ${student.lrn}`.toLowerCase();
             return haystack.includes(rosterSearchTerm);
         })
-        .sort((a, b) => studentFullName(a).localeCompare(studentFullName(b)));
+        .sort(compareSectionRosterStudents);
 
     if (countEl) countEl.textContent = `${rows.length} student${rows.length === 1 ? "" : "s"}`;
 
