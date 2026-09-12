@@ -641,14 +641,14 @@
                     </section>
 
                     <!-- INCIDENT VOLUME OVER TIME (PRIMARY CHART — AREA) -->
-                    <section class="analytics-chart-card analytics-chart-card-wide">
+                    <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-volume">
                         <div class="analytics-chart-header">
                             <div>
                                 <h3>Incident Volume Over Time</h3>
                                 <p>Total incidents recorded per period — watch for spikes or sustained increases</p>
                             </div>
                             <div class="analytics-chart-header-actions">
-                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Incident Volume Over Time">&#10024; Ask AI</button>
+                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Incident Volume Over Time">Insights</button>
                                 <div id="analytics-month-nav" class="analytics-month-nav">
                                     <button type="button" id="analytics-month-prev" class="analytics-month-nav-btn" aria-label="Previous month">&#8249;</button>
                                     <span id="analytics-month-label" class="analytics-month-nav-label">Live</span>
@@ -672,13 +672,13 @@
                     </section>
 
                     <!-- ACTIVE VS RESOLVED OVER TIME (SECONDARY CHART — LINE) -->
-                    <section class="analytics-chart-card analytics-chart-card-wide">
+                    <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-status">
                         <div class="analytics-chart-header">
                             <div>
                                 <h3>Active vs. Resolved Over Time</h3>
                                 <p>Is resolution keeping up with incoming incidents?</p>
                             </div>
-                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Active vs. Resolved Over Time">&#10024; Ask AI</button>
+                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Active vs. Resolved Over Time">Insights</button>
                         </div>
                         <div class="analytics-chart-legend">
                             <span class="analytics-chart-legend-item"><span class="analytics-chart-legend-dot dot-active"></span>Active</span>
@@ -694,13 +694,13 @@
                          incident count + violation count used by the "Highest Incidents" /
                          "Highest Violations" sort in Students & Sections, so the ranking here
                          always agrees with that sort. -->
-                    <section class="analytics-chart-card analytics-chart-card-wide">
+                    <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-risk">
                         <div class="analytics-chart-header">
                             <div>
                                 <h3>Top Sections — Incidents &amp; Violations</h3>
                                 <p>Which sections need the most attention right now</p>
                             </div>
-                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Sections — Incidents & Violations">&#10024; Ask AI</button>
+                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Sections — Incidents & Violations">Insights</button>
                         </div>
                         <div class="analytics-chart-legend">
                             <span class="analytics-chart-legend-item"><span class="analytics-chart-legend-dot dot-volume"></span>Incidents</span>
@@ -720,7 +720,7 @@
                                     <h3>Top Classrooms</h3>
                                     <p>Highest incident count</p>
                                 </div>
-                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Classrooms">&#10024; Ask AI</button>
+                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Classrooms">Insights</button>
                             </div>
                             <div class="analytics-chart-canvas-wrap">
                                 <canvas id="chart-classroom"></canvas>
@@ -734,7 +734,7 @@
                                     <h3>Resolution Time</h3>
                                     <p>How quickly incidents are cleared</p>
                                 </div>
-                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Resolution Time">&#10024; Ask AI</button>
+                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Resolution Time">Insights</button>
                             </div>
                             <div class="analytics-chart-canvas-wrap">
                                 <canvas id="chart-resolution"></canvas>
@@ -748,7 +748,7 @@
                                     <h3>Time of Day</h3>
                                     <p>When incidents tend to occur</p>
                                 </div>
-                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Time of Day">&#10024; Ask AI</button>
+                                <button type="button" class="ai-ask-chart-btn" data-chart-title="Time of Day">Insights</button>
                             </div>
                             <div class="analytics-chart-canvas-wrap">
                                 <canvas id="chart-timeofday"></canvas>
@@ -763,7 +763,7 @@
                          or hide it in sync with the Analytics tab. position:fixed lifts it out of
                          the section's normal document flow so it floats over the whole viewport.
                     ================================================================================= -->
-                    <button type="button" id="ai-widget-fab" class="ai-widget-fab" aria-label="Ask AI about this data">
+                    <button type="button" id="ai-widget-fab" class="ai-widget-fab" aria-label="Open analytics insights">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="13" rx="3"/><path d="M8 21l1.8-3h4.4L16 21"/><circle cx="8.5" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r="1.1" fill="currentColor" stroke="none"/></svg>
                     </button>
 
@@ -782,7 +782,7 @@
                         </div>
 
                         <div class="ai-widget-messages" id="ai-widget-messages">
-                            <p class="ai-widget-empty-note">Click "Ask AI" on any chart, or type a question below.</p>
+                            <p class="ai-widget-empty-note">Click "Insights" on any chart, or type a question below.</p>
                         </div>
 
                         <form class="ai-widget-input-row" id="ai-widget-form">
