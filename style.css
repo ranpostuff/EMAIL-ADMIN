@@ -3382,18 +3382,18 @@ body.eoc-dashboard-body {
     border-radius: 9px;
     box-shadow: var(--card-shadow);
 }
-.metric-card.card-primary { background: #4b3d57; border-color: #6d5a78; }
-.metric-card.card-safe { background: #2e5140; border-color: #476b58; }
-.metric-card.card-alert { background: #5a363a; border-color: #764a4e; }
-.metric-card.card-incidents { background: #5b384a; border-color: #765065; }
-.metric-card.card-resolved { background: #334f5c; border-color: #4d6874; }
+.metric-card.card-primary { background: #861b61; border-color: #a8327b; }
+.metric-card.card-safe { background: #137f4b; border-color: #279960; }
+.metric-card.card-alert { background: #c13732; border-color: #d8554e; }
+.metric-card.card-incidents { background: #af2d78; border-color: #ca468f; }
+.metric-card.card-resolved { background: #824568; border-color: #9d5d80; }
 .metric-card.card-temp,
-.metric-card.card-temp.temp-unavailable { background: #5a4932; border-color: #756348; }
+.metric-card.card-temp.temp-unavailable { background: #a05a08; border-color: #bd741b; }
 .metric-card.card-temp.temp-cold,
-.metric-card.card-temp.temp-cool { background: #334f5c; border-color: #4d6874; }
-.metric-card.card-temp.temp-comfortable { background: #35513b; border-color: #506d55; }
-.metric-card.card-temp.temp-warm { background: #5a4932; border-color: #756348; }
-.metric-card.card-temp.temp-hot { background: #5a363a; border-color: #764a4e; }
+.metric-card.card-temp.temp-cool { background: #276b86; border-color: #4387a1; }
+.metric-card.card-temp.temp-comfortable { background: #137f4b; border-color: #279960; }
+.metric-card.card-temp.temp-warm { background: #a05a08; border-color: #bd741b; }
+.metric-card.card-temp.temp-hot { background: #c13732; border-color: #d8554e; }
 
 .metric-card::before,
 .metric-card::after { display: none; }
@@ -3414,12 +3414,12 @@ body.eoc-dashboard-body {
     border-color: rgba(255,255,255,.1);
     box-shadow: none;
 }
-.metric-card.card-primary .metric-icon-wrap { color: #c3a8cc; }
-.metric-card.card-safe .metric-icon-wrap { color: #9fc2a9; }
-.metric-card.card-alert .metric-icon-wrap { color: #d3a0a2; }
-.metric-card.card-incidents .metric-icon-wrap { color: #d0a0b5; }
-.metric-card.card-resolved .metric-icon-wrap { color: #a5c1cc; }
-.metric-card.card-temp .metric-icon-wrap { color: #d3ba91; }
+.metric-card.card-primary .metric-icon-wrap { color: #f2b4d8; }
+.metric-card.card-safe .metric-icon-wrap { color: #baf0cf; }
+.metric-card.card-alert .metric-icon-wrap { color: #ffd0cc; }
+.metric-card.card-incidents .metric-icon-wrap { color: #f7bfdd; }
+.metric-card.card-resolved .metric-icon-wrap { color: #edc3db; }
+.metric-card.card-temp .metric-icon-wrap { color: #ffe0a8; }
 
 .cc-card,
 .analytics-chart-card,

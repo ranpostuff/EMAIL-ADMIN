@@ -490,10 +490,10 @@
 .analytics-kpi-card::before,
 .analytics-kpi-card::after { display: none; }
 .analytics-kpi-card:hover { transform: none; }
-.analytics-kpi-card.kpi-primary { color: #fff; background: #5b384a; border-color: #765065; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
-.analytics-kpi-card.kpi-active { color: #fff; background: #5a363a; border-color: #764a4e; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
-.analytics-kpi-card.kpi-resolved { color: #fff; background: #2e5140; border-color: #476b58; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
-.analytics-kpi-card.kpi-resolution { color: #fff; background: #334f5c; border-color: #4d6874; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-primary { color: #fff; background: #af2d78; border-color: #ca468f; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-active { color: #fff; background: #c13732; border-color: #d8554e; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-resolved { color: #fff; background: #824568; border-color: #9d5d80; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-resolution { color: #fff; background: #276b86; border-color: #4387a1; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
 
 #analytics-view > .analytics-chart-card-wide,
 .analytics-chart-grid .analytics-chart-card {
