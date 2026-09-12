@@ -352,7 +352,7 @@
     filter: blur(3px);
 }
 .analytics-kpi-card:hover { transform: translateY(-2px); }
-.analytics-kpi-label { color: rgba(255,255,255,.68); font-size: .72rem; letter-spacing: .045em; }
+.analytics-kpi-label { color: #ddd5da; font-size: .72rem; letter-spacing: .045em; }
 .analytics-kpi-value { color: #fff; font-size: 1.85rem; }
 
 .analytics-kpi-card.kpi-primary {
@@ -458,4 +458,105 @@
     .analytics-chart-header-actions { justify-content: flex-start; }
     #analytics-view .analytics-chart-canvas-wrap,
     #analytics-view .analytics-chart-canvas-wrap-hero { height: 220px; min-height: 220px; }
+}
+
+/* ============================================================================
+   v9 ANALYTICS REFINEMENT
+   Flat contained dashboard layout with consistent chart proportions.
+   ============================================================================ */
+#analytics-view:not(.hidden) {
+    padding: 1rem;
+    background: #1c1a1e;
+    border: 1px solid #39343a;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+
+.analytics-intro {
+    padding: .25rem .15rem .85rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #39343a;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.analytics-kpi-card {
+    min-height: 112px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 9px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.analytics-kpi-card::before,
+.analytics-kpi-card::after { display: none; }
+.analytics-kpi-card:hover { transform: none; }
+.analytics-kpi-card.kpi-primary { color: #fff; background: #5b384a; border-color: #765065; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-active { color: #fff; background: #5a363a; border-color: #764a4e; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-resolved { color: #fff; background: #2e5140; border-color: #476b58; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.analytics-kpi-card.kpi-resolution { color: #fff; background: #334f5c; border-color: #4d6874; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+
+#analytics-view > .analytics-chart-card-wide,
+.analytics-chart-grid .analytics-chart-card {
+    background: #242126;
+    border: 1px solid #39343a;
+    border-radius: 9px;
+    box-shadow: none;
+}
+
+#analytics-view > .analytics-chart-card-volume {
+    grid-column: 1 / -1;
+    min-height: 350px;
+}
+#analytics-view > .analytics-chart-card-status,
+#analytics-view > .analytics-chart-card-risk {
+    grid-column: span 6;
+    min-height: 300px;
+}
+
+#analytics-view .analytics-chart-card-volume .analytics-chart-canvas-wrap {
+    height: 250px;
+    min-height: 250px;
+}
+#analytics-view .analytics-chart-card-status .analytics-chart-canvas-wrap,
+#analytics-view .analytics-chart-card-risk .analytics-chart-canvas-wrap {
+    height: 210px;
+    min-height: 210px;
+}
+
+#analytics-view .analytics-chart-header {
+    min-height: 58px;
+    border-bottom-color: #39343a;
+}
+#analytics-view .analytics-chart-header h3 {
+    font-size: .86rem;
+    letter-spacing: .01em;
+}
+#analytics-view .analytics-chart-header p { color: #aaa2a8; }
+#analytics-view .analytics-chart-legend-dot { box-shadow: none; }
+
+.analytics-period-select,
+.analytics-month-nav-btn,
+.analytics-month-nav-today {
+    color: #d8cdd3;
+    background: #2c282d;
+    border-color: #464047;
+    border-radius: 6px;
+}
+
+.analytics-chart-grid { gap: 1rem; }
+.analytics-chart-grid .analytics-chart-card {
+    min-height: 285px;
+    border-top: 1px solid #39343a !important;
+}
+.analytics-chart-grid .analytics-chart-canvas-wrap {
+    height: 200px;
+    min-height: 200px;
+}
+
+@media (max-width: 960px) {
+    #analytics-view > .analytics-chart-card-status,
+    #analytics-view > .analytics-chart-card-risk { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+    #analytics-view:not(.hidden) { padding: .7rem; }
 }
