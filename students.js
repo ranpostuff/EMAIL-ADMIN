@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  STUDENTS & SECTIONS MODULE
+   RESCUEPRIORITY — STUDENTS & SECTIONS MODULE
    --------------------------------------------------------------------------
    Additive module. Does NOT touch classrooms/, incidents/, or counters/.
    Reuses the existing Firebase connection, SCHOOL_FACILITIES list, and the
@@ -15,7 +15,7 @@
 
    Field names/shapes and the "QR encodes LRN only" approach are carried
    over from the astig frontend (features/student/types/student.ts +
-   StudentQrModal.tsx) as a reference :  no astig code or backend is used.
+   StudentQrModal.tsx) as a reference — no astig code or backend is used.
 
    QR generation uses the `qrcode` UMD build loaded via <script> in
    index.html (exposes window.QRCode), the same API astig's
@@ -40,7 +40,7 @@ import {
 const studentsRootRef = ref(database, "students");
 const sectionsRootRef = ref(database, "sections");
 
-/* studentLogins/{lrn} -> { studentId, passwordHash } :  written only from
+/* studentLogins/{lrn} -> { studentId, passwordHash } — written only from
    here (the admin roster), one entry at a time by direct path (there's no
    need for a root-level ref/listener on the whole studentLogins/ tree).
    The Student Incident Reporter app reads a single studentLogins/{lrn}
@@ -49,7 +49,7 @@ const sectionsRootRef = ref(database, "sections");
    RULES-NOTES.md and the student app's README for the full login flow. */
 
 /* Read-only ref onto the attendance/ tree already owned by
-   scan-attendance.js. Just a pointer :  no listener is attached until the
+   scan-attendance.js. Just a pointer — no listener is attached until the
    Section Detail modal (below) is actually open, so this doesn't touch or
    duplicate scan-attendance.js's own always-on setupLiveStats() listener. */
 const attendanceRootRef = ref(database, "attendance");
@@ -82,7 +82,7 @@ const classroomFacilities = SCHOOL_FACILITIES.filter(isClassroomFacility);
    Incidents count = incidents individually tied to a student in this
    section (incident.studentId) PLUS room-wide incidents logged against
    the classroom this section is linked to (incident.classroom matching
-   the linked facility's name) :  this mirrors how the Section Detail /
+   the linked facility's name) — this mirrors how the Section Detail /
    per-student Incidents tab already defines "involved in an incident".
 ========================================================================== */
 export function computeSectionStats(sectionId) {
@@ -143,7 +143,7 @@ function slugify(text) {
    STUDENT PORTAL LOGIN (studentLogins/{lrn})
    --------------------------------------------------------------------------
    Same SHA-256-via-Web-Crypto hash used by the Student Incident Reporter
-   app to compare a typed-in password (see that app's app.js) :  duplicated
+   app to compare a typed-in password (see that app's app.js) — duplicated
    here rather than shared, same convention as the duplicated firebaseConfig
    documented in both READMEs. This is a client-side hash, not a substitute
    for a real backend with salted/bcrypt-style hashing; see RULES-NOTES.md
@@ -183,7 +183,7 @@ async function syncStudentLogin(studentId, lrn, rawPassword, previousLrn) {
         return;
     }
 
-    // No new password, no LRN move to carry forward :  just make sure an
+    // No new password, no LRN move to carry forward — just make sure an
     // existing entry at this LRN still points at the right studentId
     // (relevant only if a login was created before this student record
     // existed, which shouldn't normally happen, but costs nothing to check).
@@ -196,7 +196,7 @@ async function syncStudentLogin(studentId, lrn, rawPassword, previousLrn) {
 /* ==========================================================================
    INITIALIZATION
    Self-initializes on load (same pattern as insights.js / weather.js) so
-   the students/sections listeners are always live :  scan-attendance.js
+   the students/sections listeners are always live — scan-attendance.js
    imports studentsState as a live binding and depends on this having run.
 ========================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
@@ -357,7 +357,7 @@ async function deleteStudent(studentId) {
     if (!confirmed) return;
 
     await remove(ref(database, `students/${studentId}`));
-    // Also drop their portal login, if any :  an orphaned studentLogins entry
+    // Also drop their portal login, if any — an orphaned studentLogins entry
     // would otherwise still let someone log in as an LRN that no longer
     // resolves to a real student record.
     if (student.lrn) {
@@ -533,7 +533,7 @@ async function handleStudentSave() {
 }
 
 /* ==========================================================================
-   SECTIONS BROWSER :  Grade folders -> Sections-in-grade (sortable)
+   SECTIONS BROWSER — Grade folders -> Sections-in-grade (sortable)
    --------------------------------------------------------------------------
    Two-level drill-down instead of one flat table: the Sections subpanel
    opens on a grid of grade-level "folders" (Grade 7, Grade 8, ...); opening
@@ -738,7 +738,7 @@ async function deleteSection(sectionId) {
 
     const studentCount = Object.values(studentsState).filter((s) => s.sectionId === sectionId).length;
     if (studentCount > 0) {
-        window.alert(`Can't delete "${section.name}" :  ${studentCount} student(s) are still assigned to it. Reassign them first.`);
+        window.alert(`Can't delete "${section.name}" — ${studentCount} student(s) are still assigned to it. Reassign them first.`);
         return;
     }
 
@@ -780,7 +780,7 @@ function populateFacilityDropdown() {
     classroomFacilities.forEach((facility) => {
         const opt = document.createElement("option");
         opt.value = facility.id;
-        opt.textContent = `${displayFacilityName(facility.name)} :  ${facility.section} (${facility.zone})`;
+        opt.textContent = `${displayFacilityName(facility.name)} — ${facility.section} (${facility.zone})`;
         select.appendChild(opt);
     });
 }
@@ -859,13 +859,13 @@ async function handleSectionSave() {
    SECTION ROSTER VIEW (full-screen, replaces the old floating modal)
    --------------------------------------------------------------------------
    Opening a section (from the Sections-in-grade list) hands off to a
-   full-screen/full-tab view :  #section-roster-view, toggled the same way
-   the sidebar's .app-view panels are, not a .modal-overlay :  listing every
+   full-screen/full-tab view — #section-roster-view, toggled the same way
+   the sidebar's .app-view panels are, not a .modal-overlay — listing every
    student in that section as real <table> rows: Name, LRN, live check-in
    status (green/red dot, same rule as before), Late/On-time, Violations
    count, Incidents count, Last scan, and an Actions column whose "View"
    button opens the per-student detail (tabs: Overview / Violations /
-   Incidents / Timeline) in a small modal :  that's the one appropriate use
+   Incidents / Timeline) in a small modal — that's the one appropriate use
    of a floating window here, since it's a drill-down on a single row, not
    the whole roster.
 
@@ -885,7 +885,7 @@ async function handleSectionSave() {
 /* ==========================================================================
    EMAIL TODAY'S LATE LIST
    --------------------------------------------------------------------------
-   One-off read of today's attendance (not a live listener :  this only runs
+   One-off read of today's attendance (not a live listener — this only runs
    when the button is clicked), finds every student whose FIRST "in" scan
    today was after the 7:15 cutoff, and opens a pre-filled email via a
    mailto: link (no backend/email-service account needed). Swap the
@@ -958,7 +958,7 @@ let studentDetailId = null;
 let studentDetailTab = "overview";
 let studentDetailSelection = null;
 
-/* Same cutoff as kiosk.js :  a student is "late" if their first "in" scan
+/* Same cutoff as kiosk.js — a student is "late" if their first "in" scan
    today happened after 7:15 AM. Duplicated locally (rather than shared)
    to keep this file's only dependency on scan data the attendanceRootRef
    pointer already declared above, matching this project's convention of
@@ -1063,7 +1063,7 @@ function closeSectionRosterView() {
     document.body.classList.remove("rp-fullscreen-open");
 
     if (rosterUnsubscribe) {
-        rosterUnsubscribe(); // detach the presence listener :  view is closed, no need to keep it live
+        rosterUnsubscribe(); // detach the presence listener — view is closed, no need to keep it live
         rosterUnsubscribe = null;
     }
     rosterSectionId = null;
@@ -1073,8 +1073,8 @@ function closeSectionRosterView() {
 }
 
 function compareSectionRosterStudents(a, b) {
-    const nameA = [a.lastName, a.firstName, a.middleName, a.extension].filter(Boolean).join(" ").trim();
-    const nameB = [b.lastName, b.firstName, b.middleName, b.extension].filter(Boolean).join(" ").trim();
+    const nameA = studentFullName(a).toLowerCase();
+    const nameB = studentFullName(b).toLowerCase();
     const incidentsA = incidentsCache.filter((i) => i.studentId === a.id).length;
     const incidentsB = incidentsCache.filter((i) => i.studentId === b.id).length;
     const violationsA = (violationsState[a.id] || []).length;
@@ -1100,7 +1100,7 @@ function renderSectionRoster() {
             const haystack = `${studentFullName(student)} ${student.lrn}`.toLowerCase();
             return haystack.includes(rosterSearchTerm);
         })
-        .sort(compareSectionRosterStudents);
+        .sort((a, b) => studentFullName(a).localeCompare(studentFullName(b)));
 
     if (countEl) countEl.textContent = `${rows.length} student${rows.length === 1 ? "" : "s"}`;
 
@@ -1591,7 +1591,7 @@ function formatLogTime(timestamp) {
 }
 
 /* ==========================================================================
-   QR MODAL (LRN-only payload, matches astig's StudentQrModal.tsx approach : 
+   QR MODAL (LRN-only payload, matches astig's StudentQrModal.tsx approach —
    ported to plain JS + the qrcode UMD build instead of npm/React)
 ========================================================================== */
 function setupQrModal() {

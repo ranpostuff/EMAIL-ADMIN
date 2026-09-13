@@ -1,22 +1,22 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  COMMAND CENTER AUTH GATE
+   RESCUEPRIORITY — COMMAND CENTER AUTH GATE
    --------------------------------------------------------------------------
    Loaded first (see index.html's script order) so the gate is wired up
    before the rest of the dashboard's modules start rendering behind it.
 
    Two-part check, same idea as any allowlisted admin panel:
-     1. Firebase Authentication :  the person has to sign in with a real
+     1. Firebase Authentication — the person has to sign in with a real
         email/password account (created in Firebase Console -> Authentication;
         this app has no public sign-up form on purpose).
-     2. admins/{uid} :  the signed-in account also has to be listed in the
+     2. admins/{uid} — the signed-in account also has to be listed in the
         Realtime Database as an authorized admin. A Firebase Auth account by
         itself does NOT grant dashboard access; see RULES-NOTES.md for how
         to add the first admin (a one-time manual step via Firebase Console,
         since the database rules can't let an unlisted account list itself
-        as authorized :  same bootstrap problem any allowlist has).
+        as authorized — same bootstrap problem any allowlist has).
 
    Everything else in this app (script.js and every other module) keeps
-   running its own DOMContentLoaded setup regardless of auth state :  reads
+   running its own DOMContentLoaded setup regardless of auth state — reads
    on students/sections/classrooms/incidents stay public (the Student
    Incident Reporter app depends on that; see database.rules.json) so data
    loads in the background same as before. This file's only job is to keep

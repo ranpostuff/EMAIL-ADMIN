@@ -1,12 +1,12 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  AI CONTEXT LAYER
+   RESCUEPRIORITY — AI CONTEXT LAYER
    ----------------------------------------------------------------------
    Read-only data layer for the AI Assistant. Follows the same pattern
    insights.js already uses: reuses the existing `database` instance from
    script.js (no second Firebase app), but keeps its OWN dedicated onValue()
    listeners on /classrooms and /incidents rather than trusting a
    cross-module live binding (insights.js's own comment explains why that
-   proved unreliable). This file never writes to Firebase :  it cannot
+   proved unreliable). This file never writes to Firebase — it cannot
    affect emergency records, classroom state, or incident history.
 
    Exports buildAIContext(), which packages a compact snapshot of current
@@ -59,17 +59,13 @@ function setupContextListeners() {
 setupContextListeners();
 
 /* ==========================================================================
-   DATA ROBUSTNESS (mirrors insights.js :  never throws on a bad record)
+   DATA ROBUSTNESS (mirrors insights.js — never throws on a bad record)
 ========================================================================== */
 function getValidIncidents() {
     if (!Array.isArray(incidents)) return [];
     return incidents.filter(inc => {
         if (!inc || typeof inc !== "object") return false;
         if (inc.isTestData) return false;
-        const studentName = String(inc.studentName || "").trim().toLowerCase();
-        const incidentType = String(inc.incidentType || "").trim().toLowerCase();
-        if (/^(test|dummy)|test dummy|automated latency/.test(studentName)) return false;
-        if (incidentType === "latency test" || incidentType === "facilities test") return false;
         const ts = Number(inc.timestamp);
         return Number.isFinite(ts) && ts > 0;
     });
@@ -138,7 +134,7 @@ export function getRecentIncidents(limit = 10) {
         }));
 }
 
-// Overall counts :  same definitions insights.js uses for its KPI row, so
+// Overall counts — same definitions insights.js uses for its KPI row, so
 // the AI's numbers always match what's on screen.
 export function getIncidentStatistics() {
     const valid = getValidIncidents();
@@ -149,7 +145,7 @@ export function getIncidentStatistics() {
 }
 
 // Top classrooms/areas by incident count, both by individual classroom and
-// rolled up by zone/wing :  this is what lets the AI answer "which area has
+// rolled up by zone/wing — this is what lets the AI answer "which area has
 // the most incidents" (zone-level) as well as "which classroom" (room-level).
 export function getTopClassrooms(limit = 5) {
     const valid = getValidIncidents().filter(isClassroomIncident);

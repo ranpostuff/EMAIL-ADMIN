@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  VIOLATIONS MODULE
+   RESCUEPRIORITY — VIOLATIONS MODULE
    --------------------------------------------------------------------------
    Additive module, same conventions as students.js / scan-attendance.js:
    owns one new Firebase path, reuses studentsState/sectionsState
@@ -14,7 +14,7 @@
      }
 
    Keyed by studentId first (not a flat list) so "how many violations does
-   this student have" :  the thing the Section Detail modal needs :  is a
+   this student have" — the thing the Section Detail modal needs — is a
    single child read/count instead of a scan over every violation ever
    logged school-wide.
 
@@ -83,7 +83,7 @@ function initViolationsModule() {
 }
 
 /* ==========================================================================
-   CAMERA SCANNING :  mirrors scan-attendance.js's startCamera()/stopCamera()
+   CAMERA SCANNING — mirrors scan-attendance.js's startCamera()/stopCamera()
 ========================================================================== */
 function setupScanStartButton() {
     const startBtn = document.getElementById("btn-violations-start-scan");
@@ -105,7 +105,7 @@ function setupScanStartButton() {
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 220, height: 220 } },
                 (decodedText) => handleLrnLookup(decodedText.trim()),
-                () => { /* per-frame decode miss, expected while framing :  ignore */ }
+                () => { /* per-frame decode miss, expected while framing — ignore */ }
             );
             cameraRunning = true;
             if (idleBox) idleBox.classList.add("hidden");
@@ -158,7 +158,7 @@ function handleLrnLookup(lrn) {
     }
     const [studentId] = entry;
     showFoundCard(studentId);
-    stopScanCamera(); // camera served its purpose :  free it up rather than leaving it running behind the form
+    stopScanCamera(); // camera served its purpose — free it up rather than leaving it running behind the form
 }
 
 /* ==========================================================================

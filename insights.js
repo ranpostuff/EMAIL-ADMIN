@@ -3,8 +3,8 @@
    ----------------------------------------------------------------------
    Reuses the existing `database` instance from script.js (so this does NOT
    initialize a second Firebase app). It DOES set up its own read-only
-   onValue() listener on /incidents :  deliberately, not via a cross-module
-   live-binding import :  because relying on script.js's internal `incidents`
+   onValue() listener on /incidents — deliberately, not via a cross-module
+   live-binding import — because relying on script.js's internal `incidents`
    variable proved unreliable (the Incident Log, which reads that variable
    directly inside script.js, stayed in sync; this file, reading it through
    an ES import, did not always see updates). A dedicated listener here is
@@ -55,11 +55,11 @@ function setupIncidentsListener() {
 }
 
 /* Top Sections chart depends on sections/students/violations, not just
-   incidents/ :  those already have live listeners in students.js and
+   incidents/ — those already have live listeners in students.js and
    violations.js (whose exported state this file reads), but nothing here
    was re-running buildOrUpdateCharts() when THEY changed without an
    incidents/ update too. These three thin listeners exist purely as a
-   "something changed, re-render" trigger :  they ignore their own snapshot
+   "something changed, re-render" trigger — they ignore their own snapshot
    and read sectionsState/computeSectionStats (already kept live by
    students.js) instead of keeping a second copy of the data. */
 function setupSectionRiskRefreshTriggers() {
@@ -98,8 +98,8 @@ let ccActivityOffset = 0;
 // When null, Daily/Weekly charts use their normal "trailing window ending
 // today" behavior (unchanged). When set to a Date (first-of-month), Daily
 // shows every day of that calendar month and Weekly shows the weeks that
-// fall inside it, so the month navigator can jump to any past month : 
-// e.g. July :  instead of only ever seeing the last 14 days.
+// fall inside it, so the month navigator can jump to any past month —
+// e.g. July — instead of only ever seeing the last 14 days.
 let selectedMonthAnchor = null;
 
 /* ==========================================================================
@@ -145,7 +145,7 @@ function getPalette() {
 /* ==========================================================================
    DATA ROBUSTNESS
    Filters raw incident records down to entries analytics can safely use.
-   Never throws :  a malformed record is simply excluded, not fatal.
+   Never throws — a malformed record is simply excluded, not fatal.
 ========================================================================== */
 function getValidIncidents() {
     if (!Array.isArray(incidents)) return [];
@@ -210,11 +210,11 @@ function setText(id, value) {
 
 /* ==========================================================================
    ANALYTICS TIME BUCKETS (Daily / Weekly / Monthly)
-   Shared by both time-series charts on the Analytics page :  Incident Volume
-   and Active vs. Resolved :  so they always plot against identical x-axis
+   Shared by both time-series charts on the Analytics page — Incident Volume
+   and Active vs. Resolved — so they always plot against identical x-axis
    buckets and stay visually comparable when the period control changes.
    (Independent from the Command Center's buildActivitySeries below, which
-   intentionally uses its own shorter window :  see the comment there.)
+   intentionally uses its own shorter window — see the comment there.)
 ========================================================================== */
 function buildAnalyticsPeriodBuckets(period) {
     const now = new Date();
@@ -296,7 +296,7 @@ function buildAnalyticsPeriodBuckets(period) {
     }
 
     if (selectedMonthAnchor) {
-        // daily :  every day of the selected calendar month
+        // daily — every day of the selected calendar month
         const year = selectedMonthAnchor.getFullYear();
         const month = selectedMonthAnchor.getMonth();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -310,7 +310,7 @@ function buildAnalyticsPeriodBuckets(period) {
         return { keys, labels, bucketKeyForTimestamp: (ts) => dayKey(new Date(ts)) };
     }
 
-    // daily :  last 14 days
+    // daily — last 14 days
     const keys = [];
     const labels = [];
     for (let i = 13; i >= 0; i--) {
@@ -324,7 +324,7 @@ function buildAnalyticsPeriodBuckets(period) {
 
 /* ==========================================================================
    INCIDENT VOLUME OVER TIME (Daily / Weekly / Monthly)
-   Total incident count per bucket :  the Analytics page's primary trend.
+   Total incident count per bucket — the Analytics page's primary trend.
 ========================================================================== */
 function buildVolumeSeries(validIncidents, period) {
     const buckets = buildAnalyticsPeriodBuckets(period);
@@ -366,7 +366,7 @@ function buildActiveResolvedSeries(validIncidents, period) {
 
 /* ==========================================================================
    BY CLASSROOM
-   Kept exactly as-is (sorted descending, top 12) :  the Command Center's
+   Kept exactly as-is (sorted descending, top 12) — the Command Center's
    Classroom Activity list and the Dashboard's classroom chart both depend
    on this order and slice count, so it is not touched here.
 ========================================================================== */
@@ -385,7 +385,7 @@ function buildClassroomSeries(validIncidents) {
 }
 
 /* ==========================================================================
-   TOP CLASSROOMS (Analytics :  horizontal bar, top 5)
+   TOP CLASSROOMS (Analytics — horizontal bar, top 5)
    Deliberately a separate builder from buildClassroomSeries above rather
    than a shared one with a `limit` argument: this one reverses the sorted
    order before returning, because Chart.js draws a horizontal bar's first
@@ -409,7 +409,7 @@ function buildTopClassroomsSeries(validIncidents, limit = 5) {
 /* ==========================================================================
    TIME OF DAY (grouped operational periods, Asia/Manila local hour)
    Grouped into Morning / Afternoon / Evening / Night rather than 24 raw
-   hourly bars :  easier to read at a glance and answers the operational
+   hourly bars — easier to read at a glance and answers the operational
    question ("when do incidents happen?") without the noise of hour-by-hour
    granularity a school-hours dataset doesn't really need.
 ========================================================================== */
@@ -439,7 +439,7 @@ function buildTimeOfDaySeries(validIncidents) {
 /* ==========================================================================
    RESOLUTION TIME DISTRIBUTION
    Buckets real (resolvedAt - timestamp) durations for Resolved incidents
-   only :  unresolved incidents have no duration and are excluded rather
+   only — unresolved incidents have no duration and are excluded rather
    than guessed at. Colored bucket-by-bucket with the app's existing
    semantic status colors (fast = safe green, slow = emergency red) so the
    chart reads as a performance signal, not just another bar chart.
@@ -475,7 +475,7 @@ function buildResolutionDistribution(validIncidents) {
 /* ==========================================================================
    STATUS DISTRIBUTION
    Still used by the Command Center's status doughnut/rows and the Dashboard
-   status chart :  the standalone Status chart on the Analytics page itself
+   status chart — the standalone Status chart on the Analytics page itself
    was removed (redundant with the KPI row + Active vs. Resolved trend), but
    this builder remains needed elsewhere.
 ========================================================================== */
@@ -486,10 +486,10 @@ function buildStatusSeries(validIncidents) {
 }
 
 /* ==========================================================================
-   TOP SECTIONS :  INCIDENTS & VIOLATIONS (Analytics :  grouped horizontal bar)
-   Reads students.js's computeSectionStats() :  the exact same per-section
+   TOP SECTIONS — INCIDENTS & VIOLATIONS (Analytics — grouped horizontal bar)
+   Reads students.js's computeSectionStats() — the exact same per-section
    incident/violation counts used by the "Highest Incidents" / "Highest
-   Violations" sort in Students & Sections :  so this chart's ranking never
+   Violations" sort in Students & Sections — so this chart's ranking never
    disagrees with that sort. Sections with zero of both are left off rather
    than padding the chart with rows that carry no signal.
 ========================================================================== */
@@ -524,12 +524,12 @@ function toggleEmptyNote(id, isEmpty) {
 /* ==========================================================================
    CHART BUILD / UPDATE
    Charts are created once (chartsBuilt flag) and updated in place afterward
-   :  this keeps Firebase-driven re-renders cheap and avoids flicker.
+   — this keeps Firebase-driven re-renders cheap and avoids flicker.
 ========================================================================== */
 function buildOrUpdateCharts() {
     const validIncidents = getValidIncidents();
 
-    // KPIs never depend on Chart.js :  render them first, unconditionally,
+    // KPIs never depend on Chart.js — render them first, unconditionally,
     // so a blocked/failed CDN never blanks out the numbers.
     renderKpis(computeKpis(validIncidents));
 
@@ -561,7 +561,7 @@ function buildOrUpdateCharts() {
     if (!chartsBuilt) {
         // Defensive: if a chart instance somehow already exists on one of
         // these canvases (e.g. a duplicate build call slipped through),
-        // destroy it first :  Chart.js throws if you construct a new chart
+        // destroy it first — Chart.js throws if you construct a new chart
         // on a canvas that's already in use.
         ["chart-volume", "chart-active-resolved", "chart-classroom", "chart-resolution", "chart-timeofday", "chart-section-risk"].forEach(id => {
             const canvas = document.getElementById(id);
@@ -694,7 +694,7 @@ function buildOrUpdateHomeCharts() {
     // Dashboard is no longer the view visible on page load (Command Center
     // is). Chart.js sizes a new chart to its canvas's current pixel
     // dimensions, so building it for the first time while the canvas is
-    // display:none would leave it permanently 0x0 :  same issue already
+    // display:none would leave it permanently 0x0 — same issue already
     // solved for Analytics via isAnalyticsViewVisible(). Once built, later
     // updates are just data swaps and are safe to run while hidden.
     if (!homeChartsBuilt && !isDashboardViewVisible()) return;
@@ -769,7 +769,7 @@ function updateDataset(chart, labels, data) {
 }
 
 // Same as updateDataset, but for charts with more than one dataset (e.g.
-// Active vs. Resolved) :  dataArrays[i] replaces chart.data.datasets[i].data.
+// Active vs. Resolved) — dataArrays[i] replaces chart.data.datasets[i].data.
 function updateMultiDataset(chart, labels, dataArrays) {
     if (!chart) return;
     chart.data.labels = labels;
@@ -780,12 +780,12 @@ function updateMultiDataset(chart, labels, dataArrays) {
 }
 
 /* ==========================================================================
-   COMMAND CENTER :  HERO CHARTS
+   COMMAND CENTER — HERO CHARTS
    "Incident Activity" (Active vs Resolved, grouped rounded bars) and
    "Incident Status" (doughnut) live on the Command Center view, which is
    the view visible by default on page load (unlike Dashboard/Analytics).
    That means the very first build already has correct canvas dimensions,
-   so no visibility gating is needed before the first paint :  the guard
+   so no visibility gating is needed before the first paint — the guard
    below only protects against the (rare) case of a snapshot arriving
    while the user has already navigated to another view.
 ========================================================================== */
@@ -794,7 +794,7 @@ function isCommandCenterViewVisible() {
     return !!view && !view.classList.contains("hidden");
 }
 
-/* Independent bucket logic from buildAnalyticsPeriodBuckets :  deliberately
+/* Independent bucket logic from buildAnalyticsPeriodBuckets — deliberately
    not shared, so tuning the hero chart's window (fewer, thicker bars) never
    risks changing the Analytics page's "Incident Volume" / "Active vs.
    Resolved" time buckets. */
@@ -809,7 +809,7 @@ function buildActivitySeries(validIncidents, period, offset = 0) {
     function monthLabel(d) { return d.toLocaleDateString("en-PH", { month: "short", year: "numeric", timeZone: "Asia/Manila" }); }
 
     if (period === "monthly") {
-        // offset shifts the whole 6-month window back in whole months : 
+        // offset shifts the whole 6-month window back in whole months —
         // offset 0 is the normal "last 6 months ending this month" window.
         const anchorMonth = new Date(now.getFullYear(), now.getMonth() - offset, 1);
         for (let i = 5; i >= 0; i--) {
@@ -851,7 +851,7 @@ function buildActivitySeries(validIncidents, period, offset = 0) {
             }
         });
     } else {
-        // daily :  7 days, thicker/fewer bars to match the reference
+        // daily — 7 days, thicker/fewer bars to match the reference
         // proportions. offset shifts the window back by whole days, so
         // scrolling can reach any past date instead of being capped at
         // the last 7 days.
@@ -882,10 +882,10 @@ function buildActivitySeries(validIncidents, period, offset = 0) {
 }
 
 // Two overlapping bubbles (Active / Resolved), sized by share of total,
-// plus a legend with proportional bars :  replaces the earlier concentric
+// plus a legend with proportional bars — replaces the earlier concentric
 // SVG rings with a "track by location"-style bubble cluster. Still driven
 // by the same buildStatusSeries() data, so it stays tied to the live
-// Firebase incident stream :  nothing here is hardcoded.
+// Firebase incident stream — nothing here is hardcoded.
 function renderStatusRings(status) {
     const activeBubble = document.getElementById("cc-bubble-active");
     const resolvedBubble = document.getElementById("cc-bubble-resolved");
@@ -901,7 +901,7 @@ function renderStatusRings(status) {
     const resolvedPct = total > 0 ? Math.round((resolvedCount / total) * 100) : 0;
 
     // Bubble diameter scales with sqrt(share) so AREA (not just radius)
-    // tracks the count :  the same convention real bubble charts use.
+    // tracks the count — the same convention real bubble charts use.
     const MIN_D = 64;
     const MAX_D = 132;
     const maxCount = Math.max(activeCount, resolvedCount, 1);
@@ -969,7 +969,7 @@ function buildOrUpdateCommandCenterCharts() {
     const palette = getPalette();
 
     // Facility Activity and the Incident Status rings are plain DOM/SVG,
-    // not Chart.js :  safe to update regardless of Chart.js load state or
+    // not Chart.js — safe to update regardless of Chart.js load state or
     // canvas visibility.
     renderFacilityActivity(validIncidents);
     const status = buildStatusSeries(validIncidents);
@@ -1028,7 +1028,7 @@ function buildOrUpdateCommandCenterCharts() {
 }
 
 /* ==========================================================================
-   INCIDENT TREND :  large area-chart options
+   INCIDENT TREND — large area-chart options
    Single-series total-incident trend (the Command Center centerpiece).
    Kept separate from baseActivityBarOptions since this chart needs a
    custom tooltip (no raw timestamps, "AUG 15 / 5 INCIDENTS" styling) and
@@ -1064,7 +1064,7 @@ function trendAreaOptions(palette) {
 }
 
 /* ==========================================================================
-   INCIDENT VOLUME :  area-chart options
+   INCIDENT VOLUME — area-chart options
    Styled after a clean "simple area chart" reference: no gridlines, no
    visible axis border, just quiet tick labels. Kept separate from the
    Command Center's trendAreaOptions (same tooltip idea, different look)
@@ -1126,7 +1126,7 @@ function setupCcActivityPeriodControl() {
 }
 
 /* ==========================================================================
-   INCIDENT TREND :  SCROLL TO PREVIOUS DATES
+   INCIDENT TREND — SCROLL TO PREVIOUS DATES
    The trend chart only ever showed a fixed trailing window (last 7 days /
    6 weeks / 6 months). These controls page that window backward/forward
    by one period at a time so earlier activity is reachable, and the
@@ -1159,7 +1159,7 @@ function updateCcTrendRangeLabel(rangeLabel) {
 }
 
 /* ==========================================================================
-   ACTIVE VS RESOLVED :  two-line options
+   ACTIVE VS RESOLVED — two-line options
    The legend lives in the surrounding HTML (matching the dot colors used
    everywhere else in the app for these two statuses), so the in-chart
    legend stays off. The tooltip uses "index" mode so hovering any point
@@ -1174,7 +1174,7 @@ function activeResolvedLineOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: "#181818",
+                backgroundColor: palette.textPrimary,
                 titleColor: "#ffffff",
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
@@ -1195,7 +1195,7 @@ function activeResolvedLineOptions(palette) {
 }
 
 /* ==========================================================================
-   TOP CLASSROOMS :  horizontal bar options
+   TOP CLASSROOMS — horizontal bar options
 ========================================================================== */
 function hBarOptions(palette) {
     return {
@@ -1222,7 +1222,7 @@ function sectionRiskBarOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: "#181818",
+                backgroundColor: palette.textPrimary,
                 titleColor: "#ffffff",
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
@@ -1261,7 +1261,7 @@ function baseBarOptions(palette, horizontalLabelsOnly) {
    Chart.js sizes a new chart to its canvas's current pixel dimensions. If a
    chart is first created while the Analytics tab is hidden (display:none),
    the canvas is 0x0 and the chart stays invisible forever, even after the
-   tab is opened. So: never build charts for the first time while hidden : 
+   tab is opened. So: never build charts for the first time while hidden —
    only update KPI text (cheap, no layout needed) until the tab is actually
    visible.
 ========================================================================== */
@@ -1373,7 +1373,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupIncidentsListener();
     setupSectionRiskRefreshTriggers();
 
-    // Chart.js (loaded in index.html) tries three CDNs in sequence :  that
+    // Chart.js (loaded in index.html) tries three CDNs in sequence — that
     // can finish loading AFTER this module has already run once with Chart
     // undefined. If/when it does finish, build the charts at that point.
     window.addEventListener("rp:chartjs-loaded", () => {
@@ -1383,7 +1383,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Build charts (with correct canvas size) the first time the tab is opened,
-    // and force a resize on every subsequent open :  a hidden -> visible CSS
+    // and force a resize on every subsequent open — a hidden -> visible CSS
     // flip doesn't fire a window resize event, so Chart.js won't notice its
     // canvas now has real dimensions unless told explicitly.
     window.addEventListener("rp:analytics-view-activated", () => {

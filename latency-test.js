@@ -1,7 +1,7 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  SUBMIT \u2192 DASHBOARD LATENCY TEST (capstone testing only)
+   RESCUEPRIORITY — SUBMIT \u2192 DASHBOARD LATENCY TEST (capstone testing only)
    --------------------------------------------------------------------------
-   NOT a real product feature :  this is instrumentation for the thesis
+   NOT a real product feature — this is instrumentation for the thesis
    Results chapter and stays completely inert unless test mode is turned on.
    No normal end user sees anything from this file.
 
@@ -59,7 +59,7 @@ const measurements = []; // in-memory, feeds the debug panel's stats
    --------------------------------------------------------------------------
    Two ways to generate a trial's incident:
 
-   1. STUDENT APP BRIDGE (preferred :  a real submission)
+   1. STUDENT APP BRIDGE (preferred — a real submission)
       A hidden iframe loads the actual Student App (with its own
       ?latencytest=1 on), and each trial is a postMessage asking IT to run
       its real submitIncidentReport() write path (push + incident-number
@@ -70,7 +70,7 @@ const measurements = []; // in-memory, feeds the debug panel's stats
 
    2. DIRECT WRITE (fallback)
       If no Student App URL is configured/connected, this file pushes the
-      test incident itself :  same as before. Still a real Firebase round
+      test incident itself — same as before. Still a real Firebase round
       trip, just without the Student App's own write-path overhead.
 
    Either way, the actual LATENCY MEASUREMENT is identical: this dashboard
@@ -181,7 +181,7 @@ function checkForNewSubmissions(dashboardUpdateTime) {
 }
 
 /* ==========================================================================
-   STUDENT APP BRIDGE :  hidden iframe + postMessage handshake
+   STUDENT APP BRIDGE — hidden iframe + postMessage handshake
    --------------------------------------------------------------------------
    The Student App (app.js) has its own matching bridge that only activates
    when it's (a) in its own latency test mode and (b) actually embedded in
@@ -336,7 +336,7 @@ function recordMeasurement(incidentId, submittedAt, dashboardUpdateTime) {
     // If an automated trial is already waiting on this exact incident, hand
     // it the measurement now. Otherwise the trial may not have registered
     // its waiter yet (the bridge's cross-iframe ack can arrive after this
-    // dashboard's own onValue listener already saw the write) :  buffer it
+    // dashboard's own onValue listener already saw the write) — buffer it
     // so waitForMeasurement() can pick it up the moment it does register.
     const pending = pendingAutoResolvers.get(incidentId);
     if (pending) {
@@ -504,13 +504,13 @@ function updateDebugPanel() {
    1. Firebase push keys always start with "-" (e.g. "-P0ZR5h-3JGx...").
       Excel/Sheets auto-detect a leading "-" as the start of a formula, try
       to parse the rest as an expression, fail, and show #NAME?. Wrapping
-      the value as ="-P0ZR5h..." makes it a literal-text formula instead : 
+      the value as ="-P0ZR5h..." makes it a literal-text formula instead —
       Excel evaluates it to exactly that string, dash and all, no error.
 
    2. Millisecond epoch timestamps (~1.79e12) get rendered in scientific
       notation by a "General"-formatted numeric CSV cell. Exporting the
       epoch as a still-precise number AND a separate human-readable
-      ISO string column sidesteps that :  the ISO column is never
+      ISO string column sidesteps that — the ISO column is never
       re-interpreted as a number, so it never collapses to 1.79E+12.
 ========================================================================== */
 function csvTextLiteral(value) {
@@ -558,14 +558,14 @@ function downloadBlob(content, mimeType, filename) {
 }
 
 /* ==========================================================================
-   AUTOMATED TEST GENERATOR :  runner + UI wiring
+   AUTOMATED TEST GENERATOR — runner + UI wiring
 ========================================================================== */
 
 // Waits for THIS dashboard's own measurement of a given incidentId (i.e.
 // its rp:incidents-updated → checkForNewSubmissions → recordMeasurement
 // pipeline actually observing it), regardless of who wrote the record.
 function waitForMeasurement(key) {
-    // The measurement can arrive before this function is even called :  the
+    // The measurement can arrive before this function is even called — the
     // dashboard's own onValue(incidents/) listener runs independently of
     // the bridge handshake and often wins that race. Check the buffer of
     // already-completed measurements first so we don't miss it.
@@ -591,7 +591,7 @@ function waitForMeasurement(key) {
 }
 
 // Marks a test incident Resolved instead of deleting it, so a run of 100
-// trials clears itself out of "Active" without erasing the audit trail : 
+// trials clears itself out of "Active" without erasing the audit trail —
 // still filterable afterward via isTestData / reportedVia.
 function markTestIncidentResolved(key) {
     return update(ref(database, `incidents/${key}`), {
@@ -602,7 +602,7 @@ function markTestIncidentResolved(key) {
     });
 }
 
-// Path 1 :  direct write: this dashboard pushes the test incident itself.
+// Path 1 — direct write: this dashboard pushes the test incident itself.
 function submitDirectTestIncident(trialIndex) {
     const testRef = push(incidentsRootRef);
     const key = testRef.key;
@@ -699,7 +699,7 @@ async function runAutomatedTest(totalTrials) {
     autoTestAbort = false;
     setAutoControlsEnabled(true);
     setAutoProgress(
-        `Done :  ${autoTestResults.filter((r) => !r.error).length}/${autoTestResults.length} trial(s) measured.`
+        `Done — ${autoTestResults.filter((r) => !r.error).length}/${autoTestResults.length} trial(s) measured.`
     );
 }
 

@@ -1,8 +1,8 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  TEMPERATURE KPI
+   RESCUEPRIORITY — TEMPERATURE KPI
    Fetches the live temperature for Maasin City (MCNHS area) from Open-Meteo
    (a free, no-API-key weather service) and recolors the Temperature KPI
-   card based on the reading. Runs independently of script.js :  no Firebase
+   card based on the reading. Runs independently of script.js — no Firebase
    or dashboard state is touched here, so this cannot affect the rest of
    the dashboard if the weather service is unreachable.
 ========================================================================== */

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  CAMPUS FACILITY LIST (Student App copy)
+   RESCUEPRIORITY — CAMPUS FACILITY LIST (Student App copy)
    --------------------------------------------------------------------------
    This is a duplicate of the SCHOOL_FACILITIES list maintained in the main
    dashboard's script.js, kept here on purpose (same "zero dependency on the
@@ -10,7 +10,7 @@
    Used for exactly one thing here: letting a reporting student choose
    WHERE something is actually happening, in case it's not the room their
    ID card/section says they belong to (hallway, canteen, gym, another
-   section's room, etc.) :  because real incidents don't always happen at
+   section's room, etc.) — because real incidents don't always happen at
    your assigned seat.
 
    If a room is added/renamed/removed on the main dashboard, mirror the

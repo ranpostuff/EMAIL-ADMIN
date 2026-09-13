@@ -1,18 +1,18 @@
 /* ==========================================================================
-   RESCUEPRIORITY :  FLOATING AI WIDGET (Analytics)
+   RESCUEPRIORITY — FLOATING AI WIDGET (Analytics)
    ----------------------------------------------------------------------
    A compact floating chat, separate from the full AI Assistant page.
    Lives entirely inside #analytics-view in index.html, so script.js's
-   existing view-switching "hidden" toggle shows/hides it automatically : 
+   existing view-switching "hidden" toggle shows/hides it automatically —
    no view-tracking logic needed here.
 
    Two ways to open it:
    1. The floating action button (bottom-right, visible on Analytics)
-   2. Any "Ask AI" button on a chart card :  opens the panel and
+   2. Any "Ask AI" button on a chart card — opens the panel and
       immediately asks a question about that specific chart
 
    Shares the same backend (/api/ask-ai) and the same buildAIContext()
-   data layer as the full AI Assistant :  just a different, smaller UI.
+   data layer as the full AI Assistant — just a different, smaller UI.
    Runs independently of script.js and ai-assistant.js.
 ========================================================================== */
 
