@@ -1,6 +1,6 @@
 /* ==========================================================================
    RESCUEPRIORITY - MCNHS Emergency Operations Center Dashboard
-   JavaScript Controller — Navigation Views + Permanent Incident Logging
+   JavaScript Controller :  Navigation Views + Permanent Incident Logging
 ========================================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -18,7 +18,7 @@ import {
 import { triggerIncidentAlert } from "./notify-incident.js";
 
 /* ==========================================================================
-   FIREBASE CONFIGURATION (unchanged — existing project)
+   FIREBASE CONFIGURATION (unchanged :  existing project)
 ========================================================================== */
 const firebaseConfig = {
     apiKey: "AIzaSyDHPzeyaEtVvEvnH1Va81i24tpiCX8Gx-8",
@@ -71,7 +71,7 @@ let selectedIncidentId = null;      // incident key currently shown in the detai
 let resolveSelectionKey = null;     // incident key chosen inside the Resolve Emergency modal
 
 /* ==========================================================================
-   SCHOOL FACILITY DATABASE (unchanged — authoritative, do not edit)
+   SCHOOL FACILITY DATABASE (unchanged :  authoritative, do not edit)
    Exported (read-only) so insights.js can distinguish classrooms from
    offices/support facilities for classroom-specific statistics, without
    opening a second data source or duplicating this list.
@@ -157,7 +157,7 @@ export const SCHOOL_FACILITIES = [
     { id: "shs2-cr2", name: "C.R.", adviser: "Maintenance", section: "Comfort Room", zone: "SHS Building 2", adviserImage: "advisor55.png" },
 
     /* ===============================
-       COURTYARD (open space between the wings — see school_map.png)
+       COURTYARD (open space between the wings :  see school_map.png)
     =============================== */
     { id: "gym", name: "GYM", adviser: "PE Department", section: "Gymnasium", zone: "Courtyard", adviserImage: "advisor56.png" }
 ];
@@ -181,7 +181,7 @@ export function isClassroomFacility(facility) {
    A few facilities use compact codes on the blueprint (matching physical
    room signage) that read as abbreviations everywhere else in the UI.
    This maps the underlying facility.name to a full, professional label for
-   display purposes only — the raw name is still what's written to Firebase
+   display purposes only :  the raw name is still what's written to Firebase
    incident records, so historical data and the ESP32 integration are
    unaffected.
 ========================================================================== */
@@ -228,7 +228,7 @@ function initializeDashboard() {
 }
 
 /* ==========================================================================
-   BUILD CAMPUS MAP (unchanged — orientation, zones, IDs preserved exactly)
+   BUILD CAMPUS MAP (unchanged :  orientation, zones, IDs preserved exactly)
 ========================================================================== */
 function buildCampusMap() {
     const top = document.getElementById("wing-top");
@@ -270,7 +270,7 @@ function buildCampusMap() {
             }
         } else if (facility.zone === "Courtyard") {
             // Sits in the open courtyard space to the right of the SHS
-            // clusters (see school_map.png) — positioned via CSS
+            // clusters (see school_map.png) :  positioned via CSS
             // (.courtyard-gym-slot) so it never disturbs the existing
             // wing/cluster layout or orientation.
             const gymSlot = document.getElementById("courtyard-gym-slot");
@@ -338,7 +338,7 @@ function setupClock() {
 }
 
 /* ==========================================================================
-   FIREBASE LISTENER — classrooms/ (CURRENT emergency state, display only)
+   FIREBASE LISTENER :  classrooms/ (CURRENT emergency state, display only)
    This listener never creates incidents. It only paints the map and keeps
    classroomsState in sync so the Resolve Emergency modal and modal buttons
    know which rooms are currently flagged.
@@ -377,7 +377,7 @@ function setupClassroomsListener() {
 }
 
 /* ==========================================================================
-   FIREBASE LISTENER — incidents/ (HISTORICAL, permanent)
+   FIREBASE LISTENER :  incidents/ (HISTORICAL, permanent)
 ========================================================================== */
 function setupIncidentsListener() {
     onValue(
@@ -402,7 +402,7 @@ function setupIncidentsListener() {
             }
 
             // Keep the room modal's "Notify Student" button live if it's
-            // open — e.g. reflects helpNotifiedAt the moment it's set,
+            // open :  e.g. reflects helpNotifiedAt the moment it's set,
             // even if it was set from a different admin tab/device.
             const roomModal = document.getElementById("room-modal");
             if (roomModal && !roomModal.classList.contains("hidden") && selectedFacilityId) {
@@ -447,7 +447,7 @@ function setupButtons() {
 }
 
 /* ==========================================================================
-   INCIDENT NUMBERING — atomic counter via Firebase transaction
+   INCIDENT NUMBERING :  atomic counter via Firebase transaction
 ========================================================================== */
 async function getNextIncidentNumber() {
     const result = await runTransaction(lastIncidentNumberRef, (current) => {
@@ -470,7 +470,7 @@ function formatIncidentNumber(n) {
 async function raiseClassroomEmergency(facility) {
     const existing = classroomsState[facility.id];
     if (existing && existing.emergency) {
-        // Already active — do not create a duplicate incident.
+        // Already active :  do not create a duplicate incident.
         return;
     }
 
@@ -492,7 +492,7 @@ async function raiseClassroomEmergency(facility) {
     await update(ref(database, `classrooms/${facility.id}`), {
         emergency: true,
         activeIncidentKey: newIncidentRef.key,
-        // Test alerts raised here are always single-person in scope —
+        // Test alerts raised here are always single-person in scope : 
         // never colored as an area-wide incident.
         roomWide: false
     });
@@ -516,7 +516,7 @@ async function resolveIncidentByKey(incidentKey, resolutionReason) {
         resolvedAt: now
     };
 
-    // resolutionReason is optional in the Firebase rules — only send it
+    // resolutionReason is optional in the Firebase rules :  only send it
     // when the user actually typed something, so we don't write empty strings.
     if (trimmedReason.length > 0) {
         resolutionUpdate.resolutionReason = trimmedReason;
@@ -540,7 +540,7 @@ async function resolveIncidentByKey(incidentKey, resolutionReason) {
 }
 
 /* ==========================================================================
-   NAVIGATION — sidebar view switching
+   NAVIGATION :  sidebar view switching
    Command Center is the view visible by default in index.html; every other
    .app-view starts with the "hidden" class. Clicking a sidebar item (or a
    Command Center quick-action button) swaps which view is visible and keeps
@@ -559,7 +559,7 @@ function setupNavigation() {
 
 /* Kiosk Display isn't an in-app view (it's meant to run full-screen on a
    separate monitor), so it's a plain link-out rather than a switchView()
-   target — kept here rather than in kiosk.js since kiosk.js only loads on
+   target :  kept here rather than in kiosk.js since kiosk.js only loads on
    kiosk.html itself. */
 function setupKioskLink() {
     const kioskButton = document.getElementById("sidebar-open-kiosk");
@@ -654,10 +654,10 @@ function showIncidentDetailPanel() {
 }
 
 /* ==========================================================================
-   INCIDENT LOG — folder list rendering (newest first)
+   INCIDENT LOG :  folder list rendering (newest first)
    --------------------------------------------------------------------------
    INCREMENTAL by design: this used to wipe list.innerHTML and rebuild every
-   card from scratch on every single onValue() snapshot — meaning any one
+   card from scratch on every single onValue() snapshot :  meaning any one
    write to incidents/ (even a single status flip) repainted the ENTIRE
    collection (400+ cards as of this writing). That full rebuild was
    blocking the main thread long enough to seriously distort the latency
@@ -731,7 +731,7 @@ function renderIncidentFolderList() {
         prevNode = card;
     });
 
-    // Drop cards for incidents that no longer exist (rare — e.g. a manual delete).
+    // Drop cards for incidents that no longer exist (rare :  e.g. a manual delete).
     for (const [key, card] of incidentCardElements) {
         if (seenKeys.has(key)) continue;
         card.remove();
@@ -741,9 +741,9 @@ function renderIncidentFolderList() {
 }
 
 /* ==========================================================================
-   INCIDENT LOG — detail / timeline rendering
+   INCIDENT LOG :  detail / timeline rendering
    The "timeline" is derived purely from the two stored timestamps
-   (timestamp, resolvedAt) — nothing extra is stored in Firebase for it.
+   (timestamp, resolvedAt) :  nothing extra is stored in Firebase for it.
 ========================================================================== */
 function renderIncidentDetail(incident) {
     const titleEl = document.getElementById("incident-detail-title");
@@ -774,7 +774,7 @@ function renderIncidentDetail(incident) {
         ];
         if (incident.resolvedAt) {
             const resolvedMessage = incident.resolutionReason
-                ? `Emergency resolved — ${incident.resolutionReason}`
+                ? `Emergency resolved :  ${incident.resolutionReason}`
                 : "Emergency resolved";
             events.push({ timestamp: incident.resolvedAt, type: "resolved", message: resolvedMessage });
         }
@@ -797,9 +797,9 @@ function renderIncidentDetail(incident) {
     }
 
     // Announce the render as a plain DOM event (same pattern as
-    // rp:room-modal-opened above) so incidents-browser.js — which already
+    // rp:room-modal-opened above) so incidents-browser.js :  which already
     // holds the live studentsState/sectionsState needed to resolve
-    // reporterId into a name/LRN/section — can populate the "Reported By"
+    // reporterId into a name/LRN/section :  can populate the "Reported By"
     // row without this file importing students.js (would create a
     // circular import: students.js imports database/SCHOOL_FACILITIES
     // from here).
@@ -820,15 +820,15 @@ function formatDateTime(epochMs) {
     });
 }
 /* ==========================================================================
-   INCIDENT LOG — detail / timeline rendering
+   INCIDENT LOG :  detail / timeline rendering
    The "timeline" is derived purely from the two stored timestamps
-   (timestamp, resolvedAt) — nothing extra is stored in Firebase for it.
+   (timestamp, resolvedAt) :  nothing extra is stored in Firebase for it.
 ========================================================================== */
 
 /* ==========================================================================
-   INCIDENT LOG — detail / timeline rendering
+   INCIDENT LOG :  detail / timeline rendering
    The "timeline" is derived purely from the two stored timestamps
-   (timestamp, resolvedAt) — nothing extra is stored in Firebase for it.
+   (timestamp, resolvedAt) :  nothing extra is stored in Firebase for it.
 ========================================================================== */
 
 async function clearAllIncidentLogs() {
@@ -891,7 +891,7 @@ function setupModal() {
     }
 
     if (acknowledgeButton) {
-        // UI-only affordance — acknowledgment is not part of the stored
+        // UI-only affordance :  acknowledgment is not part of the stored
         // incident schema, so nothing is written to Firebase here.
         acknowledgeButton.addEventListener("click", () => {
             if (acknowledgeButton.disabled) return;
@@ -951,7 +951,7 @@ function openRoomModal(facilityId) {
 
     // Broadcast which room's modal is open as a plain DOM event (same
     // pattern used for analytics.js above) in case another module wants
-    // to react to it later — this file doesn't need to import or know
+    // to react to it later :  this file doesn't need to import or know
     // anything about who's listening.
     window.dispatchEvent(new CustomEvent("rp:room-modal-opened", { detail: { facilityId: facility.id } }));
 }
@@ -981,13 +981,13 @@ function refreshModalButtonsForFacility(facilityId) {
 }
 
 /* ==========================================================================
-   "NOTIFY STUDENT — HELP IS COMING"
+   "NOTIFY STUDENT :  HELP IS COMING"
    The Student Incident Reporter app no longer assumes help is coming the
-   moment a report is sent (that was a loophole — the app could say "Help
+   moment a report is sent (that was a loophole :  the app could say "Help
    is on the way" even if nobody had actually seen the report yet). Instead
    it waits, live, for incidents/{key}.helpNotifiedAt to be set, which only
    happens when an admin presses this button. Only shown for incidents that
-   actually came from that app (reportedVia === "student-app") — the
+   actually came from that app (reportedVia === "student-app") :  the
    "Trigger Test Alert" / ESP32 pipeline has no student waiting on a
    confirmation screen, so there's nothing to notify.
 ========================================================================== */
@@ -1129,7 +1129,7 @@ function renderResolveOptions() {
         option.className = "resolve-option";
         option.innerHTML = `
             <input type="radio" name="resolve-choice" value="${incident.key}">
-            <span class="resolve-option-label">${incident.incidentNumber} &mdash; ${displayFacilityName(incident.classroom)}</span>
+            <span class="resolve-option-label">${incident.incidentNumber} :  ${displayFacilityName(incident.classroom)}</span>
         `;
 
         const radio = option.querySelector("input");
@@ -1163,13 +1163,13 @@ function updateRoomStatus(facilityId, status, isRoomWide = false) {
     } else if (status === "THREAT") {
         // "emergency-active" drives the pink glow/pulse defined in style.css.
         // It is applied purely because classrooms/{facilityId}/emergency is
-        // true right now — never hard-coded to a particular facility — and
+        // true right now :  never hard-coded to a particular facility :  and
         // is removed the instant that value flips back to false.
         card.classList.add("status-threat", "emergency-active");
 
         // "emergency-wide" swaps in a darker/more saturated red (see
         // --status-emergency-wide in style.css) when the active incident
-        // affects everyone in the room/area rather than one person —
+        // affects everyone in the room/area rather than one person : 
         // driven by classrooms/{facilityId}/roomWide, mirrored there from
         // the reporting incident's own roomWide flag.
         if (isRoomWide) card.classList.add("emergency-wide");
@@ -1204,7 +1204,7 @@ function updateStatistics() {
     if (safeElement) safeElement.textContent = safe;
     if (alertElement) alertElement.textContent = alerts;
 
-    // Real derived status, not a fabricated percentage comparison — mirrors
+    // Real derived status, not a fabricated percentage comparison :  mirrors
     // the same alerts count already computed above.
     if (alertBadge) {
         const isAlert = alerts > 0;
@@ -1215,9 +1215,9 @@ function updateStatistics() {
 }
 
 /* ==========================================================================
-   COMMAND CENTER — KPI / SYSTEM STATUS / CAMPUS STATUS / RECENT INCIDENTS
+   COMMAND CENTER :  KPI / SYSTEM STATUS / CAMPUS STATUS / RECENT INCIDENTS
    All figures below are derived from the same classroomsState / incidents
-   data the rest of the app already uses — nothing here is hard-coded.
+   data the rest of the app already uses :  nothing here is hard-coded.
 ========================================================================== */
 function getActiveEmergencyCount() {
     return SCHOOL_FACILITIES.reduce((count, facility) => {
@@ -1318,7 +1318,7 @@ function updateSystemStatusFullList() {
 }
 
 /* ==========================================================================
-   COMMAND CENTER — RECENT INCIDENTS (latest 5, newest first)
+   COMMAND CENTER :  RECENT INCIDENTS (latest 5, newest first)
 ========================================================================== */
 function renderCommandRecentIncidents() {
     const list = document.getElementById("command-recent-incidents");
@@ -1354,7 +1354,7 @@ function renderCommandRecentIncidents() {
 }
 
 /* ==========================================================================
-   LIVE CAMPUS UPDATE — "Campus Watch" adviser/facility carousel
+   LIVE CAMPUS UPDATE :  "Campus Watch" adviser/facility carousel
    Generated dynamically from SCHOOL_FACILITIES (never hard-coded per-slide
    HTML), so it always stays in sync with the facility database. Facilities
    currently in emergency are sorted to the front so the carousel opens on
@@ -1505,7 +1505,7 @@ function refreshCarouselLiveData() {
     const currentFacilityId = carouselOrder[carouselIndex] ? carouselOrder[carouselIndex].id : null;
 
     if (signature !== carouselEmergencySignature) {
-        // The set of active emergencies changed — recompute order (emergency
+        // The set of active emergencies changed :  recompute order (emergency
         // facilities float to the front) but try to keep showing whatever
         // the user is currently looking at, so the carousel doesn't jump.
         carouselEmergencySignature = signature;
@@ -1516,7 +1516,7 @@ function refreshCarouselLiveData() {
         carouselIndex = preservedIndex >= 0 ? preservedIndex : 0;
         showSlideAtIndex(carouselIndex, null);
     } else {
-        // No emergency-set change — just refresh the currently visible
+        // No emergency-set change :  just refresh the currently visible
         // slide's status text/classes in place (no slide animation).
         carouselOrder = ordered;
         const wrap = document.getElementById("carousel-track-wrap");

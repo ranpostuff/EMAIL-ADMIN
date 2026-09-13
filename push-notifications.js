@@ -1,29 +1,29 @@
 /* ==========================================================================
-   RESCUEPRIORITY — PUSH NOTIFICATION OPT-IN
+   RESCUEPRIORITY :  PUSH NOTIFICATION OPT-IN
    --------------------------------------------------------------------------
    Wires up the "Send me emergency push notifications on this device"
    checkbox in Settings. This is the piece that makes notifications work
    even when the browser isn't open (unlike emergency-alert.js's
    `new Notification(...)`, which only fires while a tab is actually
-   loaded) — but it ONLY gets an admin's device ready to RECEIVE a push.
+   loaded) :  but it ONLY gets an admin's device ready to RECEIVE a push.
    Something still has to SEND one when an incident happens: that's the
    Cloud Function in /functions (see functions/index.js and
    SETUP-NOTIFICATIONS.md at the project root for the one-time setup this
    needs on Firebase's side, including a VAPID key you must paste in below).
 
    Flow when the checkbox is turned on:
-     1. Register /firebase-messaging-sw.js as a service worker (required —
+     1. Register /firebase-messaging-sw.js as a service worker (required : 
         this is the part that can wake up and show a notification with no
         tab open).
      2. Ask the browser for Notification permission (a real permission
         prompt; the user can always say no, and this never re-prompts if
-        they already denied it once — that's the browser's own rule, not
+        they already denied it once :  that's the browser's own rule, not
         this code's).
      3. Ask Firebase Cloud Messaging for a token tied to this
         browser+device+site.
      4. Save that token under fcmTokens/{token} in the Realtime Database so
         the Cloud Function knows where to send pushes. Saving your own
-        device's token is all this page ever writes here — see
+        device's token is all this page ever writes here :  see
         database.rules.json for the exact (narrow) write shape allowed.
 
    Turning the checkbox back off deletes this device's token from
@@ -72,12 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reflect current real-world state on load, without prompting anything.
     if (Notification.permission === "denied") {
         toggle.disabled = true;
-        status.textContent = "Status: blocked — notifications were denied for this site in your browser settings.";
+        status.textContent = "Status: blocked :  notifications were denied for this site in your browser settings.";
     } else {
         status.textContent = Notification.permission === "granted"
             ? "Status: checking this device's saved token..."
             : "Status: off.";
-        toggle.checked = false; // token presence, not just permission, decides the real "on" state — resolved below
+        toggle.checked = false; // token presence, not just permission, decides the real "on" state :  resolved below
         syncToggleWithSavedToken(toggle, status);
     }
 
@@ -143,7 +143,7 @@ async function enablePush(toggle, status) {
 
         if (!token) {
             toggle.checked = false;
-            status.textContent = "Status: couldn't get a device token — try again.";
+            status.textContent = "Status: couldn't get a device token :  try again.";
             return;
         }
 
@@ -158,7 +158,7 @@ async function enablePush(toggle, status) {
         console.error("[push-notifications] enable failed:", error);
         toggle.checked = false;
         status.textContent = VAPID_KEY.startsWith("PASTE-")
-            ? "Status: setup incomplete — add your VAPID key in push-notifications.js (see SETUP-NOTIFICATIONS.md)."
+            ? "Status: setup incomplete :  add your VAPID key in push-notifications.js (see SETUP-NOTIFICATIONS.md)."
             : "Status: couldn't enable notifications on this device.";
     } finally {
         toggle.disabled = false;
@@ -176,7 +176,7 @@ async function disablePush(toggle, status) {
         status.textContent = "Status: off.";
     } catch (error) {
         console.error("[push-notifications] disable failed:", error);
-        status.textContent = "Status: off (locally) — cleanup on the server may have failed.";
+        status.textContent = "Status: off (locally) :  cleanup on the server may have failed.";
     } finally {
         toggle.disabled = false;
     }

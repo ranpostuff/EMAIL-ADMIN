@@ -1,5 +1,5 @@
 /* ========================================================================== 
-   RESCUEPRIORITY — STUDENT INCIDENT PANEL
+   RESCUEPRIORITY :  STUDENT INCIDENT PANEL
    --------------------------------------------------------------------------
    This module keeps the two identities on a student-submitted incident
    separate:
@@ -91,7 +91,7 @@ function refreshPanel() {
 
     if (typeBadge) {
         const typeLabel = incident.incidentType ? `Reported: ${incident.incidentType}` : "Reported Emergency";
-        typeBadge.textContent = incident.roomWide ? `${typeLabel} — Room-wide` : typeLabel;
+        typeBadge.textContent = incident.roomWide ? `${typeLabel} :  Room-wide` : typeLabel;
     }
 
     // IMPORTANT: the primary person is the student involved, not the reporter.

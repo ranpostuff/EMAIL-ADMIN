@@ -1,14 +1,14 @@
 /* ==========================================================================
-   RESCUEPRIORITY — FACILITIES TEST MODE
+   RESCUEPRIORITY :  FACILITIES TEST MODE
    --------------------------------------------------------------------------
    Purpose: a QA view for checking that the 55 campus facilities load and
-   update correctly against Firebase when an incident happens — i.e. "does
+   update correctly against Firebase when an incident happens :  i.e. "does
    the facility that says it's in emergency actually correspond to a real
    incidents/ record, and does it update live."
 
    Activation: append ?facilitiestest=2 to the dashboard URL, e.g.
        https://your-deployment-url/index.html?facilitiestest=2
-   That's the ONLY trigger — this module does nothing on a normal page load
+   That's the ONLY trigger :  this module does nothing on a normal page load
    with no query string, so it can safely stay wired into index.html
    permanently without affecting the real dashboard.
 
@@ -33,7 +33,7 @@
 
    Test tools: "Simulate" writes a real classrooms/{id}.emergency=true and
    a real incidents/ record, but tagged isTestData:true (a field the
-   database rules already allow — see database.rules.json) so it's
+   database rules already allow :  see database.rules.json) so it's
    filterable and never mistaken for a genuine emergency. "Clear" reverses
    it. "Reset All Test Data" wipes every isTestData incident + any
    emergency flags they set. Nothing here touches non-test data.
@@ -99,7 +99,7 @@ function mountOverlay() {
         <div class="ft-bar">
             <div class="ft-bar-title">
                 <strong>Facilities Test Mode</strong>
-                <span class="ft-bar-sub">?facilitiestest=2 &mdash; live view of every facility vs. its incident data</span>
+                <span class="ft-bar-sub">?facilitiestest=2 :  live view of every facility vs. its incident data</span>
             </div>
             <div class="ft-bar-actions">
                 <span class="ft-live-dot" title="Live Firebase connection"></span>
@@ -245,7 +245,7 @@ function escapeHtml(value) {
 }
 
 /* ==========================================================================
-   TEST TOOLS — writes are ALWAYS tagged isTestData: true
+   TEST TOOLS :  writes are ALWAYS tagged isTestData: true
 ========================================================================== */
 async function simulateIncident(facility) {
     const facilityName = displayFacilityName(facility.name);
@@ -314,7 +314,7 @@ async function resetAllTestData() {
 }
 
 /* ==========================================================================
-   EXPORT — CSV (no dependency)
+   EXPORT :  CSV (no dependency)
 ========================================================================== */
 function rowsToAoa() {
     const header = [
@@ -361,7 +361,7 @@ function downloadBlob(content, filename, mime) {
 }
 
 /* ==========================================================================
-   EXPORT — Excel (.xlsx) via SheetJS, lazy-loaded from CDN on first use
+   EXPORT :  Excel (.xlsx) via SheetJS, lazy-loaded from CDN on first use
 ========================================================================== */
 function loadSheetJs() {
     if (window.XLSX) return Promise.resolve();

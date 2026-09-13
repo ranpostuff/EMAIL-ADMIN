@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY — AI ASSISTANT
+   RESCUEPRIORITY :  AI ASSISTANT
    Connects the existing chat UI to the RescuePriority AI backend.
    NVIDIA Nemotron is primary and Gemini is the automatic fallback. API
    keys stay in Vercel and never touch this file or the browser.

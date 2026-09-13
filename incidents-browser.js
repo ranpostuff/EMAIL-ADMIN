@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY — INCIDENTS MODULE (grade-level folder browser)
+   RESCUEPRIORITY :  INCIDENTS MODULE (grade-level folder browser)
    --------------------------------------------------------------------------
    Additive module, same convention as violations.js: owns its
    own read-only listeners, writes nothing.
@@ -100,7 +100,7 @@ function resetToTop() {
 }
 
 /* ==========================================================================
-   HELPERS — per-student / per-section aggregation
+   HELPERS :  per-student / per-section aggregation
 ========================================================================== */
 function studentFullName(student) {
     return [student.firstName, student.middleName, student.lastName, student.extension]
@@ -109,13 +109,13 @@ function studentFullName(student) {
 }
 
 /* ==========================================================================
-   "REPORTED BY" STRIP — Incident Log detail panel
+   "REPORTED BY" STRIP :  Incident Log detail panel
    --------------------------------------------------------------------------
    Every incident the Student Incident Reporter app creates now carries
-   reporterId/reporterName/reporterLrn — the identity of whoever was logged
+   reporterId/reporterName/reporterLrn :  the identity of whoever was logged
    in when they sent it, captured regardless of whether the report was
    "Just Me" or "Everyone Here". (studentId/studentName, kept for back-
-   compat, is who the incident concerns — null for a room-wide report — so
+   compat, is who the incident concerns :  null for a room-wide report :  so
    it can legitimately differ from who reported it.) Incidents with neither
    field (the "Trigger Test Alert" / ESP32 pipeline) simply have nothing to
    show here, so the strip stays hidden for those.
@@ -260,7 +260,7 @@ function gradeSortIndex(gradeName) {
 }
 
 /* ==========================================================================
-   RENDER — dispatch to the right level
+   RENDER :  dispatch to the right level
 ========================================================================== */
 function render() {
     renderBreadcrumb();
@@ -499,7 +499,7 @@ function renderRoster(root) {
 
     const historyHeading = document.createElement("h3");
     historyHeading.className = "folder-subheading";
-    historyHeading.textContent = `Room Incident History${facility ? ` — ${displayFacilityName(facility.name)}` : ""}`;
+    historyHeading.textContent = `Room Incident History${facility ? ` :  ${displayFacilityName(facility.name)}` : ""}`;
     root.appendChild(historyHeading);
 
     const historyWrap = document.createElement("div");

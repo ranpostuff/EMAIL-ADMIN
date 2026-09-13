@@ -1,12 +1,12 @@
 /* ==========================================================================
-   RESCUEPRIORITY — KIOSK DISPLAY MODULE
+   RESCUEPRIORITY :  KIOSK DISPLAY MODULE
    --------------------------------------------------------------------------
    Standalone page, meant to be opened full-screen on a separate monitor
    (e.g. mounted at the gate next to the scanning device). It does NOT run
-   inside the main app-shell SPA in index.html — it's opened directly, or
+   inside the main app-shell SPA in index.html :  it's opened directly, or
    via the "Kiosk Display" sidebar link which does window.open("kiosk.html").
 
-   Read-only. Never writes to Firebase — it only listens to the same
+   Read-only. Never writes to Firebase :  it only listens to the same
    students/, sections/ and attendance/ trees that students.js and
    scan-attendance.js already own, so this file keeps its own small
    Firebase connection rather than importing those modules (which assume
@@ -29,7 +29,7 @@ import {
     onValue
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-/* Same public client config used in script.js — this is a Firebase Web SDK
+/* Same public client config used in script.js :  this is a Firebase Web SDK
    config (not a secret; access is governed by Firebase security rules,
    same as every other page in this app), duplicated here on purpose so
    this page has zero dependency on the main dashboard's module graph. */
@@ -58,7 +58,7 @@ const RESULT_DISPLAY_MS = 8000;
 
 /* Punctuality cutoffs (school-local time, hours/minutes in 24h form).
    A student's FIRST "in" scan of the day is what's judged against the
-   late cutoff — a later re-entry (e.g. back from an errand) shouldn't
+   late cutoff :  a later re-entry (e.g. back from an errand) shouldn't
    retroactively mark them late. The checkout cutoff is display-only
    context (shown as a note on OUT scans after that time); it does not
    change how anything is stored. */
@@ -93,7 +93,7 @@ function isStudentLateToday(studentId) {
 /* ==========================================================================
    FULLSCREEN
    --------------------------------------------------------------------------
-   Browsers only grant Fullscreen API access from a real user gesture — a
+   Browsers only grant Fullscreen API access from a real user gesture :  a
    page can never force itself fullscreen just by loading, so there's no
    way to skip the first tap entirely. What this does instead: the very
    first tap/click anywhere on the kiosk (which the idle screen already
@@ -103,7 +103,7 @@ function isStudentLateToday(studentId) {
    something else, or a browser policy blocked the auto-request.
 
    Note: this hides the browser's own chrome (tabs, address bar) and, on
-   most desktop browsers, the OS taskbar too — that's genuinely as far as
+   most desktop browsers, the OS taskbar too :  that's genuinely as far as
    a web page can reach. True OS-level lockdown (disabling Alt+Tab, the
    Windows key, etc.) needs a browser kiosk flag or a dedicated kiosk app,
    not something achievable from inside the page itself.
@@ -116,7 +116,7 @@ function requestKioskFullscreen() {
     if (!request) return;
 
     request.call(el).catch(() => {
-        /* Blocked or dismissed — the corner button stays available to retry. */
+        /* Blocked or dismissed :  the corner button stays available to retry. */
     });
 }
 
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Today-only log cache, purely to answer "was this student's first
-    // check-in today late" — same startOfToday+startAt pattern used by
+    // check-in today late" :  same startOfToday+startAt pattern used by
     // students.js, kept as its own small listener per this file's
     // read-only, self-contained convention.
     const startOfToday = new Date();

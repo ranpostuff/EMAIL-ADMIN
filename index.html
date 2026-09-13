@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 
-    <!-- Hidden-features toggle (?hide=4 / ?hide=0) — must run first,
+    <!-- Hidden-features toggle (?hide=4 / ?hide=0) :  must run first,
          synchronously, before anything else paints. See feature-flags.js. -->
     <script src="feature-flags.js"></script>
 
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="violations.css">
     <link rel="stylesheet" href="emergency-alert.css">
     <link rel="stylesheet" href="facilities-test.css">
-    <link rel="stylesheet" href="product-theme.css?v=15">
+    <link rel="stylesheet" href="product-theme.css?v=16">
 
     <!-- QR generation (Students view): self-hosted locally, same as
          chart.umd.min.js, for network resilience (unpkg was unreliable
@@ -35,16 +35,17 @@
     <script src= "https://unpkg.com/qrcode@1.5.1/build/qrcode.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-    <!-- Chart.js — self-hosted locally (not loaded from a CDN) so the
+    <!-- Chart.js :  self-hosted locally (not loaded from a CDN) so the
          Analytics charts work even on networks that block CDN domains.
          Make sure chart.umd.min.js sits in this same ANALYTICS folder. -->
     <script src="chart.umd.min.js"></script>
+    <script src="chart-theme.js"></script>
 </head>
 <body class="eoc-dashboard-body">
 
     <!-- ============================= SITE-WIDE EMERGENCY ALERT ============================= -->
     <!-- Lives outside .app-shell/.app-view entirely (a direct <body> child), so it renders on
-         top of every page/section regardless of which sidebar view is currently open — that's
+         top of every page/section regardless of which sidebar view is currently open :  that's
          the whole point: an emergency must be visible no matter where the admin is looking. -->
     <div id="emergency-alert-overlay" class="emergency-alert-overlay hidden" aria-live="assertive">
         <div class="emergency-alert-frame" aria-hidden="true"></div>
@@ -60,7 +61,7 @@
     <!-- Direct <body> child, same as the emergency alert overlay above, so it
          covers the whole screen regardless of which view is behind it. Shown
          until auth.js confirms a signed-in AND allowlisted (admins/{uid})
-         Firebase Auth session — see auth.js and RULES-NOTES.md. -->
+         Firebase Auth session :  see auth.js and RULES-NOTES.md. -->
     <div id="auth-gate" class="auth-gate">
         <div class="auth-card">
             <div class="auth-brand">
@@ -171,7 +172,6 @@
                 <div class="topbar-left">
                     <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Open menu">&#9776;</button>
                     <div class="topbar-greeting">
-                        <h2 id="greeting-text">Welcome back</h2>
                         <p id="admin-account-meta" class="admin-account-meta">Administrator</p>
                         <p id="live-date">Loading date...</p>
                     </div>
@@ -187,6 +187,7 @@
 
                 <!-- ============================= COMMAND CENTER VIEW ============================= -->
                 <div id="command-center-view" class="app-view">
+                    <h2 id="greeting-text" class="command-greeting">Command Center</h2>
 
                     <div class="cc-hero-grid">
                         <!-- LEFT / MAIN AREA -->
@@ -271,7 +272,7 @@
                                     <div class="cc-trend-controls">
                                         <div class="cc-trend-nav">
                                             <button type="button" class="cc-calendar-nav-btn" id="cc-trend-prev" aria-label="Scroll to earlier dates">&#8249;</button>
-                                            <span class="cc-trend-range-label" id="cc-trend-range-label">&mdash;</span>
+                                            <span class="cc-trend-range-label" id="cc-trend-range-label">--</span>
                                             <button type="button" class="cc-calendar-nav-btn" id="cc-trend-next" aria-label="Scroll to more recent dates" disabled>&#8250;</button>
                                         </div>
                                         <select id="cc-activity-period-select" class="analytics-period-select">
@@ -301,7 +302,7 @@
                                     </div>
                                     <div class="cc-calendar-nav">
                                         <button type="button" class="cc-calendar-nav-btn" id="cc-calendar-prev" aria-label="Previous month">&#8249;</button>
-                                        <span class="cc-calendar-month-label" id="cc-calendar-month-label">&mdash;</span>
+                                        <span class="cc-calendar-month-label" id="cc-calendar-month-label">--</span>
                                         <button type="button" class="cc-calendar-nav-btn" id="cc-calendar-next" aria-label="Next month">&#8250;</button>
                                     </div>
                                 </div>
@@ -496,7 +497,7 @@
                                         <div class="shs-tier" id="shs2-tier-2"></div>
                                     </div>
 
-                                    <!-- GYM — sits in the open courtyard space (see
+                                    <!-- GYM :  sits in the open courtyard space (see
                                          school_map.png); positioned via CSS so it
                                          never disturbs the SHS cluster layout above. -->
                                     <div class="courtyard-gym-slot" id="courtyard-gym-slot"></div>
@@ -569,7 +570,7 @@
                             </div>
                         </div>
 
-                        <!-- "Reported By" strip — populated by incidents-browser.js off the
+                        <!-- "Reported By" strip :  populated by incidents-browser.js off the
                              rp:incident-detail-rendered event script.js dispatches. Hidden for
                              incidents with no reporter on file (ESP32/"Trigger Test Alert"
                              incidents, which never go through the Student Incident Reporter app). -->
@@ -641,12 +642,12 @@
                         </div>
                     </section>
 
-                    <!-- INCIDENT VOLUME OVER TIME (PRIMARY CHART — AREA) -->
+                    <!-- INCIDENT VOLUME OVER TIME (PRIMARY CHART :  AREA) -->
                     <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-volume">
                         <div class="analytics-chart-header">
                             <div>
                                 <h3>Incident Volume Over Time</h3>
-                                <p>Total incidents recorded per period — watch for spikes or sustained increases</p>
+                                <p>Total incidents recorded per period :  watch for spikes or sustained increases</p>
                             </div>
                             <div class="analytics-chart-header-actions">
                                 <button type="button" class="ai-ask-chart-btn" data-chart-title="Incident Volume Over Time">Insights</button>
@@ -672,7 +673,7 @@
                         <p class="analytics-empty-note hidden" id="chart-volume-empty">No incident data yet.</p>
                     </section>
 
-                    <!-- ACTIVE VS RESOLVED OVER TIME (SECONDARY CHART — LINE) -->
+                    <!-- ACTIVE VS RESOLVED OVER TIME (SECONDARY CHART :  LINE) -->
                     <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-status">
                         <div class="analytics-chart-header">
                             <div>
@@ -691,17 +692,17 @@
                         <p class="analytics-empty-note hidden" id="chart-active-resolved-empty">No incident data yet.</p>
                     </section>
 
-                    <!-- SECTION RISK — ties Analytics to the Students & Sections module. Same
+                    <!-- SECTION RISK :  ties Analytics to the Students & Sections module. Same
                          incident count + violation count used by the "Highest Incidents" /
                          "Highest Violations" sort in Students & Sections, so the ranking here
                          always agrees with that sort. -->
                     <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-risk">
                         <div class="analytics-chart-header">
                             <div>
-                                <h3>Top Sections — Incidents &amp; Violations</h3>
+                                <h3>Top Sections :  Incidents &amp; Violations</h3>
                                 <p>Which sections need the most attention right now</p>
                             </div>
-                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Sections — Incidents & Violations">Insights</button>
+                            <button type="button" class="ai-ask-chart-btn" data-chart-title="Top Sections :  Incidents & Violations">Insights</button>
                         </div>
                         <div class="analytics-chart-legend">
                             <span class="analytics-chart-legend-item"><span class="analytics-chart-legend-dot dot-volume"></span>Incidents</span>
@@ -760,7 +761,7 @@
 
                     <!-- ============================= FLOATING AI WIDGET (Analytics only) =============================
                          Nested inside #analytics-view so it inherits the existing view-switching
-                         "hidden" toggle from script.js automatically — no extra JS needed to show
+                         "hidden" toggle from script.js automatically :  no extra JS needed to show
                          or hide it in sync with the Analytics tab. position:fixed lifts it out of
                          the section's normal document flow so it floats over the whole viewport.
                     ================================================================================= -->
@@ -986,7 +987,7 @@
                         </div>
                     </div>
 
-                    <!-- Passcode gate (placeholder — access model still undecided) -->
+                    <!-- Passcode gate (placeholder :  access model still undecided) -->
                     <div id="scan-passcode-gate" class="scan-passcode-card">
                         <h2>Enter Passcode</h2>
                         <p>This device is used to scan students in and out during drills and emergencies.</p>
@@ -1134,11 +1135,11 @@
                     </div>
                     <div class="info-card">
                         <h3>Data Source</h3>
-                        <p>Facility status, incident records, and adviser assignments are read directly from Firebase Realtime Database (<code>classrooms/</code> and <code>incidents/</code>) — nothing on this page is hard-coded or simulated.</p>
+                        <p>Facility status, incident records, and adviser assignments are read directly from Firebase Realtime Database (<code>classrooms/</code> and <code>incidents/</code>) :  nothing on this page is hard-coded or simulated.</p>
                     </div>
                     <div class="info-card">
                         <h3>Push Notifications</h3>
-                        <p>Get an OS-level notification the moment a new incident is reported — even if this tab, or the browser, is closed on this device. Requires a one-time permission grant and only works while this device is online.</p>
+                        <p>Get an OS-level notification the moment a new incident is reported :  even if this tab, or the browser, is closed on this device. Requires a one-time permission grant and only works while this device is online.</p>
                         <label class="settings-toggle-row" for="push-notif-toggle">
                             <input type="checkbox" id="push-notif-toggle">
                             <span>Send me emergency push notifications on this device</span>
@@ -1156,12 +1157,12 @@
                     <div class="info-card">
                         <h3>Navigating RescuePriority</h3>
                         <ul>
-                            <li><strong>Command Center</strong> — the landing screen. Answers "what is happening right now" with KPIs, system status, the Live Campus Update carousel, recent incidents, and quick actions.</li>
-                            <li><strong>Dashboard</strong> — incident trend charts (by classroom, by status).</li>
-                            <li><strong>Campus Map</strong> — the interactive blueprint of all 55 facilities. Click any room for full details and emergency controls.</li>
-                            <li><strong>Incident Log</strong> — permanent history of every emergency, with a timeline for each.</li>
-                            <li><strong>Analytics</strong> — deeper analysis: incident volume over time, active vs. resolved trend, top classrooms, resolution time, and time of day.</li>
-                            <li><strong>AI Assistant</strong> — a live, read-only operations assistant grounded in current RescuePriority data.</li>
+                            <li><strong>Command Center</strong> :  the landing screen. Answers "what is happening right now" with KPIs, system status, the Live Campus Update carousel, recent incidents, and quick actions.</li>
+                            <li><strong>Dashboard</strong> :  incident trend charts (by classroom, by status).</li>
+                            <li><strong>Campus Map</strong> :  the interactive blueprint of all 55 facilities. Click any room for full details and emergency controls.</li>
+                            <li><strong>Incident Log</strong> :  permanent history of every emergency, with a timeline for each.</li>
+                            <li><strong>Analytics</strong> :  deeper analysis: incident volume over time, active vs. resolved trend, top classrooms, resolution time, and time of day.</li>
+                            <li><strong>AI Assistant</strong> :  a live, read-only operations assistant grounded in current RescuePriority data.</li>
                         </ul>
                     </div>
                 </div>
@@ -1192,13 +1193,13 @@
                 <p><strong>Emergency Status:</strong> <span id="modal-type">--</span></p>
             </div>
 
-            <!-- Reported-incident banner — a slim, one-line strip shown whenever the
+            <!-- Reported-incident banner :  a slim, one-line strip shown whenever the
                  active incident on this room was raised through the Student
                  Incident Reporter app and has a reporter on file (this app now
                  always captures who reported, "Just Me" or "Everyone Here"
                  alike). Hidden only for test-alert / ESP32-triggered incidents,
-                 which have no reporter. Tapping it opens #reporter-modal — a
-                 separate, properly-sized modal — instead of cramming a photo +
+                 which have no reporter. Tapping it opens #reporter-modal :  a
+                 separate, properly-sized modal :  instead of cramming a photo +
                  five lines of contact detail into this already-busy room card. -->
             <button type="button" id="modal-student-incident-section" class="modal-student-incident-banner hidden">
                 <span class="modal-student-incident-banner-photo-wrap">
@@ -1217,12 +1218,12 @@
             <div class="modal-actions">
                 <button type="button" id="btn-acknowledge" class="btn btn-ack" disabled>Acknowledge Siren</button>
                 <button type="button" id="btn-resolve" class="btn btn-resolve" disabled>Clear Emergency</button>
-                <button type="button" id="btn-notify-help" class="btn btn-notify-help hidden">Notify Student &mdash; Help is Coming</button>
+                <button type="button" id="btn-notify-help" class="btn btn-notify-help hidden">Notify Student :  Help is Coming</button>
             </div>
         </div>
     </div>
 
-    <!-- REPORTER DETAILS MODAL — opened from the banner above. Its own,
+    <!-- REPORTER DETAILS MODAL :  opened from the banner above. Its own,
          wider modal (not squeezed inside #room-modal) so a photo, contact
          info, and an optional note all have room to breathe. -->
     <div id="reporter-modal" class="modal-overlay hidden">
@@ -1286,7 +1287,7 @@
         </div>
     </div>
 
-    <!-- RESOLVE EMERGENCY — SELECTION MODAL -->
+    <!-- RESOLVE EMERGENCY :  SELECTION MODAL -->
     <div id="resolve-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <button type="button" class="modal-close-btn" id="resolve-modal-close">&times;</button>
@@ -1373,7 +1374,7 @@
                 <div class="field-group field-full">
                     <label for="student-field-password">Student Web App Password <span id="student-field-password-status" class="field-hint-inline"></span></label>
                     <input type="password" id="student-field-password" autocomplete="new-password" placeholder="Leave blank to keep the current password">
-                    <span class="field-hint">Students sign in to the Student Incident Reporter with their LRN and this password. Set one here to grant (or reset) their access — leave it blank when editing to leave an existing password unchanged. A student with no password on file can't log in.</span>
+                    <span class="field-hint">Students sign in to the Student Incident Reporter with their LRN and this password. Set one here to grant (or reset) their access :  leave it blank when editing to leave an existing password unchanged. A student with no password on file can't log in.</span>
                 </div>
             </div>
 
@@ -1423,7 +1424,7 @@
         </div>
     </div>
 
-    <!-- SECTION ROSTER VIEW — full-screen/full-tab (NOT a floating modal). Opened
+    <!-- SECTION ROSTER VIEW :  full-screen/full-tab (NOT a floating modal). Opened
          from the Sections-in-grade folder list; covers the whole viewport. -->
     <div id="section-roster-view" class="students-fullscreen-view hidden">
         <div class="students-fullscreen-inner">
@@ -1472,7 +1473,7 @@
         </div>
     </div>
 
-    <!-- STUDENT DETAIL PAGE (Overview / Violations / Incidents / Timeline tabs) —
+    <!-- STUDENT DETAIL PAGE (Overview / Violations / Incidents / Timeline tabs) : 
          full-screen workspace opened from the Section Roster's "View" action. -->
     <div id="student-detail-modal" class="student-detail-page hidden" aria-hidden="true">
         <div class="student-detail-page-shell">

@@ -1,10 +1,10 @@
 /* ==========================================================================
-   RESCUEPRIORITY — COMMAND CENTER CALENDAR
+   RESCUEPRIORITY :  COMMAND CENTER CALENDAR
    --------------------------------------------------------------------------
    Small, self-contained month calendar for the Command Center's "Calendar"
    card. index.html already wires up the markup (#cc-calendar-grid,
    #cc-calendar-month-label, #cc-calendar-prev / #cc-calendar-next,
-   #cc-calendar-today) and loads this file as a module — this is the
+   #cc-calendar-today) and loads this file as a module :  this is the
    implementation behind it.
 ========================================================================== */
 
@@ -113,7 +113,7 @@ function renderCalendar() {
                 btn.classList.add("is-today");
             }
 
-            // Purely informational — lets other modules react to a picked
+            // Purely informational :  lets other modules react to a picked
             // date later without this card needing to know about them.
             btn.addEventListener("click", () => {
                 const picked = new Date(viewedYear, viewedMonth, cell.day);

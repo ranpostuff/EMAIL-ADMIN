@@ -1,11 +1,11 @@
 /* ==========================================================================
-   RESCUEPRIORITY — STUDENT INCIDENT REPORTER
+   RESCUEPRIORITY :  STUDENT INCIDENT REPORTER
    --------------------------------------------------------------------------
    Standalone mobile-first web app, separate deployment from the main
    RescuePriority dashboard, but pointed at the SAME Firebase Realtime
    Database. It only READS students/ and sections/ (to identify the
    reporting student) and only WRITES to incidents/ and
-   classrooms/{facilityId} — the exact same two paths the main dashboard's
+   classrooms/{facilityId} :  the exact same two paths the main dashboard's
    "Trigger Test Alert" button writes to (see script.js in the main
    project), so a report from this app lights up the Campus Map exactly
    like any other emergency.
@@ -21,9 +21,9 @@
        description        : string | null (optional free-text notes)
        reportedVia        : "student-app"
        facilityId         : string | null (the ACTUAL place the student picked
-                                            on the map — see below)
+                                            on the map :  see below)
        locationOverridden : boolean  (true if the student changed the location
-                                       away from the room their scan implied —
+                                       away from the room their scan implied : 
                                        real incidents don't always happen at
                                        your assigned seat, so this is never
                                        forced to match the scan)
@@ -49,7 +49,7 @@ import {
 import { SCHOOL_FACILITIES, ZONE_ORDER, displayFacilityName, findFacility } from "./facilities.js";
 import { triggerIncidentAlert } from "./notify-incident.js";
 
-/* Same public client config used throughout the main RescuePriority app —
+/* Same public client config used throughout the main RescuePriority app : 
    this is a Firebase Web SDK config (not a secret; access is governed by
    Firebase security rules), duplicated here so this app has zero
    dependency on the main dashboard's codebase. */
@@ -83,7 +83,7 @@ let matchedStudent = null;
 let matchedSection = null;
 
 let scannedFacilityId = null;   // the room implied by the student's scan (may be null)
-let selectedFacilityId = null;  // the room actually picked for THIS report — defaults to scannedFacilityId
+let selectedFacilityId = null;  // the room actually picked for THIS report :  defaults to scannedFacilityId
 let locationOverridden = false; // true once the student changes it away from the scanned room
 
 let reportRoomWide = false;     // false = "Just Me", true = "Everyone Here"
@@ -95,13 +95,13 @@ let armInterval = null;
 let armRemaining = ARM_SECONDS;
 
 /* ==========================================================================
-   LATENCY TEST MODE (capstone testing only — NOT a normal end-user feature)
+   LATENCY TEST MODE (capstone testing only :  NOT a normal end-user feature)
    --------------------------------------------------------------------------
    When enabled, submitIncidentReport() attaches a high-resolution
    submitted_at timestamp to the incident record so the admin dashboard's
    own latency-test.js can measure submit-to-dashboard latency. When
    disabled (the default for every real user), nothing extra is sent and
-   nothing is logged — this whole block is a no-op.
+   nothing is logged :  this whole block is a no-op.
    Enable once via ?latencytest=1 in the URL; it's then remembered in
    localStorage until you visit with ?latencytest=0.
 ========================================================================== */
@@ -193,7 +193,7 @@ function resetReportState() {
 }
 
 /* ==========================================================================
-   SCAN SCREEN — camera + manual fallback, both resolve to the same
+   SCAN SCREEN :  camera + manual fallback, both resolve to the same
    handleLrnLookup() (same "QR encodes LRN only" convention as the main
    dashboard's scan-attendance.js and kiosk.js)
 ========================================================================== */
@@ -234,7 +234,7 @@ async function startCamera() {
             { facingMode: "environment" },
             { fps: 10, qrbox: { width: 220, height: 220 } },
             (decodedText) => handleLrnLookup(decodedText.trim()),
-            () => { /* per-frame decode miss while framing the code — expected, ignore */ }
+            () => { /* per-frame decode miss while framing the code :  expected, ignore */ }
         );
         cameraRunning = true;
         if (idleBox) idleBox.classList.add("hidden");
@@ -299,7 +299,7 @@ async function handleLrnLookup(lrn) {
 }
 
 /* ==========================================================================
-   REPORT SCREEN — identity + scope + type + location + notes, all on one
+   REPORT SCREEN :  identity + scope + type + location + notes, all on one
    screen, ending in a single Send button (no separate confirm screen).
 ========================================================================== */
 function populateReportScreen() {
@@ -390,7 +390,7 @@ function setupTypeGrids() {
 }
 
 function setupNotes() {
-    // Notes are read directly from the textarea at submit time — nothing
+    // Notes are read directly from the textarea at submit time :  nothing
     // to wire up here beyond letting the <details> disclosure do its thing.
 }
 
@@ -440,7 +440,7 @@ function updateSendButtonState() {
 }
 
 /* ==========================================================================
-   SEND BUTTON — tap once to arm a short, visible, cancellable countdown
+   SEND BUTTON :  tap once to arm a short, visible, cancellable countdown
    instead of navigating to a separate confirmation screen. Tap again while
    armed to cancel. This replaces the old Confirm screen so reporting a real
    emergency takes as few steps as possible.
@@ -526,7 +526,7 @@ async function finalizeSend() {
 }
 
 /* ==========================================================================
-   CAMPUS MAP OVERLAY — lets the student pick where this is ACTUALLY
+   CAMPUS MAP OVERLAY :  lets the student pick where this is ACTUALLY
    happening instead of trusting the room implied by their scan. Real
    incidents happen in hallways, the canteen, another section's room, etc.
 ========================================================================== */
@@ -630,14 +630,14 @@ function renderMapZones(filterText) {
 }
 
 /* ==========================================================================
-   FIREBASE WRITE — mirrors the main dashboard's raiseClassroomEmergency()
+   FIREBASE WRITE :  mirrors the main dashboard's raiseClassroomEmergency()
    in script.js: atomic incident-number transaction, then a permanent
    incidents/{pushKey} record, then the current-state classrooms/ flag.
    Uses selectedFacilityId (the map pick) rather than blindly trusting the
    room implied by the student's scan, since the two can legitimately differ.
 ========================================================================== */
 async function submitIncidentReport() {
-    // Captured at the exact moment this function starts — i.e. the moment
+    // Captured at the exact moment this function starts :  i.e. the moment
     // the report actually fires (after the ARM_SECONDS cancel window has
     // expired), which is the "submit" side of the latency test.
     const submittedAt = isLatencyTestModeEnabled() ? highResTimestamp() : null;
@@ -677,7 +677,7 @@ async function submitIncidentReport() {
     await set(newIncidentRef, incidentPayload);
 
     if (selectedFacilityId) {
-        // Don't stomp an already-active emergency's activeIncidentKey — if the
+        // Don't stomp an already-active emergency's activeIncidentKey :  if the
         // room is already flagged, this new report still gets logged above,
         // it just won't replace which incident the room card/modal points to.
         // (See this app's README for the tradeoff and how to change it.)

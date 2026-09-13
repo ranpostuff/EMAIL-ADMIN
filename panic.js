@@ -1,7 +1,7 @@
 /* ==========================================================================
-   RESCUEPRIORITY — PANIC / EVACUATION MODULE
+   RESCUEPRIORITY :  PANIC / EVACUATION MODULE
    --------------------------------------------------------------------------
-   Additive module. Does NOT touch classrooms/, incidents/, or counters/ —
+   Additive module. Does NOT touch classrooms/, incidents/, or counters/ : 
    same convention as students.js and scan-attendance.js.
 
    New Firebase path owned by this file:
@@ -12,12 +12,12 @@
    ------------------------------------
    A "panic" is a separate, brighter/faster visual state layered on top of
    the room card and the room modal. It deliberately does NOT create an
-   incident or flip classrooms/{facilityId}.emergency — it's a distinct
+   incident or flip classrooms/{facilityId}.emergency :  it's a distinct
    per-classroom evacuation trigger, not a duplicate emergency workflow.
 
    Real hardware target: an ultrasonic sensor mounted at the classroom
    door, wired into Firebase the same way the ESP32 already wires into
-   classrooms/. Until that hardware exists, two things simulate a press —
+   classrooms/. Until that hardware exists, two things simulate a press : 
    the room modal's own Panic button (the realistic case: someone in that
    room presses it) and the "Trigger Test Panic" button in the Campus Map
    header (a random-classroom demo button, same spirit as the existing
@@ -30,7 +30,7 @@
    student on that classroom's roster who scans OUT at the gate (kiosk /
    scan-attendance) at or after the panic's triggeredAt counts as
    evacuated. It reuses the same attendance/ log scan-attendance.js
-   already writes — no new student-facing workflow needed.
+   already writes :  no new student-facing workflow needed.
 ========================================================================== */
 
 import { database, SCHOOL_FACILITIES, isClassroomFacility } from "./script.js";
@@ -103,7 +103,7 @@ function initPanicModule() {
 
 /* ==========================================================================
    HEADER "TRIGGER TEST PANIC" BUTTON (Campus Map view)
-   Picks a random classroom without an active evacuation and raises one —
+   Picks a random classroom without an active evacuation and raises one : 
    same demo role as the existing "Trigger Test Alert" button.
 ========================================================================== */
 function setupHeaderTestPanicButton() {
@@ -126,7 +126,7 @@ function setupHeaderTestPanicButton() {
 }
 
 /* ==========================================================================
-   ROOM MODAL — PANIC TOGGLE BUTTON
+   ROOM MODAL :  PANIC TOGGLE BUTTON
 ========================================================================== */
 function setupRoomModalPanicButton() {
     const btn = document.getElementById("btn-panic-toggle");
@@ -160,7 +160,7 @@ async function endPanic(facilityId) {
 }
 
 /* ==========================================================================
-   BLUEPRINT — brighter/faster "panic-active" overlay on the room card
+   BLUEPRINT :  brighter/faster "panic-active" overlay on the room card
 ========================================================================== */
 function applyPanicStylesToBlueprint() {
     SCHOOL_FACILITIES.forEach((facility) => {
@@ -178,7 +178,7 @@ function applyPanicStylesToBlueprint() {
 }
 
 /* ==========================================================================
-   ROOM MODAL — evacuation panel + button label/state
+   ROOM MODAL :  evacuation panel + button label/state
 ========================================================================== */
 function refreshRoomModalPanicUI() {
     if (!openModalFacilityId) return;
@@ -233,7 +233,7 @@ function refreshRoomModalPanicUI() {
 
 /* Roster is read via student.facilityId (denormalized in students.js) so
    this doesn't need to cross-reference sections/ at all. "Evacuated" means
-   at least one OUT scan at or after the panic started — a student who
+   at least one OUT scan at or after the panic started :  a student who
    scanned back in afterwards still counts, since the point is headcount
    at the moment everyone left, not current occupancy. */
 function computeEvacuationProgress(facilityId, triggeredAt) {

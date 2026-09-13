@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY — CAMPUS MAP ADMIN TESTING TOOL
+   RESCUEPRIORITY :  CAMPUS MAP ADMIN TESTING TOOL
    --------------------------------------------------------------------------
    Lets an administrator type a room/classroom name and raise a simulated
    emergency there, to verify room highlighting and the emergency
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error("[map testing tool] Failed to trigger test incident:", error);
             if (status) {
-                status.textContent = "Failed to trigger — check console.";
+                status.textContent = "Failed to trigger :  check console.";
                 status.className = "map-testing-status is-error";
             }
         } finally {

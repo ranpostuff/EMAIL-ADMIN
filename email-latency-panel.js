@@ -1,11 +1,11 @@
 /* ==========================================================================
-   RESCUEPRIORITY — EMAIL LATENCY TEST PANEL (capstone testing only)
+   RESCUEPRIORITY :  EMAIL LATENCY TEST PANEL (capstone testing only)
    --------------------------------------------------------------------------
-   NOT a real product feature — same family as latency-test.js and
+   NOT a real product feature :  same family as latency-test.js and
    facilities-test.js, completely inert unless test mode is on. Drives
    api/email-latency-test.js, which simulates the batch-email pipeline
    (real Firebase routing lookups + real nodemailer message compilation)
-   WITHOUT ever sending a real email — see that file's header comment for
+   WITHOUT ever sending a real email :  see that file's header comment for
    exactly how the "no real send" guarantee works.
 
    TURNING TEST MODE ON
@@ -23,7 +23,7 @@
        submission_time -> the moment this simulated send started
        display_time    -> the moment it finished (Firebase lookup +
                            message compile + modeled network delay)
-       via              -> always "simulated" (never "student-app"/"direct" —
+       via              -> always "simulated" (never "student-app"/"direct" : 
                            nothing here is a real submission)
 ========================================================================== */
 
@@ -41,7 +41,7 @@ function isEmailLatencyTestModeEnabled() {
 }
 
 /* ==========================================================================
-   CSV FIELD FORMATTING — same two workarounds as latency-test.js:
+   CSV FIELD FORMATTING :  same two workarounds as latency-test.js:
    wrap text-like ids as ="..." so Excel doesn't misread a leading "-" as
    a formula, and pair every epoch-ms column with a human-readable ISO
    column so epoch numbers don't collapse into scientific notation.
@@ -184,7 +184,7 @@ function buildPanel() {
             lastTrials = flattenToTrials(data);
             lastOverallStats = data.overall;
 
-            overallEl.textContent = `Overall — ${summaryLine(data.overall)}`;
+            overallEl.textContent = `Overall :  ${summaryLine(data.overall)}`;
             progressEl.textContent = `Done. ${data.note}`;
 
             tbody.innerHTML = lastTrials.map((t) => `

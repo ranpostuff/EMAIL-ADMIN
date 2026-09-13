@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RESCUEPRIORITY — SCAN ATTENDANCE MODULE
+   RESCUEPRIORITY :  SCAN ATTENDANCE MODULE
    --------------------------------------------------------------------------
    Additive module. Does NOT touch classrooms/, incidents/, or counters/.
    Reuses the existing Firebase connection from script.js and the live
@@ -11,14 +11,14 @@
    Scanning is browser/camera-based (html5-qrcode, loaded via <script> in
    index.html, exposes window.Html5Qrcode) per the decision to start with
    web-based scanning rather than new dedicated hardware. QR payload is the
-   student's LRN only (see students.js) — the studentId/section/facility
+   student's LRN only (see students.js) :  the studentId/section/facility
    correlation happens here, via a database lookup, at scan time.
 
-   ACCESS CONTROL — STILL UNDECIDED (see planning doc point 5):
+   ACCESS CONTROL :  STILL UNDECIDED (see planning doc point 5):
    RescuePriority currently has no auth system at all, and who exactly
    holds the scanning device (gate personnel vs. a lower-trust user vs.
    self-service by students) hasn't been decided yet. SCAN_PASSCODE below
-   is a placeholder single shared passcode — good enough to stop a casual
+   is a placeholder single shared passcode :  good enough to stop a casual
    passer-by from opening this view, NOT a real access-control system.
    Replace this once the access model is decided.
 ========================================================================== */
@@ -37,7 +37,7 @@ import {
 
 const attendanceRootRef = ref(database, "attendance");
 
-/* TODO(access-control): placeholder only — see header note above. */
+/* TODO(access-control): placeholder only :  see header note above. */
 const SCAN_PASSCODE = "1234";
 const SESSION_UNLOCK_KEY = "rp_scan_unlocked";
 
@@ -68,7 +68,7 @@ function initScanAttendanceModule() {
 }
 
 /* ==========================================================================
-   PASSCODE GATE (placeholder — see header note)
+   PASSCODE GATE (placeholder :  see header note)
 ========================================================================== */
 function setupPasscodeGate() {
     const form = document.getElementById("scan-passcode-form");
@@ -143,7 +143,7 @@ async function startCamera() {
             { facingMode: "environment" },
             { fps: 10, qrbox: { width: 220, height: 220 } },
             (decodedText) => handleScanResult(decodedText.trim()),
-            () => { /* per-frame decode failure — expected while framing the code, ignore */ }
+            () => { /* per-frame decode failure :  expected while framing the code, ignore */ }
         );
 
         cameraRunning = true;
@@ -253,7 +253,7 @@ function showFeedback(state, title, sub) {
 
 /* ==========================================================================
    LIVE STATS (today's scans / distinct students currently checked in)
-   Client-side aggregation over today's attendance/ logs — matches the
+   Client-side aggregation over today's attendance/ logs :  matches the
    "client-side aggregation" starting point noted in the planning doc for
    occupancy counts, ahead of a possible Cloud Function upgrade later.
 ========================================================================== */

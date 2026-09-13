@@ -1,10 +1,10 @@
 /* ==========================================================================
-   RESCUEPRIORITY — SITE-WIDE EMERGENCY ALERT
+   RESCUEPRIORITY :  SITE-WIDE EMERGENCY ALERT
    --------------------------------------------------------------------------
    Additive module, read-only. Turns the whole admin app into an unmissable
-   alert state the moment any classroom emergency goes active — no matter
+   alert state the moment any classroom emergency goes active :  no matter
    which sidebar view (Dashboard, Students, Analytics, Violations, ...) the
-   admin currently has open — because the overlay it controls
+   admin currently has open :  because the overlay it controls
    (#emergency-alert-overlay, #emergency-toast-stack) lives outside every
    .app-view in index.html, as a direct <body> child.
 
@@ -84,7 +84,7 @@ function recomputeAlertState() {
 }
 
 /* ==========================================================================
-   PERSISTENT OVERLAY (border pulse + banner) — visible on every page
+   PERSISTENT OVERLAY (border pulse + banner) :  visible on every page
 ========================================================================== */
 function renderPersistentAlertUI(alerts) {
     const overlay = document.getElementById("emergency-alert-overlay");
@@ -114,7 +114,7 @@ function setupBannerButton() {
 }
 
 /* ==========================================================================
-   NEW-ALERT ANNOUNCEMENT — toast + sound + optional OS notification
+   NEW-ALERT ANNOUNCEMENT :  toast + sound + optional OS notification
 ========================================================================== */
 function announceNewAlert(alert) {
     showToast(alert);
@@ -152,7 +152,7 @@ function showToast(alert) {
     setTimeout(() => toast.remove(), 15000); // auto-dismiss; the persistent banner keeps the state visible regardless
 }
 
-/* Short two-tone beep via Web Audio — no external audio file needed.
+/* Short two-tone beep via Web Audio :  no external audio file needed.
    Browsers block audio before any user gesture on the page; that's fine,
    this silently no-ops in that case rather than throwing. */
 function playAlertBeep() {
@@ -174,7 +174,7 @@ function playAlertBeep() {
         });
         setTimeout(() => ctx.close(), 800);
     } catch (error) {
-        // Autoplay restrictions or no Web Audio support — the visual alert
+        // Autoplay restrictions or no Web Audio support :  the visual alert
         // still covers it, so this is safe to ignore.
     }
 }
@@ -199,7 +199,7 @@ function maybeShowBrowserNotification(alert) {
         notificationPermissionAsked = true;
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") new Notification(title, { body: roomName });
-        }).catch(() => { /* ignore — visual alert still covers it */ });
+        }).catch(() => { /* ignore :  visual alert still covers it */ });
     }
 }
 

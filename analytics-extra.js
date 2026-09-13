@@ -1,12 +1,12 @@
 /* ==========================================================================
-   RESCUEPRIORITY — ANALYTICS EXTRAS
+   RESCUEPRIORITY :  ANALYTICS EXTRAS
    --------------------------------------------------------------------------
    Adds the analytics the redesign asked for that the original Analytics
    tab didn't cover: Grade-Level Risk Distribution, Violation Category
    Breakdown, Offense Escalation Pattern, and Repeat Offender Analysis.
    Deliberately mirrors insights.js's approach (own onValue listeners
    rather than relying on another module's live-bound export staying in
-   sync) — this file owns its own read of /incidents and /violations.
+   sync) :  this file owns its own read of /incidents and /violations.
 ========================================================================== */
 
 import { database, SCHOOL_FACILITIES } from "./script.js";
@@ -113,7 +113,7 @@ function buildViolationCategorySeries() {
 /* ==========================================================================
    OFFENSE ESCALATION PATTERN
    How many distinct students have reached at least their 1st, 2nd, 3rd,
-   and 4th-or-later violation — a funnel showing how often minor cases
+   and 4th-or-later violation :  a funnel showing how often minor cases
    turn into repeat/escalated ones.
 ========================================================================== */
 function buildEscalationSeries() {
@@ -153,7 +153,7 @@ function renderRepeatOffenders() {
         el.className = "section-folder-row";
         el.innerHTML = `
             <span class="section-folder-rank">#${i + 1}</span>
-            <span class="section-folder-icon">&#128100;</span>
+            <span class="section-folder-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span>
             <span class="section-folder-info">
                 <span class="section-folder-name">${escapeHtml(studentFullName(row.student))}</span>
                 <span class="section-folder-sub">${section ? `${escapeHtml(section.gradeName || "--")} \u2013 ${escapeHtml(section.name)}` : "No section on file"}</span>
@@ -174,7 +174,7 @@ function escapeHtml(value) {
 }
 
 /* ==========================================================================
-   RENDER — charts + list together
+   RENDER :  charts + list together
 ========================================================================== */
 function renderAll() {
     renderRepeatOffenders();
