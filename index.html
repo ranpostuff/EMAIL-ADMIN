@@ -169,11 +169,6 @@
             <header class="topbar">
                 <div class="topbar-left">
                     <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Open menu">&#9776;</button>
-                    <div class="topbar-greeting">
-                        <h2 id="greeting-text">Welcome back</h2>
-                        <p id="admin-account-meta" class="admin-account-meta">Administrator</p>
-                        <p id="live-date">Loading date...</p>
-                    </div>
                 </div>
 
                 <div class="header-clock">
@@ -186,6 +181,14 @@
 
                 <!-- ============================= COMMAND CENTER VIEW ============================= -->
                 <div id="command-center-view" class="app-view">
+
+                    <!-- Greeting renders only here, inside Command Center — not in the
+                         shared topbar, so it doesn't repeat across every other view. -->
+                    <div class="cc-greeting">
+                        <h2 id="greeting-text">Welcome back</h2>
+                        <p id="admin-account-meta" class="admin-account-meta">Administrator</p>
+                        <p id="live-date">Loading date...</p>
+                    </div>
 
                     <div class="cc-hero-grid">
                         <!-- LEFT / MAIN AREA -->

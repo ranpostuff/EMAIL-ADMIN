@@ -153,7 +153,7 @@ function renderRepeatOffenders() {
         el.className = "section-folder-row";
         el.innerHTML = `
             <span class="section-folder-rank">#${i + 1}</span>
-            <span class="section-folder-icon">&#128100;</span>
+            <span class="section-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c.5-4 3.2-6 7-6s6.5 2 7 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
             <span class="section-folder-info">
                 <span class="section-folder-name">${escapeHtml(studentFullName(row.student))}</span>
                 <span class="section-folder-sub">${section ? `${escapeHtml(section.gradeName || "--")} \u2013 ${escapeHtml(section.name)}` : "No section on file"}</span>

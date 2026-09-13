@@ -8,83 +8,98 @@
    ============================================================================ */
 
 :root {
-    /* Legacy variable names are kept on purpose — insights.js reads several
-       of these directly via getComputedStyle() to theme the Chart.js
-       graphs, so renaming them would silently break the charts. Only the
-       values changed, from the old green palette to the new pink brand. */
-    --bg-page: #F6F6F7;
-    --bg-card: #FFFFFF;
-    --bg-panel: #FAFAFB;
+    /* ------------------------------------------------------------------
+       DESIGN TOKENS — single source of truth for the whole dashboard.
+       Adapted from the STAR.AI reference (near-black base, restrained
+       rose-pink accent) rather than lifted 1:1: saturation and glow were
+       pulled back so status colors, charts, and body text stay legible.
+       Legacy variable names are kept on purpose — insights.js and
+       analytics-extra.js read several of these directly via
+       getComputedStyle() to theme the Chart.js graphs, so renaming them
+       would silently break the charts. This block replaces the four
+       competing :root overrides that used to live further down this
+       file (v7 / v9 / v12 passes) — that history is gone, this is the
+       only theme now in effect.
+       ------------------------------------------------------------------ */
 
-    --text-primary: #1C1720;
-    --text-secondary: #6B6470;
-    --text-muted: #9C96A2;
+    /* Surface ladder: page < panel (chrome) < card (content) < elevated
+       (modals, dropdowns, the chatbot shell) — each a visible step up. */
+    --bg-page: #0b0910;
+    --bg-panel: #14101a;
+    --bg-card: #1e1823;
+    --bg-elevated: #291f2e;
 
-    --accent-pink: #FF66C4;          /* RescuePriority brand pink */
-    --accent-pink-dark: #C2368F;     /* deep pink — contrast-safe on white */
-    --accent-pink-soft: #FFD6EC;     /* soft pink tint */
-    --accent-pink-lightest: #FFF3FA;
+    --text-primary: #f1edf0;
+    --text-secondary: #b7afba;
+    --text-muted: #8b8390;
 
-    --accent-mauve: #8C4870;         /* muted pink-violet — complements brand pink without competing with it */
-    --accent-mauve-light: #F6EBF2;
+    --accent-pink: #c4487a;          /* RescuePriority brand pink — muted, not neon */
+    --accent-pink-dark: #93315c;     /* deep pink — contrast-safe on dark surfaces */
+    --accent-pink-soft: rgba(196, 72, 122, 0.16);
+    --accent-pink-lightest: rgba(196, 72, 122, 0.08);
 
-    --border-color: #E4E1E6;
-    --border-subtle: #EFEDF0;
+    --accent-mauve: #8e6e86;         /* muted plum — second chart/series color, stays in-family with the pink accent */
+    --accent-mauve-light: rgba(142, 110, 134, 0.14);
 
-    --status-safe: #0E8F4E;
-    --status-safe-light: #E1F4E8;
+    --border-color: #362e3c;
+    --border-subtle: #251f2a;
 
-    --status-warning: #A6720C;
-    --status-warning-light: #FBF0D6;
+    --status-safe: #4e9e78;
+    --status-safe-light: rgba(78, 158, 120, 0.16);
 
-    --status-emergency: #D92D20;
-    --status-emergency-light: #FCE7E4;
+    --status-warning: #c99a52;
+    --status-warning-light: rgba(201, 154, 82, 0.16);
+
+    --status-emergency: #d6584f;
+    --status-emergency-light: rgba(214, 88, 79, 0.16);
 
     /* Darker/more saturated than --status-emergency on purpose — used for
        incidents that affect an entire room/area (roomWide: true) rather
        than a single person, so a "everyone here" report visually outranks
        a single-person one at a glance on the Campus Map. */
-    --status-emergency-wide: #8B0000;
+    --status-emergency-wide: #7a1f1c;
 
-    --room-dark-bg: #F3EEF2;
-    --room-dark-text: #241E29;
-    --room-light-bg: #FFFFFF;
-    --room-light-text: #241E29;
+    --room-dark-bg: #241d2a;
+    --room-dark-text: #f1edf0;
+    --room-light-bg: #1a1520;
+    --room-light-text: #f1edf0;
 
-    --map-bg: #FAFAFB;
-    --room-bg: #F5F2F4;
-    --room-alt-bg: #FFFFFF;
-    --room-border: #E6E1E5;
-    --room-text: #241E29;
+    --map-bg: #100c16;
+    --room-bg: #241d2a;
+    --room-alt-bg: #1e1823;
+    --room-border: #362e3c;
+    --room-text: #f1edf0;
 
-    --card-shadow: 0 1px 2px rgba(20, 16, 22, 0.05);
-    --modal-shadow: 0 10px 24px rgba(20, 16, 22, 0.16);
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+    --modal-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
 
     /* Rounding scale — used across every card surface (KPI cards, chart
        cards, status cards, facility cards, activity cards) so the whole
-       app reads as one consistent, restrained card language. */
-    --radius-card: 10px;
-    --radius-card-sm: 8px;
-    --radius-pill: 6px;
+       app reads as one consistent, restrained card language.
+       --radius-pill is a soft rounded-rect, not a true pill — no fully
+       circular buttons anywhere in the UI. */
+    --radius-card: 12px;
+    --radius-card-sm: 9px;
+    --radius-pill: 10px;
 
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* New, descriptive aliases used by the sidebar / command-center UI.
-       These carry the brand's deep-pink "ink" tone — used for icon accents,
-       small text highlights and gradient stops — kept distinct from the
+    /* Descriptive aliases used by the sidebar / command-center UI. These
+       carry the brand's rose-pink "ink" tone — used for icon accents,
+       small text highlights and active states — kept distinct from the
        neutral charcoal sidebar surface below. */
-    --primary: #C2368F;
-    --primary-dark: #7A1F5C;
-    --primary-light: #B8447F;
-    --accent: #FF66C4;
+    --primary: #c4487a;
+    --primary-dark: #93315c;
+    --primary-light: #d9749e;
+    --accent: #c4487a;
 
-    --sidebar-bg: #1B1720;
-    --sidebar-bg-alt: #241E29;
-    --sidebar-text: rgba(255, 255, 255, 0.68);
-    --sidebar-text-active: #FFFFFF;
-    --sidebar-active-bg: rgba(255, 102, 196, 0.16);
-    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-bg: #0e0a13;
+    --sidebar-bg-alt: #171220;
+    --sidebar-text: rgba(241, 237, 240, 0.68);
+    --sidebar-text-active: #ffffff;
+    --sidebar-active-bg: rgba(196, 72, 122, 0.16);
+    --sidebar-border: rgba(241, 237, 240, 0.08);
 }
 
 * {
@@ -346,6 +361,11 @@ img { max-width: 100%; display: block; }
 .topbar-greeting h2 { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); }
 .topbar-greeting p { font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.05rem; }
 
+/* Command Center greeting — the only place this renders in the whole app. */
+.cc-greeting { margin-bottom: 0.85rem; }
+.cc-greeting h2 { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); }
+.cc-greeting p { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.15rem; }
+
 .header-clock {
     display: flex;
     flex-direction: column;
@@ -449,119 +469,52 @@ img { max-width: 100%; display: block; }
 .metric-badge.badge-alert { background: var(--status-emergency-light); color: var(--status-emergency); animation: statusIconPulse 1.2s ease-in-out infinite; }
 
 /* ----------------------------------------------------------------------
-   KPI CARD GRADIENTS — every Command Center metric card is now a full,
-   edge-to-edge saturated gradient (not just a tinted sliver at the top),
-   so each card reads as a solid colored tile. Text/icon/badge/foot all
-   switch to white-on-color for contrast; the old top accent strip and
-   the divider line under the icon row are removed so the gradient reads
-   as one continuous surface with no banding or seams.
+   KPI CARDS — restrained treatment: every card keeps the same neutral
+   var(--bg-card) face, padding, height, radius and border (set on the
+   shared .metric-card rule above). The only per-status color is a thin
+   3px top strip (via ::before, colored below) and the icon — never the
+   whole card face. Label/value/foot share one type scale and the same
+   text-token hierarchy across every variant, so cards differ only in
+   their accent, not their structure.
    ---------------------------------------------------------------------- */
-.metric-card.card-primary,
-.metric-card.card-safe,
-.metric-card.card-alert,
-.metric-card.card-incidents,
-.metric-card.card-resolved,
-.metric-card.card-temp {
-    border-color: transparent;
-    box-shadow: 0 4px 14px rgba(20, 16, 22, 0.14);
-}
+.metric-card.card-primary::before { background: var(--accent-pink); }
+.metric-card.card-safe::before { background: var(--status-safe); }
+.metric-card.card-alert::before { background: var(--status-emergency); }
+.metric-card.card-incidents::before { background: var(--accent-pink); }
+.metric-card.card-resolved::before { background: var(--accent-mauve); }
+.metric-card.card-temp::before,
+.metric-card.card-temp.temp-unavailable::before { background: var(--status-warning); }
 
-.metric-card.card-primary::before,
-.metric-card.card-safe::before,
-.metric-card.card-alert::before,
-.metric-card.card-incidents::before,
-.metric-card.card-resolved::before,
-.metric-card.card-temp::before {
-    display: none;
-}
+.metric-card.card-primary .metric-icon-wrap { background: var(--accent-pink-lightest); color: var(--accent-pink); }
+.metric-card.card-safe .metric-icon-wrap { background: var(--status-safe-light); color: var(--status-safe); }
+.metric-card.card-alert .metric-icon-wrap { background: var(--status-emergency-light); color: var(--status-emergency); }
+.metric-card.card-incidents .metric-icon-wrap { background: var(--accent-pink-lightest); color: var(--accent-pink); }
+.metric-card.card-resolved .metric-icon-wrap { background: var(--accent-mauve-light); color: var(--accent-mauve); }
+.metric-card.card-temp .metric-icon-wrap { background: var(--status-warning-light); color: var(--status-warning); }
 
-.metric-card.card-primary .metric-top-row,
-.metric-card.card-safe .metric-top-row,
-.metric-card.card-alert .metric-top-row,
-.metric-card.card-incidents .metric-top-row,
-.metric-card.card-resolved .metric-top-row,
-.metric-card.card-temp .metric-top-row {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.metric-card.card-primary .metric-icon-wrap,
-.metric-card.card-safe .metric-icon-wrap,
-.metric-card.card-alert .metric-icon-wrap,
-.metric-card.card-incidents .metric-icon-wrap,
-.metric-card.card-resolved .metric-icon-wrap,
-.metric-card.card-temp .metric-icon-wrap {
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-}
-
-.metric-card.card-primary .metric-label,
-.metric-card.card-safe .metric-label,
-.metric-card.card-alert .metric-label,
-.metric-card.card-incidents .metric-label,
-.metric-card.card-resolved .metric-label,
-.metric-card.card-temp .metric-label {
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.metric-card.card-primary .metric-value,
-.metric-card.card-safe .metric-value,
-.metric-card.card-alert .metric-value,
-.metric-card.card-incidents .metric-value,
-.metric-card.card-resolved .metric-value,
-.metric-card.card-temp .metric-value {
-    color: #ffffff;
-}
-
-.metric-card.card-primary .metric-foot,
-.metric-card.card-safe .metric-foot,
-.metric-card.card-alert .metric-foot,
-.metric-card.card-incidents .metric-foot,
-.metric-card.card-resolved .metric-foot,
-.metric-card.card-temp .metric-foot {
-    color: rgba(255, 255, 255, 0.72);
-}
-
-.metric-card.card-primary .metric-badge,
-.metric-card.card-safe .metric-badge,
-.metric-card.card-alert .metric-badge,
-.metric-card.card-incidents .metric-badge,
-.metric-card.card-resolved .metric-badge,
-.metric-card.card-temp .metric-badge {
-    background: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-}
-.metric-card.card-primary .metric-badge.badge-safe,
-.metric-card.card-safe .metric-badge.badge-safe { background: rgba(255, 255, 255, 0.24); color: #fff; }
-.metric-card.card-alert .metric-badge.badge-alert { background: rgba(255, 255, 255, 0.26); color: #fff; }
-
-.metric-card.card-primary {
-    background: linear-gradient(155deg, var(--primary-dark) 0%, #5C1747 100%);
-}
+.metric-badge.badge-safe { background: var(--status-safe-light); color: var(--status-safe); }
+.metric-badge.badge-alert { background: var(--status-emergency-light); color: var(--status-emergency); animation: statusIconPulse 1.2s ease-in-out infinite; }
 
 .metric-label { font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; position: relative; }
 .metric-value { font-size: 1.65rem; font-weight: 800; line-height: 1.15; color: var(--text-primary); margin-top: 0.2rem; position: relative; }
 .metric-foot { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.35rem; position: relative; }
 
-.metric-card.card-safe { background: linear-gradient(155deg, #0B6B3B 0%, #1FAE68 100%); }
-.metric-card.card-alert { background: linear-gradient(155deg, #9E1D14 0%, #E5473A 100%); }
-.metric-card.card-incidents { background: linear-gradient(155deg, var(--primary-dark) 0%, var(--primary) 100%); }
-.metric-card.card-resolved { background: linear-gradient(155deg, #5E2F49 0%, var(--accent-mauve) 100%); }
-
 /* ----------------------------------------------------------------------
    TEMPERATURE KPI — accent color reflects the current reading only.
-   The rest of the RescuePriority theme stays pink; these classes are
-   toggled on #temp-kpi-card by weather.js based on the live temperature.
-   Each band is its own full gradient rather than a single flat tint.
+   These classes are toggled on #temp-kpi-card by weather.js based on
+   the live temperature; only the top strip and icon color change.
    ---------------------------------------------------------------------- */
-.metric-card.card-temp { background: linear-gradient(155deg, var(--primary-dark) 0%, var(--primary) 100%); }
+.metric-card.card-temp.temp-cold::before,
+.metric-card.card-temp.temp-cool::before { background: #4f8fa8; }
+.metric-card.card-temp.temp-comfortable::before { background: var(--status-safe); }
+.metric-card.card-temp.temp-warm::before { background: var(--status-warning); }
+.metric-card.card-temp.temp-hot::before { background: var(--status-emergency); }
 
-.metric-card.card-temp.temp-cold { background: linear-gradient(155deg, #075A85 0%, #0E7FBF 100%); }
-.metric-card.card-temp.temp-cool { background: linear-gradient(155deg, #0B6E64 0%, #0F9488 100%); }
-.metric-card.card-temp.temp-comfortable { background: linear-gradient(155deg, #355F14 0%, #4C8C1F 100%); }
-.metric-card.card-temp.temp-warm { background: linear-gradient(155deg, #7C4607 0%, #B5690A 100%); }
-.metric-card.card-temp.temp-hot { background: linear-gradient(155deg, #8C1A4A 0%, #D6266E 100%); }
-.metric-card.card-temp.temp-unavailable { background: linear-gradient(155deg, #6B6470 0%, #9C96A2 100%); }
+.metric-card.card-temp.temp-cold .metric-icon-wrap,
+.metric-card.card-temp.temp-cool .metric-icon-wrap { background: rgba(79, 143, 168, 0.16); color: #4f8fa8; }
+.metric-card.card-temp.temp-comfortable .metric-icon-wrap { background: var(--status-safe-light); color: var(--status-safe); }
+.metric-card.card-temp.temp-warm .metric-icon-wrap { background: var(--status-warning-light); color: var(--status-warning); }
+.metric-card.card-temp.temp-hot .metric-icon-wrap { background: var(--status-emergency-light); color: var(--status-emergency); }
 
 /* ============================================================================
    AI ASSISTANT
@@ -571,10 +524,10 @@ img { max-width: 100%; display: block; }
     flex-direction: column;
     height: calc(100vh - 170px);
     min-height: 480px;
-    background: var(--bg-card);
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-card);
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--modal-shadow);
     overflow: hidden;
 }
 
@@ -831,10 +784,10 @@ img { max-width: 100%; display: block; }
     max-width: calc(100vw - 2.5rem);
     height: 440px;
     max-height: calc(100vh - 8rem);
-    background: var(--bg-panel);
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-card);
-    box-shadow: 0 6px 18px rgba(20, 16, 22, 0.18);
+    box-shadow: var(--modal-shadow);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2110,7 +2063,7 @@ img { max-width: 100%; display: block; }
 .modal-overlay.hidden { display: none; }
 
 .modal-card {
-    background: var(--bg-card);
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-card);
     width: 90%; max-width: 420px;
@@ -2420,8 +2373,8 @@ html.rp-hide-attendance [data-hide-group="attendance"] {
 
 /* ===== RescuePriority revision: admin identity, accountability, folder language ===== */
 .admin-account-meta { margin:.1rem 0 0; font-size:.78rem; color:var(--text-secondary); font-weight:600; }
-.incident-report-info { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; padding:1rem; margin-top:.75rem; border:1px solid var(--border); border-radius:14px; background:var(--surface, #fff); }
-.incident-report-info>div { display:flex; flex-direction:column; gap:.25rem; }.incident-report-info strong { font-size:.9rem; }.incident-report-description { grid-column:1/-1; padding-top:.7rem; border-top:1px solid var(--border); }.incident-report-description p { margin:.2rem 0 0; line-height:1.55; white-space:pre-wrap; color:var(--text-primary); }
+.incident-report-info { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; padding:1rem; margin-top:.75rem; border:1px solid var(--border-color); border-radius:14px; background:var(--bg-card); }
+.incident-report-info>div { display:flex; flex-direction:column; gap:.25rem; }.incident-report-info strong { font-size:.9rem; }.incident-report-description { grid-column:1/-1; padding-top:.7rem; border-top:1px solid var(--border-color); }.incident-report-description p { margin:.2rem 0 0; line-height:1.55; white-space:pre-wrap; color:var(--text-primary); }
 .grade-folder-icon svg,.section-folder-icon svg { width:22px; height:22px; display:block; }.grade-folder-icon,.section-folder-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--text-secondary); }
 .grade-folder-card:focus-visible,.section-folder-row:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
 @media(max-width:720px){.incident-report-info{grid-template-columns:1fr}.incident-report-description{grid-column:auto}}
@@ -2583,51 +2536,9 @@ table.data-table tbody tr:hover {
     .incident-reporter-accountability-row { align-items: flex-start; flex-direction: column; }
 }
 
-/* ============================================================================
-   v7 DASHBOARD REFINEMENT
-   Dark, compact command-center treatment inspired by the supplied reference.
-   Existing selectors, IDs, and semantic status colours are intentionally kept.
-   ============================================================================ */
-:root {
-    --bg-page: #0d0c10;
-    --bg-card: #18161d;
-    --bg-panel: #1d1a22;
-    --text-primary: #f8f5f7;
-    --text-secondary: #b8b0ba;
-    --text-muted: #817985;
-    --accent-pink: #ff66c4;
-    --accent-pink-dark: #e24aa8;
-    --accent-pink-soft: rgba(255, 102, 196, 0.18);
-    --accent-pink-lightest: rgba(255, 102, 196, 0.08);
-    --accent-mauve: #bd71a0;
-    --accent-mauve-light: rgba(189, 113, 160, 0.14);
-    --border-color: rgba(255, 255, 255, 0.095);
-    --border-subtle: rgba(255, 255, 255, 0.06);
-    --status-safe-light: rgba(29, 185, 106, 0.14);
-    --status-warning-light: rgba(238, 177, 50, 0.14);
-    --status-emergency-light: rgba(239, 82, 76, 0.14);
-    --room-dark-bg: #201c24;
-    --room-dark-text: #f8f5f7;
-    --room-light-bg: #19171e;
-    --room-light-text: #f8f5f7;
-    --map-bg: #121015;
-    --room-bg: #201c24;
-    --room-alt-bg: #18161d;
-    --room-border: rgba(255, 255, 255, 0.1);
-    --room-text: #f8f5f7;
-    --card-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
-    --modal-shadow: 0 24px 70px rgba(0, 0, 0, 0.46);
-    --radius-card: 14px;
-    --radius-card-sm: 11px;
-    --radius-pill: 999px;
-    --primary: #ff66c4;
-    --primary-dark: #b92e83;
-    --primary-light: #ff92d4;
-    --accent: #ff66c4;
-    --sidebar-bg: #0b0a0d;
-    --sidebar-bg-alt: #141116;
-    --sidebar-active-bg: rgba(255, 102, 196, 0.14);
-}
+/* v7/v9/v12 :root overrides removed — the single token block at the top
+   of this file is now the only theme source. Component rules from the
+   later passes are kept below, fixed in place to use those tokens. */
 
 html,
 body.eoc-dashboard-body {
@@ -3313,30 +3224,10 @@ textarea:focus-visible,
 }
 
 /* ============================================================================
-   v9 QUIET OPERATIONS THEME
-   Flat, restrained surfaces replace decorative glow and glass effects.
+   QUIET OPERATIONS THEME — component-level fixes (flat, restrained
+   surfaces; no decorative glow or glass). Colors now come entirely from
+   the tokens at the top of this file.
    ============================================================================ */
-:root {
-    --bg-page: #171619;
-    --bg-card: #242126;
-    --bg-panel: #201e22;
-    --text-primary: #f4f1f3;
-    --text-secondary: #c4bdc2;
-    --text-muted: #aaa2a8;
-    --accent-pink: #c45a8c;
-    --accent-pink-dark: #a94775;
-    --accent-pink-soft: rgba(196, 90, 140, .16);
-    --accent-pink-lightest: rgba(196, 90, 140, .08);
-    --primary: #c45a8c;
-    --primary-dark: #8e3e66;
-    --primary-light: #d482aa;
-    --accent: #c45a8c;
-    --border-color: #39343a;
-    --border-subtle: #302c31;
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, .18);
-    --radius-card: 10px;
-    --radius-card-sm: 8px;
-}
 
 html,
 body.eoc-dashboard-body {
@@ -3344,7 +3235,7 @@ body.eoc-dashboard-body {
 }
 
 .sidebar {
-    background: #111013;
+    background: var(--sidebar-bg);
     box-shadow: none;
 }
 .sidebar-brand-mark {
@@ -3354,17 +3245,24 @@ body.eoc-dashboard-body {
     border-radius: 8px;
 }
 .sidebar-nav-item.active {
-    background: #2a2027;
+    background: var(--sidebar-active-bg);
     box-shadow: inset 3px 0 0 var(--accent-pink);
 }
 
 .topbar {
-    background: #171619;
+    background: var(--bg-panel);
     box-shadow: none;
     backdrop-filter: none;
 }
-.header-clock { background: #201e22; border-radius: 8px; }
+.header-clock { background: var(--bg-card); border-radius: 8px; }
 
+/* ----------------------------------------------------------------------
+   KPI CARDS — neutral card face (var(--bg-card)) for every metric, a
+   thin colored top border to keep each card identifiable at a glance,
+   and a colored icon as the only other accent. No saturated/gradient
+   card fills, no glow. Padding, gap, height, radius and border are
+   shared by every card in the row via the base .metric-card rule.
+   ---------------------------------------------------------------------- */
 .metric-card,
 .metric-card.card-primary,
 .metric-card.card-safe,
@@ -3378,28 +3276,28 @@ body.eoc-dashboard-body {
 .metric-card.card-temp.temp-warm,
 .metric-card.card-temp.temp-hot,
 .metric-card.card-temp.temp-unavailable {
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 9px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card-sm);
     box-shadow: var(--card-shadow);
 }
-.metric-card.card-primary { background: #861b61; border-color: #a8327b; }
-.metric-card.card-safe { background: #137f4b; border-color: #279960; }
-.metric-card.card-alert { background: #c13732; border-color: #d8554e; }
-.metric-card.card-incidents { background: #af2d78; border-color: #ca468f; }
-.metric-card.card-resolved { background: #824568; border-color: #9d5d80; }
-.metric-card.card-temp,
-.metric-card.card-temp.temp-unavailable { background: #a05a08; border-color: #bd741b; }
-.metric-card.card-temp.temp-cold,
-.metric-card.card-temp.temp-cool { background: #276b86; border-color: #4387a1; }
-.metric-card.card-temp.temp-comfortable { background: #137f4b; border-color: #279960; }
-.metric-card.card-temp.temp-warm { background: #a05a08; border-color: #bd741b; }
-.metric-card.card-temp.temp-hot { background: #c13732; border-color: #d8554e; }
+.metric-card.card-primary::before { background: var(--accent-pink); }
+.metric-card.card-safe::before { background: var(--status-safe); }
+.metric-card.card-alert::before { background: var(--status-emergency); }
+.metric-card.card-incidents::before { background: var(--accent-pink); }
+.metric-card.card-resolved::before { background: var(--accent-mauve); }
+.metric-card.card-temp::before,
+.metric-card.card-temp.temp-unavailable::before { background: var(--status-warning); }
+.metric-card.card-temp.temp-cold::before,
+.metric-card.card-temp.temp-cool::before { background: #4f8fa8; }
+.metric-card.card-temp.temp-comfortable::before { background: var(--status-safe); }
+.metric-card.card-temp.temp-warm::before { background: var(--status-warning); }
+.metric-card.card-temp.temp-hot::before { background: var(--status-emergency); }
 
-.metric-card::before,
 .metric-card::after { display: none; }
 .metric-card:hover {
     transform: none;
-    border-color: rgba(255,255,255,.2);
+    border-color: var(--text-muted);
     box-shadow: var(--card-shadow);
 }
 
@@ -3410,16 +3308,41 @@ body.eoc-dashboard-body {
 .metric-card.card-incidents .metric-icon-wrap,
 .metric-card.card-resolved .metric-icon-wrap,
 .metric-card.card-temp .metric-icon-wrap {
-    background: rgba(0,0,0,.16);
-    border-color: rgba(255,255,255,.1);
+    background: var(--bg-panel);
+    border-color: var(--border-subtle);
     box-shadow: none;
 }
-.metric-card.card-primary .metric-icon-wrap { color: #f2b4d8; }
-.metric-card.card-safe .metric-icon-wrap { color: #baf0cf; }
-.metric-card.card-alert .metric-icon-wrap { color: #ffd0cc; }
-.metric-card.card-incidents .metric-icon-wrap { color: #f7bfdd; }
-.metric-card.card-resolved .metric-icon-wrap { color: #edc3db; }
-.metric-card.card-temp .metric-icon-wrap { color: #ffe0a8; }
+.metric-card.card-primary .metric-icon-wrap { color: var(--accent-pink); }
+.metric-card.card-safe .metric-icon-wrap { color: var(--status-safe); }
+.metric-card.card-alert .metric-icon-wrap { color: var(--status-emergency); }
+.metric-card.card-incidents .metric-icon-wrap { color: var(--accent-pink); }
+.metric-card.card-resolved .metric-icon-wrap { color: var(--accent-mauve); }
+.metric-card.card-temp .metric-icon-wrap { color: var(--status-warning); }
+
+.metric-card.card-primary .metric-label,
+.metric-card.card-safe .metric-label,
+.metric-card.card-alert .metric-label,
+.metric-card.card-incidents .metric-label,
+.metric-card.card-resolved .metric-label,
+.metric-card.card-temp .metric-label { color: var(--text-secondary); }
+.metric-card.card-primary .metric-value,
+.metric-card.card-safe .metric-value,
+.metric-card.card-alert .metric-value,
+.metric-card.card-incidents .metric-value,
+.metric-card.card-resolved .metric-value,
+.metric-card.card-temp .metric-value { color: var(--text-primary); }
+.metric-card.card-primary .metric-foot,
+.metric-card.card-safe .metric-foot,
+.metric-card.card-alert .metric-foot,
+.metric-card.card-incidents .metric-foot,
+.metric-card.card-resolved .metric-foot,
+.metric-card.card-temp .metric-foot { color: var(--text-muted); }
+.metric-card.card-primary .metric-badge,
+.metric-card.card-safe .metric-badge,
+.metric-card.card-alert .metric-badge,
+.metric-card.card-incidents .metric-badge,
+.metric-card.card-resolved .metric-badge,
+.metric-card.card-temp .metric-badge { background: var(--bg-panel); }
 
 .cc-card,
 .analytics-chart-card,
@@ -3564,188 +3487,3 @@ body.eoc-dashboard-body {
 .ai-widget-fab:hover { background: #302c31; }
 .ai-widget-fab svg { width: 20px; height: 20px; }
 
-/* ============================================================================
-   v12 RICH OPERATIONS THEME
-   Restores the expressive pink atmosphere while retaining readable surfaces.
-   ============================================================================ */
-:root {
-    --bg-page: #140d15;
-    --bg-card: #2a1b28;
-    --bg-panel: #211720;
-    --text-primary: #fff8fc;
-    --text-secondary: #ddcbd6;
-    --text-muted: #b69eac;
-    --accent-pink: #df4d9a;
-    --accent-pink-dark: #a9236c;
-    --accent-pink-soft: rgba(223, 77, 154, .2);
-    --accent-pink-lightest: rgba(223, 77, 154, .1);
-    --primary: #df4d9a;
-    --primary-dark: #8f1d5d;
-    --primary-light: #ee86bd;
-    --accent: #df4d9a;
-    --border-color: #4a3042;
-    --border-subtle: #382332;
-    --card-shadow: 0 10px 24px rgba(20, 5, 16, .28);
-}
-
-html,
-body.eoc-dashboard-body { background: #140d15; }
-
-.main-content {
-    background:
-        radial-gradient(circle at 14% 8%, rgba(175, 45, 120, .13), transparent 30rem),
-        radial-gradient(circle at 92% 16%, rgba(134, 27, 97, .1), transparent 27rem),
-        #140d15;
-}
-
-.sidebar {
-    background: #0f0a11;
-    border-right-color: #35202f;
-    box-shadow: 8px 0 28px rgba(12, 2, 10, .28);
-}
-.sidebar-brand-mark {
-    background: #a9236c;
-    border-color: #c9478c;
-    box-shadow: 0 7px 18px rgba(124, 20, 78, .25);
-}
-.sidebar-nav-item:hover { background: #281825; }
-.sidebar-nav-item.active {
-    background: #3b2033;
-    box-shadow: inset 3px 0 0 #e258a2, 0 6px 16px rgba(76, 17, 55, .18);
-}
-
-.topbar {
-    background: #160f17;
-    border-bottom-color: #3d2737;
-    box-shadow: 0 7px 22px rgba(13, 3, 11, .22);
-}
-.header-clock {
-    background: #251824;
-    border-color: #4b3044;
-}
-
-.metric-card.card-primary {
-    box-shadow: 0 10px 24px rgba(134, 27, 97, .28), 0 0 14px rgba(134, 27, 97, .12);
-}
-.metric-card.card-safe,
-.metric-card.card-temp.temp-comfortable {
-    box-shadow: 0 10px 24px rgba(19, 127, 75, .25), 0 0 14px rgba(19, 127, 75, .1);
-}
-.metric-card.card-alert,
-.metric-card.card-temp.temp-hot {
-    box-shadow: 0 10px 24px rgba(193, 55, 50, .26), 0 0 14px rgba(193, 55, 50, .1);
-}
-.metric-card.card-incidents {
-    box-shadow: 0 10px 24px rgba(175, 45, 120, .27), 0 0 14px rgba(175, 45, 120, .11);
-}
-.metric-card.card-resolved {
-    box-shadow: 0 10px 24px rgba(130, 69, 104, .26), 0 0 14px rgba(130, 69, 104, .1);
-}
-.metric-card.card-temp,
-.metric-card.card-temp.temp-warm,
-.metric-card.card-temp.temp-unavailable {
-    box-shadow: 0 10px 24px rgba(160, 90, 8, .25), 0 0 14px rgba(160, 90, 8, .1);
-}
-.metric-card.card-temp.temp-cold,
-.metric-card.card-temp.temp-cool {
-    box-shadow: 0 10px 24px rgba(39, 107, 134, .25), 0 0 14px rgba(39, 107, 134, .1);
-}
-.metric-card:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.04);
-}
-
-.cc-card,
-.analytics-chart-card,
-.school-map-section,
-.incident-log-section,
-.info-card,
-.ai-chat-shell,
-.data-table-wrap,
-.system-status-card,
-.system-status-card.status-alert {
-    background: linear-gradient(145deg, #291b28 0%, #211720 72%);
-    border-color: #4a3042;
-    box-shadow: 0 10px 24px rgba(20, 5, 16, .24);
-}
-.quick-action-btn,
-.cc-recent-item,
-.carousel-track-wrap {
-    background: #2a1b28;
-    border-color: #493043;
-}
-.quick-action-btn:hover,
-.cc-recent-item:hover {
-    background: #352131;
-    border-color: #754661;
-}
-.cc-bubble-active { background: #c13732; }
-.cc-bubble-resolved { background: #137f4b; }
-.cc-calendar-day.is-today {
-    background: #a9236c;
-    box-shadow: 0 5px 14px rgba(169, 35, 108, .25);
-}
-.carousel-slide-photo { background: #593047; }
-
-#incident-log-view .incident-log-section,
-#incident-log-view .incident-detail-section {
-    background: #211720;
-    border-color: #4a3042;
-    box-shadow: 0 10px 24px rgba(20, 5, 16, .24);
-}
-#incident-log-view .grade-folder-card,
-#incident-log-view .section-folder-row {
-    background: #2a1b28;
-    border-color: #4d3045;
-}
-#incident-log-view .grade-folder-card:hover,
-#incident-log-view .section-folder-row:hover {
-    background: #362132;
-    border-color: #765067;
-}
-#incident-log-view .grade-folder-icon,
-#incident-log-view .section-folder-icon {
-    background: #46243b;
-    border-color: #6e3a59;
-    color: #ef8abd;
-}
-#incident-log-view .incident-card {
-    background: linear-gradient(90deg, rgba(175, 45, 120, .16), #2a1b28 52%);
-    border-color: #4d3045;
-}
-#incident-log-view .incident-card:hover {
-    background: linear-gradient(90deg, rgba(175, 45, 120, .24), #362131 56%);
-    border-color: #765067;
-    box-shadow: 0 10px 22px rgba(20, 5, 16, .22);
-}
-
-.auth-gate { background: #0f0a11; }
-.auth-card {
-    background: #241823;
-    border-color: #59394f;
-    box-shadow: 0 18px 42px rgba(15, 3, 12, .36);
-}
-.ai-ask-chart-btn,
-.analytics-period-select,
-.analytics-month-nav-btn,
-.analytics-month-nav-today {
-    color: #f3bedc;
-    background: #321d2c;
-    border-color: #68405a;
-}
-.ai-ask-chart-btn:hover,
-.analytics-period-select:hover,
-.analytics-month-nav-btn:hover,
-.analytics-month-nav-today:hover {
-    color: #fff;
-    background: #43233a;
-    border-color: #995477;
-}
-.ai-widget-fab,
-.ai-widget-fab.is-active {
-    color: #ffd2e9;
-    background: #a9236c;
-    border-color: #cc4d90;
-    box-shadow: 0 9px 22px rgba(132, 23, 86, .28);
-}
-.ai-widget-fab:hover { background: #be2e7b; }
