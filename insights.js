@@ -138,7 +138,6 @@ function getPalette() {
         textSecondary: themeColor("--text-secondary", "#6B6470"),
         border: themeColor("--border-color", "#E4E1E6"),
         bgCard: themeColor("--bg-card", "#FFFFFF"),
-        bgPanel: themeColor("--bg-panel", "#14101a"),
         fontFamily: "'Inter', system-ui, sans-serif"
     };
 }
@@ -1005,7 +1004,7 @@ function buildOrUpdateCommandCenterCharts() {
                         label: "Incidents",
                         data: trendData,
                         borderColor: palette.pink,
-                        backgroundColor: withAlpha(palette.pink, 0.16),
+                        backgroundColor: "rgba(255, 102, 196, 0.16)",
                         borderWidth: 2.5,
                         fill: true,
                         tension: 0.4,
@@ -1043,7 +1042,7 @@ function trendAreaOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.bgPanel,
+                backgroundColor: "#21151d",
                 titleColor: palette.pink,
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
@@ -1079,7 +1078,7 @@ function volumeAreaOptions(palette) {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: palette.bgPanel,
+                backgroundColor: "#21151d",
                 titleColor: palette.pink,
                 bodyColor: "#ffffff",
                 titleFont: { size: 11, weight: "700" },
