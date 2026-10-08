@@ -1,0 +1,153 @@
+/* Reference-led navy dashboard. Loaded last; presentation only. */
+:root {
+ --bg-page:#001d39; --bg-card:#082b46; --bg-panel:#103750; --surface-elevated:#123d59;
+ --text-primary:#edf6fc; --text-secondary:#bdd8e9; --text-muted:#99b8cb;
+ --border-color:#244a63; --border-subtle:#1a4059;
+ --accent-pink:#7bbde8; --accent-pink-dark:#49769f; --accent-pink-soft:#123e5d; --accent-pink-lightest:#10354e;
+ --primary:#7bbde8; --primary-dark:#0a4174; --primary-light:#bdd8e9; --accent:#7bbde8; --accent-mauve:#6ea2b3;
+ --status-safe:#80c6bb; --status-safe-light:#153e45; --status-warning:#dfbd7a; --status-warning-light:#3d382c;
+ --status-emergency:#ed9e97; --status-emergency-light:#472f39; --radius-card:18px;
+}
+html,body.eoc-dashboard-body,.main-content,#analytics-view:not(.hidden){background:var(--bg-page)}
+body .sidebar,body .topbar,body .auth-gate{background:#02182e;border-color:#21435c}
+body .sidebar{width:220px}
+body .main-content{margin-left:220px}
+body .sidebar-brand-mark{background:#0a4174;color:#bdd8e9;border-color:#49769f;border-radius:12px}
+body .sidebar-brand-text h1{font-size:12px;letter-spacing:.045em}
+body .sidebar-brand-text p{font-size:10px;color:#99b8cb}
+body .sidebar-nav-item{font-size:12px;padding:12px;min-height:42px}
+body .sidebar-nav-item.active{background:#103c5a;color:#eaf6ff;border-left-color:#7bbde8}
+body .sidebar-nav-item:hover{background:#0b304b}
+body .nav-section-label{color:#799caf;letter-spacing:.12em;font-size:9px}
+body .topbar{padding:15px 26px}
+body .topbar-greeting h2{font-size:19px;font-weight:600}
+body .header-clock{background:transparent;border:0;padding:0}
+body .dashboard-wrapper{padding:22px 26px;max-width:1600px}
+body .cc-card,body .analytics-chart-card,body .school-map-section,body .incident-log-section,body .info-card,body .data-table-wrap,body .system-status-card,body .auth-card,body .grade-folder-card,body .section-folder-card,body .section-folder-row,body .quick-action-btn,body .cc-recent-item,#analytics-view .analytics-chart-card{background:var(--bg-card);border-color:var(--border-color);border-radius:18px}
+body .analytics-chart-card,#analytics-view .analytics-chart-card{padding:20px}
+body .analytics-chart-header,#analytics-view .analytics-chart-header{border:0;margin-bottom:12px;padding-bottom:0;gap:10px}
+body .analytics-chart-header h3,#analytics-view .analytics-chart-header h3{font-size:13px;letter-spacing:0;font-weight:600}
+body .analytics-chart-header p,#analytics-view .analytics-chart-header p{font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:5px}
+body .analytics-chart-header-actions{gap:7px;flex-wrap:wrap}
+body button,body select{border-radius:20px!important}
+body .ai-ask-chart-btn,body .analytics-period-select,body .analytics-month-nav-btn,body .analytics-month-nav-today,body .btn-test-alert{background:#113b56;color:#bdd8e9;border:1px solid #365970;font-size:10px;min-height:30px;padding:5px 11px}
+body .analytics-month-nav{background:transparent;border:0;gap:4px}
+body .analytics-month-nav-label{font-size:10px;color:#bdd8e9;min-width:48px}
+body .analytics-month-nav-btn{min-width:28px;padding:3px}
+body .analytics-chart-legend{margin:0 0 10px;gap:16px}
+body .analytics-chart-legend-dot{border-radius:50%;width:6px;height:6px}
+body .analytics-chart-legend-dot.dot-volume{background:#7bbde8}
+body .analytics-chart-legend-dot.dot-active{background:#ed9e97}
+body .analytics-chart-legend-dot.dot-resolved{background:#80c6bb}
+body .analytics-chart-legend-dot.dot-warning{background:#dfbd7a}
+body .analytics-intro{background:transparent;border:0;padding:0 0 4px;gap:12px}
+body .analytics-intro h2{font-size:24px;font-weight:600;letter-spacing:-.6px}
+body .analytics-intro p{color:var(--text-muted);font-size:12px}
+#analytics-view:not(.hidden){grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+#analytics-view>.analytics-intro{grid-column:1/-1;grid-row:1}
+#analytics-view>.analytics-kpi-row{grid-column:1/4;grid-row:2/4;grid-template-columns:1fr;gap:0;background:#0a4174;border:1px solid #315f80;border-radius:18px;padding:4px 20px}
+body #analytics-view .analytics-kpi-card[class]{min-height:0;background:transparent;border:0;border-bottom:1px solid #315c7b;border-radius:0;padding:19px 0;gap:8px}
+body #analytics-view .analytics-kpi-card:last-child{border:0}
+body #analytics-view .analytics-kpi-card .analytics-kpi-value{font-size:34px;letter-spacing:-1px;font-weight:600;color:#edf6fc}
+body #analytics-view .kpi-active .analytics-kpi-value{color:#ffc0b8}
+body #analytics-view .kpi-resolved .analytics-kpi-value{color:#9adecf}
+body .analytics-kpi-label{font-size:11px;color:#bdd8e9}
+#analytics-view>.analytics-chart-card-volume{grid-column:4/10;grid-row:2;background:#0a304d}
+#analytics-view>.analytics-chart-card-status{grid-column:4/10;grid-row:3}
+#analytics-view>.analytics-status-summary{grid-column:10/13;grid-row:2/4;background:#0b3450}
+#analytics-view>.analytics-chart-card-risk{grid-column:1/5;grid-row:4}
+#analytics-view>.analytics-chart-grid{display:contents}
+#analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(1){grid-column:5/9;grid-row:4}
+#analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(2){grid-column:9/13;grid-row:4}
+#analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(3){grid-column:1/-1;grid-row:5}
+#analytics-view .analytics-chart-canvas-wrap,#analytics-view .analytics-chart-canvas-wrap-hero{height:190px;min-height:190px}
+#analytics-view .analytics-chart-card-status .analytics-chart-canvas-wrap{height:154px;min-height:154px}
+#analytics-view .analytics-status-summary .analytics-chart-canvas-wrap{height:310px;min-height:310px;margin:auto 0}
+#analytics-view .analytics-chart-card-volume .analytics-chart-header{flex-direction:column}
+#analytics-view .analytics-chart-card-volume .analytics-chart-header-actions{width:100%;justify-content:flex-end}
+body .analytics-empty-note{color:#bdd8e9;font-size:12px}
+body .cc-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+body .metric-card[class]{padding:18px;min-height:142px;border-radius:18px;border-top:1px solid var(--border-color);background:var(--bg-card);row-gap:12px}
+body .metric-card.card-primary,body .metric-card.card-incidents{--kpi-accent:#7bbde8}
+body .metric-card.card-primary{background:#0a4174}
+body .metric-card.card-safe,body .metric-card.card-resolved{--kpi-accent:#80c6bb}
+body .metric-card.card-alert{--kpi-accent:#ed9e97}
+body .metric-card.card-temp{--kpi-accent:#dfbd7a}
+body .metric-card[class] .metric-value{font-size:30px}
+body .cc-bubble-active{background:#ed9e97;color:#001d39}
+body .cc-bubble-resolved{background:#80c6bb;color:#001d39}
+body .ai-avatar,body .ai-empty-avatar,body .ai-widget-fab{background:#0a4174;color:#bdd8e9;border-color:#49769f}
+body .ai-chat-input-row input,body .ai-widget-input-row input{background:#001d39;border-color:#365970}
+body .ai-chat-bubble-user{background:#0a4174;border-color:#49769f}
+body .btn-primary,body .btn-resolve,body .ai-chat-send-btn,body .ai-widget-send-btn{background:#7bbde8;color:#001d39;border-color:#7bbde8}
+body .student-row-avatar-fallback{background:#0a4174;color:#bdd8e9}
+body .metric-card:hover{transform:none}
+body .live-dot{background:#80c6bb;animation:none}
+body .cc-calendar-day.is-today{background:#0a4174;color:#edf6fc}
+body .analytics-chart-grid .analytics-chart-card{border-top-color:var(--border-color)!important}
+body .map-dot-emergency,body .map-dot-emergency-wide{animation:none!important}
+@media(min-width:1500px){#analytics-view .analytics-chart-card-volume .analytics-chart-header{flex-direction:row}}
+@media(max-width:1150px){
+ #analytics-view>.analytics-kpi-row{grid-column:1/-1;grid-row:2;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+ body #analytics-view .analytics-kpi-card[class]{border-bottom:0}
+ #analytics-view>.analytics-chart-card-volume{grid-column:1/9;grid-row:3}
+ #analytics-view>.analytics-status-summary{grid-column:9/13;grid-row:3/5}
+ #analytics-view>.analytics-chart-card-status{grid-column:1/9;grid-row:4}
+ #analytics-view>.analytics-chart-card-risk{grid-column:1/7;grid-row:5}
+ #analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(1){grid-column:7/13;grid-row:5}
+ #analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(2){grid-column:1/7;grid-row:6}
+ #analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(3){grid-column:7/13;grid-row:6}
+}
+@media(max-width:900px){body .main-content{margin-left:0}body .sidebar{width:220px}body .cc-hero-grid{grid-template-columns:1fr}}
+@media(max-width:650px){
+ body .dashboard-wrapper{padding:16px}body .topbar{padding:14px 16px}
+ #analytics-view:not(.hidden){display:flex;flex-direction:column;gap:12px}
+ #analytics-view>.analytics-kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;padding:0 16px}
+ body #analytics-view .analytics-kpi-card .analytics-kpi-value{font-size:29px}
+ #analytics-view .analytics-chart-grid{display:flex;flex-direction:column;gap:12px}
+ #analytics-view .analytics-status-summary .analytics-chart-canvas-wrap{height:240px;min-height:240px}
+ body .cc-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body .analytics-chart-header-actions{justify-content:flex-start!important}
+ body .analytics-intro h2{font-size:22px}
+}
+/* Neutralize older nth-of-type layout rules so each chart has an explicit place. */
+body .main-content{margin-left:0;min-width:0}
+#analytics-view>.analytics-chart-card-wide{min-height:0}
+#analytics-view>.analytics-chart-card-volume.analytics-chart-card-wide{grid-column:4/10;grid-row:2;min-height:0}
+#analytics-view>.analytics-chart-card-status.analytics-chart-card-wide{grid-column:4/10;grid-row:3;min-height:0}
+#analytics-view>.analytics-chart-card-risk.analytics-chart-card-wide{grid-column:1/5;grid-row:4;min-height:0}
+#analytics-view>.analytics-chart-card-volume.analytics-chart-card-wide .analytics-chart-canvas-wrap{height:170px;min-height:170px}
+#analytics-view>.analytics-chart-card-status.analytics-chart-card-wide .analytics-chart-canvas-wrap{height:140px;min-height:140px}
+#analytics-view>.analytics-status-summary .analytics-chart-canvas-wrap{height:260px;min-height:260px;max-height:260px}
+#analytics-view .analytics-kpi-card .analytics-kpi-value{overflow-wrap:anywhere}
+@media(max-width:1150px){
+ #analytics-view>.analytics-chart-card-volume.analytics-chart-card-wide{grid-column:1/9;grid-row:3}
+ #analytics-view>.analytics-chart-card-status.analytics-chart-card-wide{grid-column:1/9;grid-row:4}
+ #analytics-view>.analytics-chart-card-risk.analytics-chart-card-wide{grid-column:1/7;grid-row:5}
+}
+@media(max-width:650px){
+ #analytics-view>.analytics-chart-card-volume.analytics-chart-card-wide .analytics-chart-canvas-wrap{height:180px;min-height:180px}
+ #analytics-view>.analytics-chart-card-status.analytics-chart-card-wide .analytics-chart-canvas-wrap{height:160px;min-height:160px}
+ #analytics-view>.analytics-status-summary .analytics-chart-canvas-wrap{height:220px;min-height:220px}
+}
+/* Compact right rail: status above the time-of-day comparison. */
+#analytics-view>.analytics-status-summary{grid-row:2;min-height:0}
+#analytics-view>.analytics-status-summary .analytics-chart-canvas-wrap{height:220px;min-height:220px;max-height:220px;margin:0}
+#analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(3){grid-column:10/13;grid-row:3;min-height:0}
+#analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(3) .analytics-chart-canvas-wrap{height:150px;min-height:150px}
+#analytics-view .analytics-chart-header{margin-bottom:10px}
+#analytics-view>.analytics-chart-card-volume .analytics-chart-legend{display:none}
+#analytics-view>.analytics-chart-card-volume.analytics-chart-card-wide .analytics-chart-canvas-wrap{height:180px;min-height:180px}
+#analytics-view .analytics-chart-grid>.analytics-chart-card{min-height:0}
+body .ai-widget-fab{width:38px;height:38px;right:12px;bottom:12px}
+@media(max-width:1150px){
+ #analytics-view>.analytics-status-summary{grid-row:3}
+ #analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(3){grid-column:9/13;grid-row:4}
+ #analytics-view>.analytics-chart-grid>.analytics-chart-card:nth-child(2){grid-column:1/-1;grid-row:6}
+}
+@media(max-width:650px){
+ #analytics-view>.analytics-status-summary .analytics-chart-canvas-wrap{height:205px;min-height:205px;margin:0 auto;width:100%}
+ #analytics-view .analytics-chart-header-actions{gap:6px}
+ #analytics-view .analytics-chart-header{flex-direction:row;flex-wrap:wrap}
+ #analytics-view .analytics-chart-card-volume .analytics-chart-header{flex-direction:column}
+}

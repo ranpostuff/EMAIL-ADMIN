@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="violations.css">
     <link rel="stylesheet" href="emergency-alert.css">
     <link rel="stylesheet" href="facilities-test.css">
+    <link rel="stylesheet" href="product-theme.css">
+    <link rel="stylesheet" href="reference-theme.css">
 
     <!-- QR generation (Students view): self-hosted locally, same as
          chart.umd.min.js, for network resilience (unpkg was unreliable
@@ -38,6 +40,7 @@
          Analytics charts work even on networks that block CDN domains.
          Make sure chart.umd.min.js sits in this same ANALYTICS folder. -->
     <script src="chart.umd.min.js"></script>
+    <script src="chart-theme.js"></script>
 </head>
 <body class="eoc-dashboard-body">
 
@@ -672,6 +675,11 @@
                     </section>
 
                     <!-- ACTIVE VS RESOLVED OVER TIME (SECONDARY CHART — LINE) -->
+                    <section class="analytics-chart-card analytics-status-summary">
+                        <div class="analytics-chart-header"><div><h3>Incident Status</h3><p>All recorded incidents</p></div></div>
+                        <div class="analytics-chart-canvas-wrap"><canvas id="chart-analytics-status" role="img" aria-label="Active and resolved incident totals"></canvas></div>
+                        <p class="analytics-empty-note hidden" id="chart-analytics-status-empty">No incident data yet.</p>
+                    </section>
                     <section class="analytics-chart-card analytics-chart-card-wide analytics-chart-card-status">
                         <div class="analytics-chart-header">
                             <div>
