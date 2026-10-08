@@ -80,8 +80,7 @@ const charts = {
     sectionRisk: null,
     homeClassroom: null,
     homeStatus: null,
-    ccActivity: null,
-    analyticsStatus: null
+    ccActivity: null
 };
 
 let chartsBuilt = false;
@@ -543,22 +542,6 @@ function buildOrUpdateCharts() {
     const palette = getPalette();
 
     const volume = buildVolumeSeries(validIncidents, currentPeriod);
-    const statusSummary = buildStatusSeries(validIncidents);
-    const unknownStatusCount = validIncidents.length - statusSummary.data.reduce((sum, count) => sum + count, 0);
-    if (unknownStatusCount > 0) {
-        statusSummary.labels.push("Unknown");
-        statusSummary.data.push(unknownStatusCount);
-    }
-    toggleEmptyNote("chart-analytics-status-empty", validIncidents.length === 0);
-    if (!charts.analyticsStatus) {
-        charts.analyticsStatus = new Chart(document.getElementById("chart-analytics-status"), {
-            type: "doughnut",
-            data: { labels: statusSummary.labels, datasets: [{ data: statusSummary.data }] },
-            options: { responsive: true, maintainAspectRatio: false, cutout: "74%", plugins: { legend: { display: true } } }
-        });
-    } else {
-        updateDataset(charts.analyticsStatus, statusSummary.labels, statusSummary.data);
-    }
     const activeResolved = buildActiveResolvedSeries(validIncidents, currentPeriod);
     const topClassrooms = buildTopClassroomsSeries(validIncidents);
     const resolution = buildResolutionDistribution(validIncidents);
@@ -587,7 +570,7 @@ function buildOrUpdateCharts() {
         });
 
         charts.volume = new Chart(document.getElementById("chart-volume"), {
-            type: "bar",
+            type: "line",
             data: {
                 labels: volume.labels,
                 datasets: [{
