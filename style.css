@@ -3749,3 +3749,31 @@ body.eoc-dashboard-body { background: #140d15; }
     box-shadow: 0 9px 22px rgba(132, 23, 86, .28);
 }
 .ai-widget-fab:hover { background: #be2e7b; }
+
+/* Glow-only adjustment: preserve the original palette, dimensions and layout. */
+body.eoc-dashboard-body *,
+body.eoc-dashboard-body *::before,
+body.eoc-dashboard-body *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+/* Remove background lighting while retaining the existing background color. */
+body.eoc-dashboard-body .main-content { background-image: none !important; }
+body.eoc-dashboard-body .metric-card:hover,
+body.eoc-dashboard-body .analytics-kpi-card:hover,
+body.eoc-dashboard-body .ai-chat-send-btn:hover,
+body.eoc-dashboard-body .ai-widget-send-btn:hover { filter: none !important; }
+/* Keep flat state indicators and keyboard focus, without blurred halos. */
+body.eoc-dashboard-body .sidebar-nav-item.active {
+    box-shadow: inset 3px 0 0 #e258a2 !important;
+}
+body.eoc-dashboard-body .emergency-alert-frame {
+    box-shadow: inset 0 0 0 6px var(--status-emergency) !important;
+}
+body.eoc-dashboard-body .emergency-toast {
+    box-shadow: inset 0 -3px 0 var(--status-emergency) !important;
+}
+body.eoc-dashboard-body :is(button, a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--accent-pink);
+    outline-offset: 2px;
+}
